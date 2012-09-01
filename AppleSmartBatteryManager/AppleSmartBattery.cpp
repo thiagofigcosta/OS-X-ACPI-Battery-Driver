@@ -21,6 +21,17 @@
  * @APPLE_LICENSE_HEADER_END@
  */
 
+/* Modification History
+ *
+ * Unknown date: Original mods credit to glsy/insanelymac.com
+ *
+ * 2012-08-31, RehabMan/tonymacx86.com.
+ *   - Integrate zprood's hack to gather cycle count as extra field in _BIF.
+ *   - Also fix bug where if boot with no batteries installed, incorrect
+ *     "Power Soure: Battery" was displayed in Mac menu bar.
+ *   - Also a few other changes to get battery status to show in System Report
+ */
+
 #include <IOKit/IOTimerEventSource.h>
 #include <IOKit/IOWorkLoop.h>
 #include <IOKit/IOTimerEventSource.h>
