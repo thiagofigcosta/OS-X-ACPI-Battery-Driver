@@ -384,6 +384,10 @@ bool AppleSmartBattery::pollBatteryState(int path)
 		{
             setFullyCharged(false);
             clearBatteryState(true);
+            //rehabman: added to correct power source Battery if boot w/ no batteries
+            DEBUG_LOG("AppleSmartBattery: !fBatteryPresent\n");
+            fACConnected = true;
+            setExternalConnected(fACConnected);
         }
 		
 		fPollingNow = false;
