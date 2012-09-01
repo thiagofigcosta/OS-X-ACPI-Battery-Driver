@@ -1232,8 +1232,14 @@ IOReturn AppleSmartBattery::setBatteryBIF(OSArray *acpibat_bif)
     setLocation(0);
     setAdapterInfo(0);
     
+    //rehabman: zprood's technique of expanding the _BIF to include cycle count
+    uint32_t cycleCnt = 0;
+    if (acpibat_bif->getCount() > BIF_CYCLE_COUNT) {
+        cycleCnt = GetValueFromArray(acpibat_bif, BIF_CYCLE_COUNT);
+    }
+    setCycleCount(cycleCnt);
+    
 	// ACPI _BIF doesn't provide these
-	setCycleCount(0);
 	setMaxErr(0);
 	setManufactureDate(0);
     
