@@ -25,7 +25,7 @@
 #include <IOKit/IOWorkLoop.h>
 #include <IOKit/IOTimerEventSource.h>
 #include <IOKit/pwr_mgt/RootDomain.h>
-#include <IOKit/pwr_mgt/IOPMPrivate.h>
+//#include <IOKit/pwr_mgt/IOPMPrivate.h>    //rehabman: I don't have this header in latest xcode
 #include <libkern/c++/OSObject.h>
 
 #include "AppleSmartBatteryManager.h"
