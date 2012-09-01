@@ -35,9 +35,9 @@
 			<key>IOProviderClass</key>
 			<string>IOACPIPlatformDevice</string>
 			<key>UseExtendedBatteryInformationMethod</key>
-			<true/>
+			<false/>
 			<key>UseExtraBatteryInformationMethod</key>
-			<true/>
+			<false/>
 		</dict>
 	</dict>
 	<key>NSHumanReadableCopyright</key>
