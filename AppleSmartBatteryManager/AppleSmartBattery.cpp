@@ -1224,15 +1224,25 @@ IOReturn AppleSmartBattery::setBatteryBIF(OSArray *acpibat_bif)
 	setSerialNumber(fSerialNumber);
 	setBatteryType(fType);
 	setManufacturer(fManufacturer);
-	
+    
+    //rehabman: added to get battery status to show
+    setBatteryInstalled(true);
+    setExternalChargeCapable(true);
+    setSerial(fSerialNumber);
+    setLocation(0);
+    setAdapterInfo(0);
+    
 	// ACPI _BIF doesn't provide these
-	
 	setCycleCount(0);
 	setMaxErr(0);
 	setManufactureDate(0);
+    
+    //rehabman: removed this code to get battery status to show in System Report
+/*
 	fManufacturerData = OSData::withCapacity(10);
 	setManufacturerData((uint8_t *)fManufacturerData, fManufacturerData->getLength());
 	setPermanentFailureStatus(0);
+*/
 	
 	return kIOReturnSuccess;
 }
