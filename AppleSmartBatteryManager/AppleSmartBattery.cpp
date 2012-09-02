@@ -599,8 +599,6 @@ void AppleSmartBattery::clearBatteryState(bool do_update)
     setVoltage(0);
     setCycleCount(0);
 	setMaxErr(0);
-    setAdapterInfo(0);
-    setLocation(0);
 	
     properties->removeObject(manufacturerKey);
     removeProperty(manufacturerKey);
@@ -1208,6 +1206,7 @@ IOReturn AppleSmartBattery::setBatterySTA(UInt32 battery_status)
  * 	Serial Number					//ASCIIZ
  * 	Battery Type					//ASCIIZ
  * 	OEM Information					//ASCIIZ
+ *  Cycle Count                     //DWORD (//rehabman: this is zprood's extension!!)
  * }
  */
 
@@ -1220,6 +1219,8 @@ IOReturn AppleSmartBattery::setBatteryBIF(OSArray *acpibat_bif)
 	fMaxCapacity		= GetValueFromArray (acpibat_bif, BIF_LAST_FULL_CAPACITY);
 	fBatteryTechnology	= GetValueFromArray (acpibat_bif, BIF_TECHNOLOGY);
 	fDesignVoltage		= GetValueFromArray (acpibat_bif, BIF_DESIGN_VOLTAGE);
+    fCapacityWarning    = GetValueFromArray (acpibat_bif, BIF_CAPACITY_WARNING);
+    fLowWarning         = GetValueFromArray (acpibat_bif, BIF_LOW_WARNING);
 	fDeviceName			= GetSymbolFromArray(acpibat_bif, BIF_MODEL_NUMBER);
 	fSerialNumber		= GetSymbolFromArray(acpibat_bif, BIF_SERIAL_NUMBER);					 
 	fType				= GetSymbolFromArray(acpibat_bif, BIF_BATTERY_TYPE);
@@ -1245,8 +1246,6 @@ IOReturn AppleSmartBattery::setBatteryBIF(OSArray *acpibat_bif)
     setBatteryInstalled(true);
     setExternalChargeCapable(true);
     setSerial(fSerialNumber);
-    setLocation(0);
-    setAdapterInfo(0);
     
     //rehabman: zprood's technique of expanding the _BIF to include cycle count
     uint32_t cycleCnt = 0;
@@ -1263,8 +1262,8 @@ IOReturn AppleSmartBattery::setBatteryBIF(OSArray *acpibat_bif)
 /*
 	fManufacturerData = OSData::withCapacity(10);
 	setManufacturerData((uint8_t *)fManufacturerData, fManufacturerData->getLength());
-	setPermanentFailureStatus(0);
 */
+	setPermanentFailureStatus(0);
 	
 	return kIOReturnSuccess;
 }
@@ -1339,8 +1338,12 @@ IOReturn AppleSmartBattery::setBatteryBIX(OSArray *acpibat_bix)
 	// ACPI _BIX doesn't provide these...
 	
 	setManufactureDate(0);
+
+    //rehabman: removed this code to get battery status to show in System Report
+/*
 	fManufacturerData = OSData::withCapacity(10);
 	setManufacturerData((uint8_t *)fManufacturerData, fManufacturerData->getLength());
+*/
 	setPermanentFailureStatus(0);
 	
 	return kIOReturnSuccess;
@@ -1662,8 +1665,20 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 		setInstantaneousTimeToFull(0xffff);
 		setInstantaneousTimeToEmpty(0xffff);
 
+        //rehabman: This code causes the battery to go to 100% even if it is not charged to 100%.
+        //
+        //  Not completely charged and not currently charging is perfectly normal:
+        //    situation 1: battery is not depleted enough to cause a charge
+        //       (ie. battery is 3% discharged, and you plug it back in... the battery will not
+        //        charge to 100%, instead staying at 97% to keep cycles on the battery to a
+        //        minimum)
+        //    situation 2: battery might be getting hot, so the charger may stop charging it
+        //    situation 3: the battery might be broken, so the charger stops charging it
+        
+#if 0
 		fCurrentCapacity = fMaxCapacity;
 		setCurrentCapacity(fCurrentCapacity);
+#endif
 		
 		DEBUG_LOG("AppleSmartBattery: Battery is charged.\n");
 	}
@@ -1682,7 +1697,10 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 			fPollingInterval = kDefaultPollInterval;
 		}
 	}
-    OSNumber *num;
+
+    //rehabman: set warning/critical flags
+    setAtWarnLevel(-1 != fCapacityWarning && fCurrentCapacity <= fCapacityWarning);
+    setAtCriticalLevel(-1 != fLowWarning && fCurrentCapacity <= fLowWarning);
 	
 	// Assumes 4 cells but Smart Battery standard does not provide count to do this dynamically. 
 	// Smart Battery can expose manufacturer specific functions, but they will be specific to the embedded battery controller
@@ -1690,7 +1708,7 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 	fCellVoltages = OSArray::withCapacity(4); 
 	
 	fCellVoltage1 = fCurrentVoltage / 4;
-    num = OSNumber::withNumber((unsigned long long)fCellVoltage1 , NUM_BITS);
+    OSNumber* num = OSNumber::withNumber((unsigned long long)fCellVoltage1 , NUM_BITS);
     fCellVoltages->setObject(num);
 	
 	fCellVoltage2 = fCurrentVoltage / 4;

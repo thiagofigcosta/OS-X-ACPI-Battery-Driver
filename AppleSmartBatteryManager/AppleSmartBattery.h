@@ -290,6 +290,9 @@ private:
 	UInt32   fAverageRate;
 	UInt32   fStatus;
 	UInt32	 fCycleCount;
+    //rehabman: added for warnings when battery is running low
+    UInt32   fCapacityWarning;
+    UInt32   fLowWarning;
 
 	OSSymbol *fDeviceName;
 	OSSymbol *fType;
