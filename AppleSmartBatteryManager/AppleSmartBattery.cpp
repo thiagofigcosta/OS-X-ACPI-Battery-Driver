@@ -30,6 +30,10 @@
  *   - Also fix bug where if boot with no batteries installed, incorrect
  *     "Power Soure: Battery" was displayed in Mac menu bar.
  *   - Also a few other changes to get battery status to show in System Report
+ *
+ * 2012-09-02, RehabMan/tonymacx86.com
+ *   - Fix bug where code assumes that "not charging" means 100% charged.
+ *   - Minor code cleanup (const issues)
  */
 
 #include <IOKit/IOTimerEventSource.h>
@@ -45,7 +49,7 @@
 // Defines the order of reading properties in the power source state machine
 // Bitfield
 
-enum 
+enum
 {
     kExistingBatteryPath    = 1,
     kNewBatteryPath         = 2
@@ -741,7 +745,7 @@ void AppleSmartBattery::constructAppleSerialNumber(void)
 	
     printableSerial = OSSymbol::withCString(serialBuf);
     if (printableSerial) {
-		setPSProperty(_HardwareSerialSym, (OSSymbol*)printableSerial);
+		setPSProperty(_HardwareSerialSym, const_cast<OSSymbol*>(printableSerial));
         printableSerial->release();
     }
 	
@@ -816,7 +820,7 @@ int AppleSmartBattery::maxErr(void)
 void AppleSmartBattery::setDeviceName(const OSSymbol *sym)
 {
     if (sym)
-		setPSProperty(_DeviceNameSym, (OSSymbol*)sym);
+		setPSProperty(_DeviceNameSym, const_cast<OSSymbol*>(sym));
 }
 
 OSSymbol * AppleSmartBattery::deviceName(void)
@@ -1059,7 +1063,7 @@ void AppleSmartBattery::setSerialNumber(const OSSymbol *sym)
 	
     if (sym) 
 	{
-		setPSProperty(_HardwareSerialSym, (OSSymbol*) sym);
+		setPSProperty(_HardwareSerialSym, const_cast<OSSymbol*>(sym));
 	
 		// FirmwareSerialNumber - This is a number so we have to convert it from the zero padded
 		//                        string returned by ACPI.
@@ -1095,7 +1099,7 @@ void AppleSmartBattery::setChargeStatus(const OSSymbol *sym)
 		properties->removeObject(_ChargeStatusSym);
 		removeProperty(_ChargeStatusSym);
 	} else {
-		setPSProperty(_ChargeStatusSym, (OSSymbol*)sym);
+		setPSProperty(_ChargeStatusSym, const_cast<OSSymbol*>(sym));
 	}
 }
 
@@ -1128,7 +1132,7 @@ unsigned int AppleSmartBattery::designCapacity(void)
 void AppleSmartBattery::setBatteryType(const OSSymbol *sym)
 {
     if (sym)
-		setPSProperty(_TypeSym, (OSSymbol*)sym);
+		setPSProperty(_TypeSym, const_cast<OSSymbol*>(sym));
 }
 
 OSSymbol * AppleSmartBattery::batteryType(void)
@@ -1414,7 +1418,7 @@ IOReturn AppleSmartBattery::setBatteryBBIX(OSArray *acpibat_bbix)
 	
 	const OSSymbol *manuDate = this->unpackDate(fManufactureDate);
 	if (manuDate) {
-		setPSProperty(_DateOfManufacture, (OSSymbol*) manuDate);
+		setPSProperty(_DateOfManufacture, const_cast<OSSymbol*>(manuDate));
 		manuDate->release();
 	}
 	
