@@ -741,7 +741,7 @@ void AppleSmartBattery::constructAppleSerialNumber(void)
 	
     printableSerial = OSSymbol::withCString(serialBuf);
     if (printableSerial) {
-		setPSProperty(_HardwareSerialSym, (OSObject *) printableSerial);
+		setPSProperty(_HardwareSerialSym, (OSSymbol*)printableSerial);
         printableSerial->release();
     }
 	
@@ -813,10 +813,10 @@ int AppleSmartBattery::maxErr(void)
     }
 }
 
-void AppleSmartBattery::setDeviceName(OSSymbol *sym)
+void AppleSmartBattery::setDeviceName(const OSSymbol *sym)
 {
     if (sym)
-		setPSProperty(_DeviceNameSym, (OSObject *)sym);
+		setPSProperty(_DeviceNameSym, (OSSymbol*)sym);
 }
 
 OSSymbol * AppleSmartBattery::deviceName(void)
@@ -1053,13 +1053,13 @@ int AppleSmartBattery::manufactureDate(void)
     }
 }
 
-void AppleSmartBattery::setSerialNumber(OSSymbol *sym)
+void AppleSmartBattery::setSerialNumber(const OSSymbol *sym)
 {
 	// BatterySerialNumber
 	
     if (sym) 
 	{
-		setPSProperty(_HardwareSerialSym, (OSObject *) sym);
+		setPSProperty(_HardwareSerialSym, (OSSymbol*) sym);
 	
 		// FirmwareSerialNumber - This is a number so we have to convert it from the zero padded
 		//                        string returned by ACPI.
@@ -1095,7 +1095,7 @@ void AppleSmartBattery::setChargeStatus(const OSSymbol *sym)
 		properties->removeObject(_ChargeStatusSym);
 		removeProperty(_ChargeStatusSym);
 	} else {
-		setPSProperty(_ChargeStatusSym, (OSObject *)sym);
+		setPSProperty(_ChargeStatusSym, (OSSymbol*)sym);
 	}
 }
 
@@ -1125,10 +1125,10 @@ unsigned int AppleSmartBattery::designCapacity(void)
 		return (unsigned int)n->unsigned32BitValue();
 }
 
-void AppleSmartBattery::setBatteryType(OSSymbol *sym)
+void AppleSmartBattery::setBatteryType(const OSSymbol *sym)
 {
     if (sym)
-		setPSProperty(_TypeSym, (OSObject *)sym);
+		setPSProperty(_TypeSym, (OSSymbol*)sym);
 }
 
 OSSymbol * AppleSmartBattery::batteryType(void)
@@ -1414,7 +1414,7 @@ IOReturn AppleSmartBattery::setBatteryBBIX(OSArray *acpibat_bbix)
 	
 	const OSSymbol *manuDate = this->unpackDate(fManufactureDate);
 	if (manuDate) {
-		setPSProperty(_DateOfManufacture, (OSObject *) manuDate);
+		setPSProperty(_DateOfManufacture, (OSSymbol*) manuDate);
 		manuDate->release();
 	}
 	
@@ -1657,7 +1657,7 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 		setAverageTimeToEmpty(0xffff);
 		setInstantaneousTimeToFull(0xffff);
 		setInstantaneousTimeToEmpty(0xffff);
-		
+
 		fCurrentCapacity = fMaxCapacity;
 		setCurrentCapacity(fCurrentCapacity);
 		
