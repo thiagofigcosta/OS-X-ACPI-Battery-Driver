@@ -1586,15 +1586,20 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 		setAmperage(fAverageRate * -1);
 		setInstantAmperage(fCurrentRate * -1);
 		
-		if (fAverageRate)	setTimeRemaining((60 * fCurrentCapacity) / fAverageRate);
-		else				setTimeRemaining(0xffff);
+		if (fAverageRate)
+            setTimeRemaining((60 * fCurrentCapacity) / fAverageRate);
+		else
+            setTimeRemaining(0xffff);
 		
+		if (fAverageRate)
+            setAverageTimeToEmpty((60 * fCurrentCapacity) / fAverageRate);
+		else
+            setAverageTimeToEmpty(0xffff);
 		
-		if (fAverageRate)	setAverageTimeToEmpty((60 * fCurrentCapacity) / fAverageRate);
-		else				setAverageTimeToEmpty(0xffff);
-		
-		if (fCurrentRate)	setInstantaneousTimeToEmpty((60 * fCurrentCapacity) / fCurrentRate);
-		else				setInstantaneousTimeToEmpty(0xffff);
+		if (fCurrentRate)
+            setInstantaneousTimeToEmpty((60 * fCurrentCapacity) / fCurrentRate);
+		else
+            setInstantaneousTimeToEmpty(0xffff);
 
 		setAverageTimeToFull(0xffff);
 		setInstantaneousTimeToFull(0xffff);		
@@ -1623,7 +1628,6 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 			setAverageTimeToFull((60 * (fMaxCapacity - fCurrentCapacity)) / fAverageRate);
 		else
 			setAverageTimeToFull(0xffff);
-		
 		
 		if (fCurrentRate)
 			setInstantaneousTimeToFull((60 * (fMaxCapacity - fCurrentCapacity)) / fCurrentRate);
