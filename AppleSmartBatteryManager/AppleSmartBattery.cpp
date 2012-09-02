@@ -543,7 +543,8 @@ void AppleSmartBattery::pollingTimeOut(void)
     if (fInitialPollCountdown > 0) 
     {
         // At boot time we make sure to re-read everything kInitialPoltoCountdown times
-        pollBatteryState( kNewBatteryPath ); 
+        pollBatteryState( kNewBatteryPath );
+        --fInitialPollCountdown;
     } else {
 		pollBatteryState( kExistingBatteryPath );
 	}
