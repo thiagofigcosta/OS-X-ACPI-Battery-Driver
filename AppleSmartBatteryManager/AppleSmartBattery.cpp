@@ -34,6 +34,7 @@
  * 2012-09-02, RehabMan/tonymacx86.com
  *   - Fix bug where code assumes that "not charging" means 100% charged.
  *   - Minor code cleanup (const issues)
+ *   - Added code to set warning/critical levels
  */
 
 #include <IOKit/IOTimerEventSource.h>
