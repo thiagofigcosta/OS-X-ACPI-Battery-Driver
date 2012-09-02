@@ -167,7 +167,7 @@ protected:
     int     maxErr(void);
 
     // ACPIBattery reports a device name
-    void    setDeviceName(OSSymbol *sym);
+    void    setDeviceName(const OSSymbol *sym);
     OSSymbol *deviceName(void);
 
     // Set when battery is fully charged;
@@ -195,7 +195,7 @@ protected:
     void    setManufactureDate(int date);
     int     manufactureDate(void);
 
-    void    setSerialNumber(OSSymbol *sym);
+    void    setSerialNumber(const OSSymbol *sym);
     OSSymbol *serialNumber(void);
 
     // An OSData container of manufacturer specific data
@@ -211,7 +211,7 @@ protected:
 	void    setDesignCapacity(unsigned int val);
     unsigned int designCapacity(void);
 	
-	void    setBatteryType(OSSymbol *sym);
+	void    setBatteryType(const OSSymbol *sym);
     OSSymbol *batteryType(void);
 	
 	void    setPermanentFailureStatus(unsigned int val);
