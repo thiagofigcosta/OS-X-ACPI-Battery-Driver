@@ -1675,6 +1675,7 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
         //        minimum)
         //    situation 2: battery might be getting hot, so the charger may stop charging it
         //    situation 3: the battery might be broken, so the charger stops charging it
+        //    situation 4: broken DSDT code causing bad data to be returned
         
 #if 0
 		fCurrentCapacity = fMaxCapacity;
