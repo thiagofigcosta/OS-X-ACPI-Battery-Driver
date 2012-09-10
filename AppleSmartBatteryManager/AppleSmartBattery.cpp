@@ -1208,6 +1208,7 @@ IOReturn AppleSmartBattery::setBatterySTA(UInt32 battery_status)
  * 	Battery Type					//ASCIIZ
  * 	OEM Information					//ASCIIZ
  *  Cycle Count                     //DWORD (//rehabman: this is zprood's extension!!)
+ *  Battery Temperatue              //DWORD (//rehabman: this is rehabman extension!!)
  * }
  */
 
@@ -1254,6 +1255,16 @@ IOReturn AppleSmartBattery::setBatteryBIF(OSArray *acpibat_bif)
         cycleCnt = GetValueFromArray(acpibat_bif, BIF_CYCLE_COUNT);
     }
     setCycleCount(cycleCnt);
+    
+    //rehabman: getting temperature from extended _BIF
+    fTemperature = -1;
+    if (acpibat_bif->getCount() > BIF_TEMPERATURE) {
+        fTemperature = GetValueFromArray(acpibat_bif, BIF_TEMPERATURE);
+        DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fTemperature = 0x%x (0.1K)\n", (unsigned int)fTemperature);
+    }
+    if (-1 == fTemperature || 0 == fTemperature)
+        fTemperature = 2731; // 2731(.1K) == 0 degrees C
+    setTemperature((fTemperature - 2731) * 10);
     
 	// ACPI _BIF doesn't provide these
 	setMaxErr(0);
@@ -1417,7 +1428,11 @@ IOReturn AppleSmartBattery::setBatteryBBIX(OSArray *acpibat_bbix)
 	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fManufactureDate       = 0x%x\n", (unsigned int) fManufactureDate);
 	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fManufacturerData size = 0x%x\n", (unsigned int) fManufacturerData->getLength());
 	
-	setTemperature(fTemperature);
+    // temperature must be converted from .1K to .01 degrees C
+    if (-1 == fTemperature || 0 == fTemperature)
+        fTemperature = 2731;
+	setTemperature((fTemperature - 2731) * 10);
+    
 	setManufactureDate(fManufactureDate);
 	
 	const OSSymbol *manuDate = this->unpackDate(fManufactureDate);
@@ -1726,8 +1741,9 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
     fCellVoltages->setObject(num);
 	
 	setProperty("CellVoltage", fCellVoltages);
-	
-	setProperty("Temperature", (long long unsigned int)fTemperature, NUM_BITS);
+
+//rehabman: no need to set this as it is never updated here...
+//	setProperty("Temperature", (long long unsigned int)fTemperature, NUM_BITS);
 	
 	/* construct and publish our battery serial number here */
 	constructAppleSerialNumber();
