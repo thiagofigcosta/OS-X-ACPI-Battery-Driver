@@ -59,6 +59,7 @@
 #define BIF_BATTERY_TYPE		11
 #define BIF_OEM					12
 #define BIF_CYCLE_COUNT         13   //rehabman: zprood extended _BIF
+#define BIF_TEMPERATURE         14   //rehabman: rehabman extended _BIF
 
 
 // Return package from _BIX
