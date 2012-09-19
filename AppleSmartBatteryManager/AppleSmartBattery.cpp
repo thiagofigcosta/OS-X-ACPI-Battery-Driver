@@ -1228,9 +1228,13 @@ IOReturn AppleSmartBattery::setBatteryBIF(OSArray *acpibat_bif)
 	fType				= GetSymbolFromArray(acpibat_bif, BIF_BATTERY_TYPE);
 	fManufacturer		= GetSymbolFromArray(acpibat_bif, BIF_OEM);
 
-	if(fPowerUnit == WATTS) {
-		fDesignCapacity /= fDesignVoltage;
-		fMaxCapacity /= fDesignVoltage;
+	if (WATTS == fPowerUnit)
+    {
+        // Watts = Amps X Volts
+        fDesignCapacity = (fDesignCapacity * 1000) / fDesignVoltage;
+        fMaxCapacity = (fMaxCapacity * 1000) / fDesignVoltage;
+        fCapacityWarning = (fCapacityWarning * 1000) / fDesignVoltage;
+        fLowWarning = (fLowWarning * 1000) / fDesignVoltage;
 	}
 	
 	if ((fDesignCapacity == 0) || (fMaxCapacity == 0))  {
@@ -1322,6 +1326,8 @@ IOReturn AppleSmartBattery::setBatteryBIX(OSArray *acpibat_bix)
 	fMaxCapacity		= GetValueFromArray (acpibat_bix, BIX_LAST_FULL_CAPACITY);
 	fBatteryTechnology	= GetValueFromArray (acpibat_bix, BIX_TECHNOLOGY);
 	fDesignVoltage		= GetValueFromArray (acpibat_bix, BIX_DESIGN_VOLTAGE);
+    fCapacityWarning    = GetValueFromArray (acpibat_bix, BIX_CAPACITY_WARNING);
+    fLowWarning         = GetValueFromArray (acpibat_bix, BIX_LOW_WARNING);
 	fCycleCount			= GetValueFromArray (acpibat_bix, BIX_CYCLE_COUNT);
 	fMaxErr				= GetValueFromArray (acpibat_bix, BIX_ACCURACY);
 	fDeviceName			= GetSymbolFromArray(acpibat_bix, BIX_MODEL_NUMBER);
@@ -1329,9 +1335,13 @@ IOReturn AppleSmartBattery::setBatteryBIX(OSArray *acpibat_bix)
 	fType				= GetSymbolFromArray(acpibat_bix, BIX_BATTERY_TYPE);
 	fManufacturer		= GetSymbolFromArray(acpibat_bix, BIX_OEM);
 	
-	if(fPowerUnit == WATTS) {
-		fDesignCapacity /= fDesignVoltage;
-		fMaxCapacity /= fDesignVoltage;
+	if (WATTS == fPowerUnit)
+    {
+        // Watts = Amps X Volts
+        fDesignCapacity = (fDesignCapacity * 1000) / fDesignVoltage;
+        fMaxCapacity = (fMaxCapacity * 1000) / fDesignVoltage;
+        fCapacityWarning = (fCapacityWarning * 1000) / fDesignVoltage;
+        fLowWarning = (fLowWarning * 1000) / fDesignVoltage;
 	}
 	
 	if ((fDesignCapacity == 0) || (fMaxCapacity == 0))  {
@@ -1523,6 +1533,16 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 	DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentRate     = 0x%x\n",	(unsigned int) fCurrentRate);
 	DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentCapacity = 0x%x\n",	(unsigned int) fCurrentCapacity);
 	DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentVoltage  = 0x%x\n",	(unsigned int) fCurrentVoltage);
+    
+    if (WATTS == fPowerUnit)
+    {
+        // Watts = Amps X Volts
+		DEBUG_LOG("AppleSmartBattery::setBatteryBST: Calculating for WATTS\n");
+        fCurrentRate = ((int)fCurrentRate * 1000) / fCurrentVoltage;
+        fCurrentCapacity = (fCurrentCapacity * 1000) / fCurrentVoltage;
+		DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentRate = %d\n",		(unsigned int) fCurrentRate);
+		DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentCapacity = %d\n",	(unsigned int) fCurrentCapacity);
+    }
 	
 	setCurrentCapacity(fCurrentCapacity);
 	setVoltage(fCurrentVoltage);
@@ -1536,17 +1556,6 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 		DEBUG_LOG("AppleSmartBattery::setBatteryBST: adjusted fCurrentRate to %d\n", (unsigned int) fCurrentRate);
 	}
 	
-	// Watts = Amps X Volts
-	
-	if(fPowerUnit == WATTS)	{
-		DEBUG_LOG("AppleSmartBattery::setBatteryBST: Calculating for WATTS\n");
-		
-		if(fCurrentRate > fCurrentVoltage)
-			fCurrentRate = (fCurrentRate * 1000) / fCurrentVoltage;
-		fCurrentCapacity /= fCurrentVoltage;
-		DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentRate = %d\n",		(unsigned int) fCurrentRate);
-		DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentCapacity = %d\n",	(unsigned int) fCurrentCapacity);
-	}
 	
 	if (fCurrentRate <= 0x00000000) {
 		fCurrentRate = fMaxCapacity / 2;
