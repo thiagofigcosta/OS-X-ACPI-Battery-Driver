@@ -48,7 +48,7 @@ OSDefineMetaClassAndStructors(AppleSmartBatteryManager, IOService)
 bool AppleSmartBatteryManager::init(OSDictionary *dict)
 {
     bool result = super::init(dict);
-    IOLog("AppleSmartBatteryManager::init: Initializing\n");
+    DEBUG_LOG("AppleSmartBatteryManager::init: Initializing\n");
     return result;
 }
 
