@@ -17,11 +17,11 @@
 	<key>CFBundlePackageType</key>
 	<string>KEXT</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.25</string>
+	<string>1.29</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.25</string>
+	<string>1.29</string>
 	<key>IOKitPersonalities</key>
 	<dict>
 		<key>ACPI Battery Manager</key>
@@ -35,9 +35,9 @@
 			<key>IOProviderClass</key>
 			<string>IOACPIPlatformDevice</string>
 			<key>UseExtendedBatteryInformationMethod</key>
-			<false/>
+			<true/>
 			<key>UseExtraBatteryInformationMethod</key>
-			<false/>
+			<true/>
 		</dict>
 	</dict>
 	<key>NSHumanReadableCopyright</key>

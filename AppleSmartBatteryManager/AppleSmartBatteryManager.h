@@ -76,7 +76,11 @@ public:
 	IOReturn getBatteryBIX(void);
 	IOReturn getBatteryBBIX(void);
 	IOReturn getBatteryBST(void);
-
+    
+    // Methods to test whether optional ACPI methods exist
+    
+    IOReturn validateBatteryBIX(void);
+    IOReturn validateBatteryBBIX(void);
 };
 
 #endif

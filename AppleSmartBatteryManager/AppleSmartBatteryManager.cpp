@@ -105,7 +105,7 @@ bool AppleSmartBatteryManager::start(IOService *provider)
     provider->joinPMtree(this);
 
     //rehabman: updated version
-	IOLog("AppleSmartBatteryManager: Version 2012.0919 starting\n");
+	IOLog("AppleSmartBatteryManager: Version 2012.0921 starting\n");
 
 	int value = getPlatform()->numBatteriesSupported();
 	DEBUG_LOG("AppleSmartBatteryManager: Battery Supported Count(s) %d.\n", value);
@@ -271,6 +271,24 @@ IOReturn AppleSmartBatteryManager::message(UInt32 type, IOService *provider, voi
 	}
 
     return kIOReturnSuccess;
+}
+
+/******************************************************************************
+ * AppleSmartBatteryManager::validateBatteryBIX
+ * Verify that DSDT _BIX method exists
+ ******************************************************************************/
+IOReturn AppleSmartBatteryManager::validateBatteryBIX(void)
+{
+    return fProvider->validateObject("_BIX");
+}
+
+/******************************************************************************
+ * AppleSmartBatteryManager::validateBatteryBBIX
+ * Verify that DSDT _BBIX method exists
+ ******************************************************************************/
+IOReturn AppleSmartBatteryManager::validateBatteryBBIX(void)
+{
+    return fProvider->validateObject("_BBIX");
 }
 
 /******************************************************************************

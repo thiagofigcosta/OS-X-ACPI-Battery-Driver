@@ -35,6 +35,18 @@
  *   - Fix bug where code assumes that "not charging" means 100% charged.
  *   - Minor code cleanup (const issues)
  *   - Added code to set warning/critical levels
+ *
+ * 2012-09-10, RehabMan/tonymacx86.com
+ *   - Added ability to get battery temperature thorugh _BIF method
+ *
+ * 2012-09-19, RehabMan/tonymacx86.com
+ *   - Calculate for watts correctly in case ACPI is reporting watts instead 
+ *     of amps.
+ *
+ * 2012-09-21, RehabMan/tonymacx86.com
+ *   - In preparation to merge probook and master branches, validate
+ *     _BIX, and _BBIX methods before attempting to use them.
+ *
  */
 
 #include <IOKit/IOTimerEventSource.h>
@@ -227,17 +239,15 @@ bool AppleSmartBattery::start(IOService *provider)
 	// Check if we should use extended information in _BIX (ACPI 4.0) or older _BIF
 	
 	useExtendedInformation = (OSBoolean *)fProvider->getProperty(kUseBatteryExtendedInfoKey);
+    fUseBatteryExtendedInformation = false;
 	if (useExtendedInformation && OSDynamicCast(OSBoolean, useExtendedInformation) )
 	{
-		
 		fUseBatteryExtendedInformation = useExtendedInformation->isTrue();
-	}
-	else 
-	{
-		fUseBatteryExtendedInformation = false;
+        if (fUseBatteryExtendedInformation && kIOReturnSuccess != fProvider->validateBatteryBIX())
+            fUseBatteryExtendedInformation = false;
 	}
 	
-	if(fUseBatteryExtendedInformation)
+	if (fUseBatteryExtendedInformation)
 	{
 		IOLog("AppleSmartBattery: Using ACPI extended battery information method _BIX\n");
 	}
@@ -249,17 +259,15 @@ bool AppleSmartBattery::start(IOService *provider)
 	// Check if we should use extra information in BBIX
 	
 	useExtraInformation = (OSBoolean *)fProvider->getProperty(kUseBatteryExtraInfoKey);
+    fUseBatteryExtraInformation = false;
 	if (useExtraInformation && OSDynamicCast(OSBoolean, useExtraInformation) )
 	{
-		
 		fUseBatteryExtraInformation = useExtraInformation->isTrue();
-	}
-	else 
-	{
-		fUseBatteryExtraInformation = false;
+        if (fUseBatteryExtraInformation && kIOReturnSuccess != fProvider->validateBatteryBBIX())
+            fUseBatteryExtraInformation = false;
 	}
 	
-	if(fUseBatteryExtraInformation)
+	if (fUseBatteryExtraInformation)
 	{
 		IOLog("AppleSmartBattery: Using ACPI extra battery information method BBIX\n");
 	}
