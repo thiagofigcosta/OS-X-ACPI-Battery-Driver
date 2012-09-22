@@ -220,7 +220,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.7;
 			};
 			name = Debug;
 		};
@@ -240,7 +240,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.7;
 			};
 			name = Release;
 		};
@@ -267,6 +267,7 @@
 				MODULE_VERSION = 1.0.0d1;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx10.7;
 				SYMROOT = Build;
 				"VALID_ARCHS[sdk=*]" = "i386 x86_64";
 				WRAPPER_EXTENSION = kext;
@@ -287,6 +288,7 @@
 				MODULE_VERSION = 1.0.0d1;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx10.7;
 				SYMROOT = Build;
 				WRAPPER_EXTENSION = kext;
 			};
