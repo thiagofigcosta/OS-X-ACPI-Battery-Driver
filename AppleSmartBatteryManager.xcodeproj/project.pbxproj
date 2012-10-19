@@ -73,8 +73,8 @@
 		0C4B238314598AD20080D960 /* AppleSmartBatteryManager */ = {
 			isa = PBXGroup;
 			children = (
-				0C4B240514598CD00080D960 /* AppleSmartBattery.cpp */,
 				0C4B240614598CD00080D960 /* AppleSmartBattery.h */,
+				0C4B240514598CD00080D960 /* AppleSmartBattery.cpp */,
 				0C4B238914598AD20080D960 /* AppleSmartBatteryManager.h */,
 				0C4B238B14598AD20080D960 /* AppleSmartBatteryManager.cpp */,
 				0C4B238414598AD20080D960 /* Supporting Files */,
