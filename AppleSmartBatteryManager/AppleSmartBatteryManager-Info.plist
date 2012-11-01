@@ -19,11 +19,11 @@
 	<key>CFBundlePackageType</key>
 	<string>KEXT</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.29.1</string>
+	<string>1.30</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.29.1</string>
+	<string>1.30</string>
 	<key>IOKitPersonalities</key>
 	<dict>
 		<key>ACPI Battery Manager</key>
@@ -47,11 +47,11 @@
 	<key>OSBundleLibraries</key>
 	<dict>
 		<key>com.apple.iokit.IOACPIFamily</key>
-		<string>1.4</string>
+		<string>1.0d1</string>
 		<key>com.apple.kpi.iokit</key>
-		<string>11.0</string>
+		<string>9.0</string>
 		<key>com.apple.kpi.libkern</key>
-		<string>11.0</string>
+		<string>9.0</string>
 	</dict>
 	<key>OSBundleRequired</key>
 	<string>Root</string>
