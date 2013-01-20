@@ -17,19 +17,20 @@ update_kernelcache:
 
 .PHONY: install_debug
 install_debug:
-	sudo cp -R ./Build/Products/Debug/AppleSmartBatteryManager.kext /System/Library/Extensions
+	sudo cp -R ./Build/Debug/AppleSmartBatteryManager.kext /System/Library/Extensions
 	make update_kernelcache
 
 .PHONY: install
 install:
-	sudo cp -R ./Build/Products/Release/AppleSmartBatteryManager.kext /System/Library/Extensions
+	sudo cp -R ./Build/Release/AppleSmartBatteryManager.kext /System/Library/Extensions
 	make update_kernelcache
 
 .PHONY: distribute
 distribute:
 	if [ -e ./Distribute ]; then rm -r ./Distribute; fi
 	mkdir ./Distribute
-	cp -R ./Build/Products/ ./Distribute
+	cp -R ./Build/Debug ./Distribute
+	cp -R ./Build/Release ./Distribute
 	find ./Distribute -path *.DS_Store -delete
 	find ./Distribute -path *.dSYM -exec echo rm -r {} \; >/tmp/org.voodoo.rm.dsym.sh
 	chmod +x /tmp/org.voodoo.rm.dsym.sh
