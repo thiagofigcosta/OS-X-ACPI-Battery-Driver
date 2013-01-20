@@ -271,7 +271,14 @@ bool AppleSmartBattery::start(IOService *provider)
 	{
 		IOLog("AppleSmartBattery: Using ACPI extra battery information method BBIX\n");
 	}
-	
+
+    fEstimateCycleCountDivisor = 6;
+    OSNumber* estimateCycleCountDivisor = (OSNumber*)fProvider->getProperty(kEstimateCycleCountDivisorInfoKey);
+    if (estimateCycleCountDivisor && OSDynamicCast(OSNumber, estimateCycleCountDivisor))
+    {
+        fEstimateCycleCountDivisor = estimateCycleCountDivisor->unsigned32BitValue();
+    }
+
     fBatteryPresent		= false;
     fACConnected		= false;
     fACChargeCapable	= false;
@@ -1263,9 +1270,10 @@ IOReturn AppleSmartBattery::setBatteryBIF(OSArray *acpibat_bif)
     
     //rehabman: zprood's technique of expanding the _BIF to include cycle count
     uint32_t cycleCnt = 0;
-    if (acpibat_bif->getCount() > BIF_CYCLE_COUNT) {
+    if (acpibat_bif->getCount() > BIF_CYCLE_COUNT)
         cycleCnt = GetValueFromArray(acpibat_bif, BIF_CYCLE_COUNT);
-    }
+    else if (fDesignCapacity > fMaxCapacity && fEstimateCycleCountDivisor)
+        cycleCnt = (fDesignCapacity - fMaxCapacity) / fEstimateCycleCountDivisor;
     setCycleCount(cycleCnt);
     
     //rehabman: getting temperature from extended _BIF

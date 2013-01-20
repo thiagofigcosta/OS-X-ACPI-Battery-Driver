@@ -40,6 +40,8 @@
 			<true/>
 			<key>UseExtraBatteryInformationMethod</key>
 			<true/>
+			<key>EstimateCycleCountDivisor</key>
+			<integer>6</integer>
 		</dict>
 	</dict>
 	<key>NSHumanReadableCopyright</key>

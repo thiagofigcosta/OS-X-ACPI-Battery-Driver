@@ -125,6 +125,10 @@
 
 #define kUseBatteryExtraInfoKey		"UseExtraBatteryInformationMethod"
 
+// Define this in Info.plist for estimations of cycle count
+
+#define kEstimateCycleCountDivisorInfoKey   "EstimateCycleCountDivisor"
+
 static const OSSymbol * unknownObjectKey		= OSSymbol::withCString("Unknown");
 UInt32 GetValueFromArray(OSArray * array, UInt8 index);
 OSSymbol *GetSymbolFromArray(OSArray * array, UInt8 index);
@@ -161,6 +165,7 @@ protected:
     OSArray                 *fCellVoltages;
 
 	uint8_t                 fInitialPollCountdown;;
+    uint32_t                fEstimateCycleCountDivisor;
 	
     // Accessor for MaxError reading
     // Percent error in MaxCapacity reading
