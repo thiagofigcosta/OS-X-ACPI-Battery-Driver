@@ -1,9 +1,11 @@
 # really just some handy scripts...
 
+KEXT=AppleSmartBatteryManager.kext
+
 .PHONY: all
 all:
-	xcodebuild -configuration Debug
-	xcodebuild -configuration Release
+	xcodebuild $(OPTIONS) -configuration Debug
+	xcodebuild $(OPTIONS) -configuration Release
 
 .PHONY: clean
 clean:
@@ -17,12 +19,12 @@ update_kernelcache:
 
 .PHONY: install_debug
 install_debug:
-	sudo cp -R ./Build/Debug/AppleSmartBatteryManager.kext /System/Library/Extensions
+	sudo cp -R ./Build/Debug/$(KEXT) /System/Library/Extensions
 	make update_kernelcache
 
 .PHONY: install
 install:
-	sudo cp -R ./Build/Release/AppleSmartBatteryManager.kext /System/Library/Extensions
+	sudo cp -R ./Build/Release/$(KEXT) /System/Library/Extensions
 	make update_kernelcache
 
 .PHONY: distribute
@@ -36,4 +38,3 @@ distribute:
 	chmod +x /tmp/org.voodoo.rm.dsym.sh
 	/tmp/org.voodoo.rm.dsym.sh
 	rm /tmp/org.voodoo.rm.dsym.sh
-

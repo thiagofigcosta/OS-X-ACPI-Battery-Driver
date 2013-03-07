@@ -24,6 +24,7 @@
 		0C4B238D14598AD20080D960 /* AppleSmartBatteryManager-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AppleSmartBatteryManager-Prefix.pch"; sourceTree = "<group>"; };
 		0C4B240514598CD00080D960 /* AppleSmartBattery.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppleSmartBattery.cpp; sourceTree = "<group>"; };
 		0C4B240614598CD00080D960 /* AppleSmartBattery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppleSmartBattery.h; sourceTree = "<group>"; };
+		844778D216E7FC2400B27895 /* makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = makefile; sourceTree = SOURCE_ROOT; usesTabs = 1; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +74,7 @@
 		0C4B238314598AD20080D960 /* AppleSmartBatteryManager */ = {
 			isa = PBXGroup;
 			children = (
+				844778D216E7FC2400B27895 /* makefile */,
 				0C4B240614598CD00080D960 /* AppleSmartBattery.h */,
 				0C4B240514598CD00080D960 /* AppleSmartBattery.cpp */,
 				0C4B238914598AD20080D960 /* AppleSmartBatteryManager.h */,
