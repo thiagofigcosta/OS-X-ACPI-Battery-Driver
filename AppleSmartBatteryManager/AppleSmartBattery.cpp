@@ -145,8 +145,6 @@ static const OSSymbol *_SerialNumberSym =		OSSymbol::withCString("FirmwareSerial
 static const OSSymbol *_HardwareSerialSym =		OSSymbol::withCString("BatterySerialNumber");
 static const OSSymbol *_DateOfManufacture =		OSSymbol::withCString("Date of Manufacture");
 
-#define super IOPMPowerSource
-
 OSDefineMetaClassAndStructors(AppleSmartBattery, IOPMPowerSource)
 
 /******************************************************************************
@@ -325,6 +323,8 @@ bool AppleSmartBattery::start(IOService *provider)
     return true;
 }
 
+#ifdef DEBUG
+
 /******************************************************************************
  * AppleSmartBattery::stop
  *
@@ -334,6 +334,8 @@ void AppleSmartBattery::stop(IOService *provider)
 {
     super::stop(provider);
 }
+
+#endif
 
 /******************************************************************************
  * AppleSmartBattery::logReadError

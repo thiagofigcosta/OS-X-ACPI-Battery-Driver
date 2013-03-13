@@ -36,9 +36,9 @@ static IOPMPowerState myTwoStates[2] = {
     {kIOPMPowerStateVersion1, kIOPMPowerOn, kIOPMPowerOn, kIOPMPowerOn, 0, 0, 0, 0, 0, 0, 0, 0}
 };
 
-#define super IOService
-
 OSDefineMetaClassAndStructors(AppleSmartBatteryManager, IOService)
+
+#ifdef DEBUG
 
 /******************************************************************************
  * AppleSmartBatteryManager::init
@@ -75,6 +75,8 @@ IOService *AppleSmartBatteryManager::probe(IOService *provider,
     DEBUG_LOG("AppleSmartBatteryManager::probe: Probing\n");
     return result;
 }
+
+#endif // DEBUG
 
 /******************************************************************************
  * AppleSmartBatteryManager::start

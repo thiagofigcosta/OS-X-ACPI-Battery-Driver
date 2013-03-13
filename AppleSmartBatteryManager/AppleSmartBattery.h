@@ -140,6 +140,7 @@ class AppleSmartBatteryManager;
 
 class AppleSmartBattery : public IOPMPowerSource 
 {
+    typedef IOPMPowerSource super;
 	OSDeclareDefaultStructors(AppleSmartBattery)
 
 protected:
@@ -253,7 +254,9 @@ public:
     virtual bool init(void);
     virtual void free(void);
 	virtual bool start(IOService *provider);
+#ifdef DEBUG
     virtual void stop(IOService *provider);
+#endif
 
     void    setPollingInterval(int milliSeconds);
 

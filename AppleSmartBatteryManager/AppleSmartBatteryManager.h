@@ -41,13 +41,15 @@ class AppleSmartBattery;
 
 class AppleSmartBatteryManager : public IOService 
 {
+    typedef IOService super;
 	OSDeclareDefaultStructors(AppleSmartBatteryManager)
 
 public:
-
+#ifdef DEBUG
 	virtual bool init(OSDictionary *dictionary = 0);
     virtual void free(void);
     virtual IOService *probe(IOService *provider, SInt32 *score);
+#endif
     bool start(IOService *provider);
 	void stop(IOService *provider);
 
@@ -60,15 +62,12 @@ private:
     IOCommandGate           *fBatteryGate;
 	IOACPIPlatformDevice    *fProvider;
 	AppleSmartBattery       *fBattery;
+    UInt32                  fBatterySTA;
 
 	IOReturn setPollingInterval(int milliSeconds);
 
 public:
 	
-    // Data structures returned from ACPI
-    
-    UInt32 fBatterySTA;
-
     // Methods that return ACPI data into above structures
     
 	IOReturn getBatterySTA(void);
