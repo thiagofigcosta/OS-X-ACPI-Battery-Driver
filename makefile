@@ -1,6 +1,6 @@
 # really just some handy scripts...
 
-KEXT=ACPIPoller.kext
+KEXT=AppleSmartBatteryManager.kext
 DIST=RehabMan-Battery
 
 ifeq ($(findstring 32,$(BITS)),32)
