@@ -1245,7 +1245,7 @@ IOReturn AppleSmartBattery::setBatteryBIF(OSArray *acpibat_bif)
 	fType				= GetSymbolFromArray(acpibat_bif, BIF_BATTERY_TYPE);
 	fManufacturer		= GetSymbolFromArray(acpibat_bif, BIF_OEM);
 
-	if (WATTS == fPowerUnit)
+	if (WATTS == fPowerUnit && fDesignVoltage)
     {
         // Watts = Amps X Volts
         fDesignCapacity = (fDesignCapacity * 1000) / fDesignVoltage;
@@ -1353,7 +1353,7 @@ IOReturn AppleSmartBattery::setBatteryBIX(OSArray *acpibat_bix)
 	fType				= GetSymbolFromArray(acpibat_bix, BIX_BATTERY_TYPE);
 	fManufacturer		= GetSymbolFromArray(acpibat_bix, BIX_OEM);
 	
-	if (WATTS == fPowerUnit)
+	if (WATTS == fPowerUnit && fDesignVoltage)
     {
         // Watts = Amps X Volts
         fDesignCapacity = (fDesignCapacity * 1000) / fDesignVoltage;
@@ -1454,7 +1454,7 @@ IOReturn AppleSmartBattery::setBatteryBBIX(OSArray *acpibat_bbix)
 	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fAverageTimeToEmpty    = 0x%x (min)\n", (unsigned int) fAverageTimeToEmpty);
 	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fAverageTimeToFull     = 0x%x (min)\n", (unsigned int) fAverageTimeToFull);
 	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fManufactureDate       = 0x%x\n", (unsigned int) fManufactureDate);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fManufacturerData size = 0x%x\n", (unsigned int) fManufacturerData->getLength());
+    DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fManufacturerData size = 0x%x\n", (unsigned int) (fManufacturerData ? fManufacturerData->getLength() : -1));
 	
     // temperature must be converted from .1K to .01 degrees C
     if (-1 == fTemperature || 0 == fTemperature)
@@ -1475,7 +1475,8 @@ IOReturn AppleSmartBattery::setBatteryBBIX(OSArray *acpibat_bbix)
 	setRemainingCapacity(fRemainingCapacity);
 	setAverageCurrent(fAverageCurrent);
 	setCurrent(fCurrent);
-	setManufacturerData((uint8_t *)fManufacturerData, fManufacturerData->getLength());
+    if (fManufacturerData)
+        setManufacturerData((uint8_t *)fManufacturerData, fManufacturerData->getLength());
 	
 	return kIOReturnSuccess;
 }
@@ -1552,7 +1553,7 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 	DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentCapacity = 0x%x\n",	(unsigned int) fCurrentCapacity);
 	DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentVoltage  = 0x%x\n",	(unsigned int) fCurrentVoltage);
     
-    if (WATTS == fPowerUnit)
+    if (WATTS == fPowerUnit && fCurrentVoltage)
     {
         // Watts = Amps X Volts
 		DEBUG_LOG("AppleSmartBattery::setBatteryBST: Calculating for WATTS\n");
