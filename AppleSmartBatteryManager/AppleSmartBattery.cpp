@@ -1211,21 +1211,21 @@ IOReturn AppleSmartBattery::setBatterySTA(UInt32 battery_status)
  * Results  : package _BIF (Battery InFormation)
  * Package {
  * 	// ASCIIZ is ASCII character string terminated with a 0x00.
- * 	Power Unit						//DWORD
- * 	Design Capacity					//DWORD
- * 	Last Full Charge Capacity		//DWORD
- * 	Battery Technology				//DWORD
- * 	Design Voltage					//DWORD
- * 	Design Capacity of Warning		//DWORD
- * 	Design Capacity of Low			//DWORD
- * 	Battery Capacity Granularity 1	//DWORD
- * 	Battery Capacity Granularity 2	//DWORD
- * 	Model Number					//ASCIIZ
- * 	Serial Number					//ASCIIZ
- * 	Battery Type					//ASCIIZ
- * 	OEM Information					//ASCIIZ
- *  Cycle Count                     //DWORD (//rehabman: this is zprood's extension!!)
- *  Battery Temperatue              //DWORD (//rehabman: this is rehabman extension!!)
+ * 	Power Unit						//DWORD     0x00
+ * 	Design Capacity					//DWORD     0x01
+ * 	Last Full Charge Capacity		//DWORD     0x02
+ * 	Battery Technology				//DWORD     0x03
+ * 	Design Voltage					//DWORD     0x04
+ * 	Design Capacity of Warning		//DWORD     0x05
+ * 	Design Capacity of Low			//DWORD     0x06
+ * 	Battery Capacity Granularity 1	//DWORD     0x07
+ * 	Battery Capacity Granularity 2	//DWORD     0x08
+ * 	Model Number					//ASCIIZ    0x09
+ * 	Serial Number					//ASCIIZ    0x0A
+ * 	Battery Type					//ASCIIZ    0x0B
+ * 	OEM Information					//ASCIIZ    0x0C
+ *  Cycle Count                     //DWORD (//rehabman: this is zprood's extension!!)  0x0D
+ *  Battery Temperatue              //DWORD (//rehabman: this is rehabman extension!!)  0x0E
  * }
  */
 
@@ -1245,6 +1245,18 @@ IOReturn AppleSmartBattery::setBatteryBIF(OSArray *acpibat_bif)
 	fType				= GetSymbolFromArray(acpibat_bif, BIF_BATTERY_TYPE);
 	fManufacturer		= GetSymbolFromArray(acpibat_bif, BIF_OEM);
 
+	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fPowerUnit       = 0x%x\n", (unsigned)fPowerUnit);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fDesignCapacity  = 0x%x\n", (unsigned)fDesignCapacity);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fMaxCapacity     = 0x%x\n", (unsigned)fMaxCapacity);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fBatteryTech     = 0x%x\n", (unsigned)fBatteryTechnology);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fDesignVoltage   = 0x%x\n", (unsigned)fDesignVoltage);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fCapacityWarning = 0x%x\n", (unsigned)fCapacityWarning);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fLowWarning      = 0x%x\n", (unsigned)fLowWarning);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fDeviceName      = '%s'\n", fDeviceName->getCStringNoCopy());
+	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fSerialNumber    = '%s'\n", fSerialNumber->getCStringNoCopy());
+	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fType            = '%s'\n", fType->getCStringNoCopy());
+	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fManufacturer    = '%s'\n", fManufacturer->getCStringNoCopy());
+    
 	if (WATTS == fPowerUnit && fDesignVoltage)
     {
         // Watts = Amps X Volts
