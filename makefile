@@ -1,3 +1,4 @@
+
 # really just some handy scripts...
 
 KEXT=AppleSmartBatteryManager.kext
@@ -24,7 +25,7 @@ clean:
 .PHONY: update_kernelcache
 update_kernelcache:
 	sudo touch /System/Library/Extensions
-	sudo kextcache --system-prelinked-kernel -arch x86_64
+	sudo kextcache -update-volume /
 
 .PHONY: install_debug
 install_debug:
