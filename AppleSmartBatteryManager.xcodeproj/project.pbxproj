@@ -262,6 +262,7 @@
 				MODULE_NAME = com.apple.driver.AppleSmartBatteryManager;
 				MODULE_VERSION = 1.0.0d1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Debug;
 		};
@@ -276,6 +277,7 @@
 				MODULE_NAME = com.apple.driver.AppleSmartBatteryManager;
 				MODULE_VERSION = 1.0.0d1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
 		};
