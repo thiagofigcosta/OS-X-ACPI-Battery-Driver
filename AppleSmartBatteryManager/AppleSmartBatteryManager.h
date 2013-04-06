@@ -39,7 +39,7 @@ class AppleSmartBattery;
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-class AppleSmartBatteryManager : public IOService 
+class EXPORT AppleSmartBatteryManager : public IOService
 {
     typedef IOService super;
 	OSDeclareDefaultStructors(AppleSmartBatteryManager)

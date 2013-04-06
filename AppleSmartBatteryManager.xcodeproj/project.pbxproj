@@ -204,7 +204,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				GCC_ENABLE_KERNEL_DEVELOPMENT = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
@@ -223,7 +223,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_CFLAGS = "-fno-stack-protector";
 				"OTHER_LDFLAGS[arch=x86_64]" = "-dead_strip";
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx10.8;
 				STRIP_STYLE = "non-global";
 			};
 			name = Debug;
@@ -233,6 +233,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				GCC_ENABLE_KERNEL_DEVELOPMENT = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
@@ -246,7 +247,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_CFLAGS = "-fno-stack-protector";
 				"OTHER_LDFLAGS[arch=x86_64]" = "-dead_strip";
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx10.8;
 				STRIP_STYLE = "non-global";
 			};
 			name = Release;
