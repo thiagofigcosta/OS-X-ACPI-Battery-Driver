@@ -107,7 +107,7 @@ bool AppleSmartBatteryManager::start(IOService *provider)
     provider->joinPMtree(this);
 
     //rehabman: updated version
-	IOLog("AppleSmartBatteryManager: Version 1.32 starting\n");
+	IOLog("AppleSmartBatteryManager: Version 1.33 starting\n");
 
 	int value = getPlatform()->numBatteriesSupported();
 	DEBUG_LOG("AppleSmartBatteryManager: Battery Supported Count(s) %d.\n", value);

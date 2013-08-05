@@ -1565,12 +1565,12 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 	DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentCapacity = 0x%x\n",	(unsigned int) fCurrentCapacity);
 	DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentVoltage  = 0x%x\n",	(unsigned int) fCurrentVoltage);
     
-    if (WATTS == fPowerUnit && fCurrentVoltage)
+    if (WATTS == fPowerUnit && fDesignVoltage)
     {
         // Watts = Amps X Volts
 		DEBUG_LOG("AppleSmartBattery::setBatteryBST: Calculating for WATTS\n");
-        fCurrentRate = ((int)fCurrentRate * 1000) / fCurrentVoltage;
-        fCurrentCapacity = (fCurrentCapacity * 1000) / fCurrentVoltage;
+        fCurrentRate = ((int)fCurrentRate * 1000) / fDesignVoltage;
+        fCurrentCapacity = (fCurrentCapacity * 1000) / fDesignVoltage;
 		DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentRate = %d\n",		(unsigned int) fCurrentRate);
 		DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentCapacity = %d\n",	(unsigned int) fCurrentCapacity);
     }
