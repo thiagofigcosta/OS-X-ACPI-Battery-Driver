@@ -1,7 +1,7 @@
 
 # really just some handy scripts...
 
-KEXT=AppleSmartBatteryManager.kext
+KEXT=ACPIBatteryManager.kext
 DIST=RehabMan-Battery
 
 ifeq ($(findstring 32,$(BITS)),32)

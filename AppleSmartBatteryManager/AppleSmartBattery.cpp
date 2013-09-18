@@ -145,7 +145,7 @@ static const OSSymbol *_SerialNumberSym =		OSSymbol::withCString("FirmwareSerial
 static const OSSymbol *_HardwareSerialSym =		OSSymbol::withCString("BatterySerialNumber");
 static const OSSymbol *_DateOfManufacture =		OSSymbol::withCString("Date of Manufacture");
 
-OSDefineMetaClassAndStructors(AppleSmartBattery, IOPMPowerSource)
+OSDefineMetaClassAndStructors(org_rehabman_AppleSmartBattery, IOPMPowerSource)
 
 /******************************************************************************
  * AppleSmartBattery::ACPIBattery
@@ -303,6 +303,8 @@ bool AppleSmartBattery::start(IOService *provider)
     {
         return false;
     }
+
+    this->setName("AppleSmartBattery");
 	
     // Publish the intended period in seconds that our "time remaining"
     // estimate is wildly inaccurate after wake from sleep.

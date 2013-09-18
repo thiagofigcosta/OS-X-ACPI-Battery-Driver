@@ -36,7 +36,7 @@ static IOPMPowerState myTwoStates[2] = {
     {kIOPMPowerStateVersion1, kIOPMPowerOn, kIOPMPowerOn, kIOPMPowerOn, 0, 0, 0, 0, 0, 0, 0, 0}
 };
 
-OSDefineMetaClassAndStructors(AppleSmartBatteryManager, IOService)
+OSDefineMetaClassAndStructors(org_rehabman_AppleSmartBatteryManager, IOService)
 
 #ifdef DEBUG
 
@@ -107,7 +107,7 @@ bool AppleSmartBatteryManager::start(IOService *provider)
     provider->joinPMtree(this);
 
     //rehabman: updated version
-	IOLog("AppleSmartBatteryManager: Version 1.33 starting\n");
+	IOLog("AppleSmartBatteryManager: Version 1.40 starting\n");
 
 	int value = getPlatform()->numBatteriesSupported();
 	DEBUG_LOG("AppleSmartBatteryManager: Battery Supported Count(s) %d.\n", value);
@@ -154,6 +154,7 @@ populateBattery:
 
 skipBattery:
 
+    this->setName("AppleSmartBatteryManager");
 	this->registerService(0);
 
     return true;
