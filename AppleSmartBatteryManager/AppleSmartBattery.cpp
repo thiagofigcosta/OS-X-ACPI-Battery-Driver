@@ -145,7 +145,7 @@ static const OSSymbol *_SerialNumberSym =		OSSymbol::withCString("FirmwareSerial
 static const OSSymbol *_HardwareSerialSym =		OSSymbol::withCString("BatterySerialNumber");
 static const OSSymbol *_DateOfManufacture =		OSSymbol::withCString("Date of Manufacture");
 
-OSDefineMetaClassAndStructors(org_rehabman_AppleSmartBattery, IOPMPowerSource)
+OSDefineMetaClassAndStructors(rehab_ACPIBattery, IOPMPowerSource)
 
 /******************************************************************************
  * AppleSmartBattery::ACPIBattery
