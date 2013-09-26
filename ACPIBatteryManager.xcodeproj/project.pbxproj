@@ -134,7 +134,7 @@
 		0C4B237314598AD10080D960 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0500;
 			};
 			buildConfigurationList = 0C4B237614598AD10080D960 /* Build configuration list for PBXProject "ACPIBatteryManager" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -256,12 +256,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.40;
+				CURRENT_PROJECT_VERSION = 1.41;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppleSmartBatteryManager/ACPIBatteryManager-Prefix.pch";
 				INFOPLIST_FILE = "AppleSmartBatteryManager/ACPIBatteryManager-Info.plist";
 				MODULE_NAME = org.rehabman.driver.AppleSmartBatteryManager;
-				MODULE_VERSION = 1.40;
+				MODULE_VERSION = 1.41;
 				PRODUCT_NAME = ACPIBatteryManager;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
@@ -271,12 +271,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.40;
+				CURRENT_PROJECT_VERSION = 1.41;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppleSmartBatteryManager/ACPIBatteryManager-Prefix.pch";
 				INFOPLIST_FILE = "AppleSmartBatteryManager/ACPIBatteryManager-Info.plist";
 				MODULE_NAME = org.rehabman.driver.AppleSmartBatteryManager;
-				MODULE_VERSION = 1.40;
+				MODULE_VERSION = 1.41;
 				PRODUCT_NAME = ACPIBatteryManager;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
