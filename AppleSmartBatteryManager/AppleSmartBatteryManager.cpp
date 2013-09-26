@@ -36,7 +36,7 @@ static IOPMPowerState myTwoStates[2] = {
     {kIOPMPowerStateVersion1, kIOPMPowerOn, kIOPMPowerOn, kIOPMPowerOn, 0, 0, 0, 0, 0, 0, 0, 0}
 };
 
-OSDefineMetaClassAndStructors(org_rehabman_AppleSmartBatteryManager, IOService)
+OSDefineMetaClassAndStructors(rehab_ACPIBatteryManager, IOService)
 
 #ifdef DEBUG
 

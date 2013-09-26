@@ -24,7 +24,7 @@
 #ifndef __AppleSmartBattery__
 #define __AppleSmartBattery__
 
-#define AppleSmartBattery org_rehabman_AppleSmartBattery
+#define AppleSmartBattery rehab_ACPIBattery
 
 #include <IOKit/IOService.h>
 #include <IOKit/pwr_mgt/IOPMPowerSource.h>
@@ -144,7 +144,7 @@ class AppleSmartBatteryManager;
 class EXPORT AppleSmartBattery : public IOPMPowerSource
 {
     typedef IOPMPowerSource super;
-	OSDeclareDefaultStructors(org_rehabman_AppleSmartBattery)
+	OSDeclareDefaultStructors(rehab_ACPIBattery)
 
 protected:
 

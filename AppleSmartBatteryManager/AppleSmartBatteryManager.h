@@ -24,7 +24,7 @@
 #ifndef __AppleSmartBatteryManager__
 #define __AppleSmartBatteryManager__
 
-#define AppleSmartBatteryManager org_rehabman_AppleSmartBatteryManager
+#define AppleSmartBatteryManager rehab_ACPIBatteryManager
 
 #include <IOKit/IOService.h>
 #include <IOKit/acpi/IOACPIPlatformDevice.h>
@@ -44,7 +44,7 @@ class AppleSmartBattery;
 class EXPORT AppleSmartBatteryManager : public IOService
 {
     typedef IOService super;
-	OSDeclareDefaultStructors(org_rehabman_AppleSmartBatteryManager)
+	OSDeclareDefaultStructors(rehab_ACPIBatteryManager)
 
 public:
 #ifdef DEBUG
