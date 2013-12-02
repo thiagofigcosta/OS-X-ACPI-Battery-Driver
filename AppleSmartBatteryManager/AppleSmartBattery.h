@@ -32,8 +32,6 @@
 
 #include "AppleSmartBatteryManager.h"
 
-#define EXPORT __attribute__((visibility("default")))
-
 #define WATTS				0
 #define AMPS				1
 #define ACPI_MAX			0x7FFFFFFF

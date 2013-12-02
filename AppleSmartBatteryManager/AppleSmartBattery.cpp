@@ -247,11 +247,11 @@ bool AppleSmartBattery::start(IOService *provider)
 	
 	if (fUseBatteryExtendedInformation)
 	{
-		IOLog("AppleSmartBattery: Using ACPI extended battery information method _BIX\n");
+		IOLog("ACPIBatteryManager: Using ACPI extended battery information method _BIX\n");
 	}
 	else 
 	{
-		IOLog("AppleSmartBattery: Using ACPI regular battery information method _BIF\n");
+		IOLog("ACPIBatteryManager: Using ACPI regular battery information method _BIF\n");
 	}
 
 	// Check if we should use extra information in BBIX
@@ -267,7 +267,7 @@ bool AppleSmartBattery::start(IOService *provider)
 	
 	if (fUseBatteryExtraInformation)
 	{
-		IOLog("AppleSmartBattery: Using ACPI extra battery information method BBIX\n");
+		IOLog("ACPIBatteryManager: Using ACPI extra battery information method BBIX\n");
 	}
 
     fEstimateCycleCountDivisor = 6;
@@ -353,7 +353,7 @@ void AppleSmartBattery::logReadError(
 	
     setProperty((const char *)"LatestErrorType", error_type);
 	
-    IOLog("AppleSmartBattery: Error: %s (%d)\n", error_type, additional_error);  
+    IOLog("ACPIBatteryManager: Error: %s (%d)\n", error_type, additional_error);  
 	
     return;
 }

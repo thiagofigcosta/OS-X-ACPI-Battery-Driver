@@ -24,6 +24,8 @@
 #ifndef __AppleSmartBatteryManager__
 #define __AppleSmartBatteryManager__
 
+#define EXPORT __attribute__((visibility("default")))
+
 #define AppleSmartBatteryManager rehab_ACPIBatteryManager
 
 #include <IOKit/IOService.h>
