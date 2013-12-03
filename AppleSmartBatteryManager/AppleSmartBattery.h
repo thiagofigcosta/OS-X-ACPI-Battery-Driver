@@ -24,8 +24,6 @@
 #ifndef __AppleSmartBattery__
 #define __AppleSmartBattery__
 
-#define AppleSmartBattery rehab_ACPIBattery
-
 #include <IOKit/IOService.h>
 #include <IOKit/pwr_mgt/IOPMPowerSource.h>
 #include <IOKit/acpi/IOACPIPlatformDevice.h>

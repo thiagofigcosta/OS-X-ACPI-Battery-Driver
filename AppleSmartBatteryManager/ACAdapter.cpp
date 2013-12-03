@@ -14,8 +14,19 @@
 
 OSDefineMetaClassAndStructors(ACPIACAdapter, IOService)
 
-IOService* ACPIACAdapter::probe(IOService* provider, SInt32* score) {
+bool ACPIACAdapter::init(OSDictionary* dict)
+{
+    if (!IOService::init(dict))
+        return false;
     
+    fTracker = NULL;
+    fProvider = NULL;
+    
+    return true;
+}
+
+IOService* ACPIACAdapter::probe(IOService* provider, SInt32* score)
+{
     if (IOService::probe(provider, score) != this)
         return 0;
 
@@ -23,7 +34,8 @@ IOService* ACPIACAdapter::probe(IOService* provider, SInt32* score) {
         *score = -1000;
     
     IOACPIPlatformDevice* acpi = OSDynamicCast(IOACPIPlatformDevice, provider);
-    if (!acpi /*|| acpi->validateObject("_PRW")*/) {
+    if (!acpi /*|| acpi->validateObject("_PRW")*/)
+    {
         IOLog("acadapt: returing 0 from probe due to _PRW object existing\n");
         return 0;
     }
@@ -39,19 +51,24 @@ bool ACPIACAdapter::start(IOService* provider)
 {
     IOLog("acadapt: entering start\n");
 
-    if (!IOService::start(provider)) {
+    if (!IOService::start(provider))
+    {
         IOLog("acadapt: IOService::start failed!\n");
         return false;
     }
     
+	IOLog("ACPIBatteryManager: Version 1.50 starting ACPIACAdapter\n");
+    
     fProvider = OSDynamicCast(IOACPIPlatformDevice, provider);
-    if (!fProvider) {
+    if (!fProvider)
+    {
         IOLog("acadapt: provider not IOACPIPlatformDevice\n");
         return false;
     }
-    
     fProvider->retain();
-	IOLog("ACPIBatteryManager: Version 1.50 starting ACPIACAdapter\n");
+    
+    // get tracker for notifications
+    fTracker = OSDynamicCast(BatteryTracker, waitForMatchingService(serviceMatching(kBatteryTrackerService)));
     
     return true;
 }
@@ -61,6 +78,7 @@ void ACPIACAdapter::stop(IOService* provider)
     IOLog("acadapt: entering stop\n");
 
     OSSafeReleaseNULL(fProvider);
+    OSSafeReleaseNULL(fTracker);
     
     IOService::stop(provider);
 }
@@ -87,18 +105,16 @@ IOReturn ACPIACAdapter::message(UInt32 type, IOService* provider, void* argument
         if (kIOReturnSuccess == fProvider->evaluateInteger("_PSR", &acpi))
         {
             IOLog("ACPIACAdapter: setting AC %s\n", (acpi ? "connected" : "disconnected"));
-            IOPMrootDomain* root = getPMRootDomain();
-            if (root)
-            {
-                if (acpi)
-                    root->receivePowerNotification(kIOPMSetACAdaptorConnected | kIOPMSetValue);
-                else
-                    root->receivePowerNotification(kIOPMSetACAdaptorConnected);
-            }
+            
+            // notify system of change in AC state
+            if (IOPMrootDomain* root = getPMRootDomain())
+                root->receivePowerNotification(kIOPMSetACAdaptorConnected | acpi ? kIOPMSetValue : 0);
             else
-            {
                 IOLog("ACPIACAdapter: couldn't notify OS about AC status\n");
-            }
+            
+            // notify battery managers of change in AC state
+            if (NULL != fTracker)
+                fTracker->notifyBatteryManagers(acpi);
         }
         else
         {

@@ -27,6 +27,7 @@
 #include "AppleSmartBatteryManager.h"
 #include "AppleSmartBattery.h"
 
+
 enum {
     kMyOnPowerState = 1
 };
@@ -49,6 +50,9 @@ bool AppleSmartBatteryManager::init(OSDictionary *dict)
 {
     bool result = super::init(dict);
     DEBUG_LOG("AppleSmartBatteryManager::init: Initializing\n");
+    
+    fTracker = NULL;
+    
     return result;
 }
 
@@ -158,6 +162,12 @@ skipBattery:
 
     this->setName("AppleSmartBatteryManager");
 	this->registerService(0);
+    
+    // add to battery tracker
+    fTracker = OSDynamicCast(BatteryTracker, waitForMatchingService(serviceMatching(kBatteryTrackerService)));
+    if (NULL != fTracker) {
+        fTracker->addBatteryManager(this);
+    }
 
     return true;
 }
@@ -169,6 +179,12 @@ skipBattery:
 void AppleSmartBatteryManager::stop(IOService *provider)
 {
 	DEBUG_LOG("AppleSmartBatteryManager::stop: called\n");
+
+    // remove from battery tracker
+    if (NULL != fTracker) {
+        fTracker->removeBatteryManager(this);
+        fTracker->release();
+    }
 	
     fBattery->detach(this);
     
@@ -435,3 +451,17 @@ IOReturn AppleSmartBatteryManager::getBatteryBST(void)
 		return kIOReturnError;
 	}
 }
+
+/*****************************************************************************
+ * AppleSmartBatteryManager::notifyConnectedState
+ * Cause a fresh battery poll in workloop to check AC status
+ ******************************************************************************/
+
+void AppleSmartBatteryManager::notifyConnectedState(bool connected)
+{
+    if (NULL != fBatteryGate && NULL != fBattery) {
+        // push through command gate, so it always happens on workloop thread...
+        fBatteryGate->runAction(OSMemberFunctionCast(IOCommandGate::Action, fBattery, &AppleSmartBattery::pollBatteryState), NULL, NULL, NULL, NULL);
+    }
+}
+

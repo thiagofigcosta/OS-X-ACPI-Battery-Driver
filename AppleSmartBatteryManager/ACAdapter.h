@@ -9,10 +9,6 @@
 #ifndef ACPIBatteryManager_ACAdapter_h
 #define ACPIBatteryManager_ACAdapter_h
 
-#define ACPIACAdapter rehab_ACPIACAdapter
-
-#include <IOKit/IOService.h>
-
 #include "AppleSmartBatteryManager.h"
 
 class EXPORT ACPIACAdapter : public IOService
@@ -21,8 +17,10 @@ class EXPORT ACPIACAdapter : public IOService
     
 private:
     IOACPIPlatformDevice*   fProvider;
+    BatteryTracker*         fTracker;
     
 public:
+    virtual bool            init(OSDictionary* dict);
     virtual IOService*      probe(IOService* provider, SInt32* score);
     virtual bool            start(IOService* provider);
     virtual void            stop(IOService* provider);

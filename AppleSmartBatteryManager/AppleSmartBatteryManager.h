@@ -27,11 +27,15 @@
 #define EXPORT __attribute__((visibility("default")))
 
 #define AppleSmartBatteryManager rehab_ACPIBatteryManager
+#define AppleSmartBattery rehab_ACPIBattery
+#define ACPIACAdapter rehab_ACPIACAdapter
+#define BatteryTracker rehab_BatteryTracker
 
 #include <IOKit/IOService.h>
 #include <IOKit/acpi/IOACPIPlatformDevice.h>
 
 #include "AppleSmartBattery.h"
+#include "BatteryTracker.h"
 
 #ifdef DEBUG_MSG
 #define DEBUG_LOG(args...)  IOLog(args)
@@ -40,6 +44,7 @@
 #endif
 
 class AppleSmartBattery;
+class BatteryTracker;
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -67,6 +72,7 @@ private:
 	IOACPIPlatformDevice    *fProvider;
 	AppleSmartBattery       *fBattery;
     UInt32                  fBatterySTA;
+    BatteryTracker          *fTracker;
 
 	IOReturn setPollingInterval(int milliSeconds);
 
@@ -84,6 +90,9 @@ public:
     
     IOReturn validateBatteryBIX(void);
     IOReturn validateBatteryBBIX(void);
+    
+    // For AC adapter notification
+    void notifyConnectedState(bool connected);
 };
 
 #endif
