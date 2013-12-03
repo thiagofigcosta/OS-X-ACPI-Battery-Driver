@@ -107,7 +107,7 @@ bool AppleSmartBatteryManager::start(IOService *provider)
     provider->joinPMtree(this);
 
     //rehabman: updated version
-	IOLog("ACPIBatteryManager: Version 1.50 starting\n");
+	IOLog("ACPIBatteryManager: Version 1.50 starting ACPIBatteryManager\n");
 
 #if 0
     //REVIEW_REHABMAN: I don't think this makes any sense...

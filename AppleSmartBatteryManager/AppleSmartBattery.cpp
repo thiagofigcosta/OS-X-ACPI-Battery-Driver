@@ -299,7 +299,8 @@ bool AppleSmartBattery::start(IOService *provider)
 																					 this, &AppleSmartBattery::incompleteReadTimeOut) );
 	
     if( !fWorkLoop || !fPollTimer
-	   || (kIOReturnSuccess != fWorkLoop->addEventSource(fPollTimer)) )
+	   || (kIOReturnSuccess != fWorkLoop->addEventSource(fPollTimer))
+       || (kIOReturnSuccess != fWorkLoop->addEventSource(fBatteryReadAllTimer)))
     {
         return false;
     }
