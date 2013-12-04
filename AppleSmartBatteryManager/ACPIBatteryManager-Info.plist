@@ -68,6 +68,8 @@
 			<string>IOACPIPlatformDevice</string>
 			<key>IONameMatch</key>
 			<string>ACPI0003</string>
+			<key>IOProbeScore</key>
+			<integer>1000</integer>
 		</dict>
 	</dict>
 	<key>NSHumanReadableCopyright</key>

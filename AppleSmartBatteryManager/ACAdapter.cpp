@@ -25,28 +25,6 @@ bool ACPIACAdapter::init(OSDictionary* dict)
     return true;
 }
 
-IOService* ACPIACAdapter::probe(IOService* provider, SInt32* score)
-{
-    if (IOService::probe(provider, score) != this)
-        return 0;
-
-    if (score)
-        *score = -1000;
-    
-    IOACPIPlatformDevice* acpi = OSDynamicCast(IOACPIPlatformDevice, provider);
-    //REVIEW: _PRW seems to always be there.  Maybe some other test...
-    if (!acpi /*|| acpi->validateObject("_PRW")*/)
-    {
-        DEBUG_LOG("ACPIACAdapter::probe returing 0 from probe due to _PRW object existing\n");
-        return 0;
-    }
-    //*score = 1000;
-
-    DEBUG_LOG("ACPIACAdapter::probe returning success from probe\n");
-    
-    return this;
-}
-
 bool ACPIACAdapter::start(IOService* provider)
 {
     if (!IOService::start(provider))
