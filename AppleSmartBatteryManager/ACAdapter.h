@@ -24,7 +24,6 @@ public:
     virtual IOService*      probe(IOService* provider, SInt32* score);
     virtual bool            start(IOService* provider);
     virtual void            stop(IOService* provider);
-    virtual void            free(void);
     virtual IOReturn        setPowerState(unsigned long state, IOService* device);
     virtual IOReturn        message(UInt32 type, IOService* provider, void* argument);
 };

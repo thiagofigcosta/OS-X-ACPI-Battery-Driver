@@ -7,10 +7,10 @@
 //  Code/ideas liberally borrowed from VoodooBattery...
 //
 
-#include "ACAdapter.h"
 #include <IOKit/pwr_mgt/RootDomain.h>
 #include <IOKit/pwr_mgt/IOPMPowerSource.h>
 #include "IOPMPrivate.h"
+#include "ACAdapter.h"
 
 OSDefineMetaClassAndStructors(ACPIACAdapter, IOService)
 
@@ -34,38 +34,36 @@ IOService* ACPIACAdapter::probe(IOService* provider, SInt32* score)
         *score = -1000;
     
     IOACPIPlatformDevice* acpi = OSDynamicCast(IOACPIPlatformDevice, provider);
+    //REVIEW: _PRW seems to always be there.  Maybe some other test...
     if (!acpi /*|| acpi->validateObject("_PRW")*/)
     {
-        IOLog("acadapt: returing 0 from probe due to _PRW object existing\n");
+        DEBUG_LOG("ACPIACAdapter::probe returing 0 from probe due to _PRW object existing\n");
         return 0;
     }
-
     //*score = 1000;
 
-    IOLog("acadapt: returning success from probe\n");
+    DEBUG_LOG("ACPIACAdapter::probe returning success from probe\n");
     
     return this;
 }
 
 bool ACPIACAdapter::start(IOService* provider)
 {
-    IOLog("acadapt: entering start\n");
-
     if (!IOService::start(provider))
     {
-        IOLog("acadapt: IOService::start failed!\n");
+        IOLog("ACPIACAdapter: IOService::start failed!\n");
         return false;
     }
-    
-	IOLog("ACPIBatteryManager: Version 1.50 starting ACPIACAdapter\n");
     
     fProvider = OSDynamicCast(IOACPIPlatformDevice, provider);
     if (!fProvider)
     {
-        IOLog("acadapt: provider not IOACPIPlatformDevice\n");
+        IOLog("ACPIACAdapter: provider not IOACPIPlatformDevice\n");
         return false;
     }
     fProvider->retain();
+    
+	DEBUG_LOG("ACPIBatteryManager::start Version 1.50 starting ACPIACAdapter.\n");
     
     // get tracker for notifications
     fTracker = OSDynamicCast(BatteryTracker, waitForMatchingService(serviceMatching(kBatteryTrackerService)));
@@ -75,17 +73,10 @@ bool ACPIACAdapter::start(IOService* provider)
 
 void ACPIACAdapter::stop(IOService* provider)
 {
-    IOLog("acadapt: entering stop\n");
-
     OSSafeReleaseNULL(fProvider);
     OSSafeReleaseNULL(fTracker);
     
     IOService::stop(provider);
-}
-
-void ACPIACAdapter::free(void)
-{
-    IOService::free();
 }
 
 IOReturn ACPIACAdapter::setPowerState(unsigned long state, IOService* device)
@@ -97,20 +88,20 @@ IOReturn ACPIACAdapter::setPowerState(unsigned long state, IOService* device)
 
 IOReturn ACPIACAdapter::message(UInt32 type, IOService* provider, void* argument)
 {
-    IOLog("ACPIACAdapter::message: type: %08X provider: %s\n", (unsigned int)type, provider->getName());
+    DEBUG_LOG("ACPIACAdapter::message: type: %08X provider: %s\n", (unsigned int)type, provider->getName());
     
     if (type == kIOACPIMessageDeviceNotification && fProvider)
     {
         UInt32 acpi = 0;
         if (kIOReturnSuccess == fProvider->evaluateInteger("_PSR", &acpi))
         {
-            IOLog("ACPIACAdapter: setting AC %s\n", (acpi ? "connected" : "disconnected"));
+            DEBUG_LOG("ACPIACAdapter::message setting AC %s\n", (acpi ? "connected" : "disconnected"));
             
             // notify system of change in AC state
             if (IOPMrootDomain* root = getPMRootDomain())
                 root->receivePowerNotification(kIOPMSetACAdaptorConnected | acpi ? kIOPMSetValue : 0);
             else
-                IOLog("ACPIACAdapter: couldn't notify OS about AC status\n");
+                DEBUG_LOG("ACPIACAdapter::message could not notify OS about AC status\n");
             
             // notify battery managers of change in AC state
             if (NULL != fTracker)
@@ -118,7 +109,7 @@ IOReturn ACPIACAdapter::message(UInt32 type, IOService* provider, void* argument
         }
         else
         {
-            IOLog("ACPIACAdapter: _PSR failed\n");
+            DEBUG_LOG("ACPIACAdapter::message ACPI method _PSR failed\n");
         }
     }
     return kIOReturnSuccess;

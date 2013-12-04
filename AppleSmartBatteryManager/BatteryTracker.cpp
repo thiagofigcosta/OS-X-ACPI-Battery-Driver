@@ -12,8 +12,13 @@ OSDefineMetaClassAndStructors(BatteryTracker, IOService)
 
 bool BatteryTracker::init(OSDictionary* dict)
 {
+    DEBUG_LOG("BatteryTracker::start: entering init\n");
+    
     if (!IOService::init(dict))
+    {
+        IOLog("BatteryTracker: IOService::init failed!\n");
         return false;
+    }
     
     m_pBatteryList = NULL;
     m_pLock = NULL;
@@ -23,15 +28,15 @@ bool BatteryTracker::init(OSDictionary* dict)
 
 bool BatteryTracker::start(IOService* provider)
 {
-    IOLog("tracker: entering start\n");
+    DEBUG_LOG("BatteryTracker::start: entering start\n");
     
     if (!IOService::start(provider))
     {
-        IOLog("tracker: IOService::start failed!\n");
+        IOLog("BatteryTracker: IOService::start failed!\n");
         return false;
     }
     
-	IOLog("ACPIBatteryManager: Version 1.50 starting BatteryTracker\n");
+	DEBUG_LOG("ACPIBatteryManager: Version 1.50 starting BatteryTracker.\n");
     
     m_pBatteryList = OSArray::withCapacity(2);
     m_pLock = IOLockAlloc();
@@ -43,7 +48,7 @@ bool BatteryTracker::start(IOService* provider)
 
 void BatteryTracker::stop(IOService* provider)
 {
-    IOLog("tracker: entering stop\n");
+    DEBUG_LOG("BatteryTracker::stop: entering stop\n");
     
     OSSafeReleaseNULL(m_pBatteryList);
     if (NULL != m_pLock)
@@ -56,7 +61,7 @@ void BatteryTracker::stop(IOService* provider)
 
 bool BatteryTracker::addBatteryManager(AppleSmartBatteryManager* pManager)
 {
-    IOLog("tracker: entering addBatteryManager(%p)\n", pManager);
+    DEBUG_LOG("BatteryTracker::addBatteryManager: entering addBatteryManager(%p)\n", pManager);
     
     bool result = false;
     
@@ -87,7 +92,7 @@ bool BatteryTracker::addBatteryManager(AppleSmartBatteryManager* pManager)
 
 bool BatteryTracker::removeBatteryManager(AppleSmartBatteryManager* pManager)
 {
-    IOLog("tracker: entering removeBatteryManager(%p)\n", pManager);
+    DEBUG_LOG("BatteryTracker::removeBatteryManager: entering removeBatteryManager(%p)\n", pManager);
     
     bool result = false;
     
@@ -109,7 +114,7 @@ bool BatteryTracker::removeBatteryManager(AppleSmartBatteryManager* pManager)
 
 void BatteryTracker::notifyBatteryManagers(bool connected)
 {
-    IOLog("tracker: entering notifyBatteryManager(%s)\n", connected ? "connected" : "disconnected");
+    DEBUG_LOG("BatteryTracker::notifyBatteryManagers: entering notifyBatteryManager(%s)\n", connected ? "connected" : "disconnected");
     
     IOLockLock(m_pLock);
     unsigned count = m_pBatteryList->getCount();
