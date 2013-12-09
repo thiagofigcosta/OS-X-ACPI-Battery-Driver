@@ -87,7 +87,7 @@ IOReturn ACPIACAdapter::message(UInt32 type, IOService* provider, void* argument
         }
         else
         {
-            DEBUG_LOG("ACPIACAdapter::message ACPI method _PSR failed\n");
+            IOLog("ACPIACAdapter: ACPI method _PSR failed\n");
         }
     }
     return kIOReturnSuccess;
