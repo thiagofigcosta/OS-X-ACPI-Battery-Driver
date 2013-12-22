@@ -5,7 +5,7 @@
 	<key>Source Code</key>
 	<string>https://github.com/RehabMan/OS-X-ACPI-Battery-Driver</string>
 	<key>CFBundleGetInfoString</key>
-	<string>1.50, Copyright 2011 Apple Inc., RehabMan 2012</string>
+	<string>1.51, Copyright 2011 Apple Inc., RehabMan 2012</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
@@ -19,11 +19,11 @@
 	<key>CFBundlePackageType</key>
 	<string>KEXT</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.50</string>
+	<string>1.51</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.50</string>
+	<string>1.51</string>
 	<key>IOKitPersonalities</key>
 	<dict>
 		<key>ACPI Battery Manager</key>

@@ -36,7 +36,7 @@ bool BatteryTracker::start(IOService* provider)
         return false;
     }
     
-	DEBUG_LOG("ACPIBatteryManager: Version 1.50 starting BatteryTracker.\n");
+	DEBUG_LOG("ACPIBatteryManager: Version 1.51 starting BatteryTracker.\n");
     
     m_pBatteryList = OSArray::withCapacity(2);
     m_pLock = IOLockAlloc();
