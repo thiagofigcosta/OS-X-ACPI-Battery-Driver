@@ -1388,7 +1388,10 @@ IOReturn AppleSmartBattery::setBatteryBIX(OSArray *acpibat_bix)
 	setBatteryType(fType);
 	setManufacturer(fManufacturer);
 	setCycleCount(fCycleCount);
-	setMaxErr(fMaxErr);
+    
+    //REVIEW_REHABMAN: Not sure it makes sense to set MaxErr based on BIF_ACCURACY
+	//setMaxErr(fMaxErr);
+    setMaxErr(0);
 	
 	// ACPI _BIX doesn't provide these...
 	

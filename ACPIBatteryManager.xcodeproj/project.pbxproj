@@ -279,7 +279,6 @@
 				MODULE_NAME = org.rehabman.driver.AppleSmartBatteryManager;
 				MODULE_VERSION = 1.50;
 				PRODUCT_NAME = ACPIBatteryManager;
-				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Debug;
 		};
@@ -294,7 +293,6 @@
 				MODULE_NAME = org.rehabman.driver.AppleSmartBatteryManager;
 				MODULE_VERSION = 1.50;
 				PRODUCT_NAME = ACPIBatteryManager;
-				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
 		};
