@@ -192,7 +192,9 @@ bool AppleSmartBattery::init(void)
 void AppleSmartBattery::free(void) 
 {
     fPollTimer->cancelTimeout();
+#ifdef REVIEW
     fBatteryReadAllTimer->cancelTimeout();
+#endif
     fWorkLoop->disableAllEventSources();
     
     clearBatteryState(true);
@@ -293,17 +295,22 @@ bool AppleSmartBattery::start(IOService *provider)
     fPollTimer = IOTimerEventSource::timerEventSource( this, 
 													  OSMemberFunctionCast( IOTimerEventSource::Action, 
 																		   this, &AppleSmartBattery::pollingTimeOut) );
-	
-    fBatteryReadAllTimer = IOTimerEventSource::timerEventSource( this,
-																OSMemberFunctionCast( IOTimerEventSource::Action,
-																					 this, &AppleSmartBattery::incompleteReadTimeOut) );
-	
     if( !fWorkLoop || !fPollTimer
-	   || (kIOReturnSuccess != fWorkLoop->addEventSource(fPollTimer))
-       || (kIOReturnSuccess != fWorkLoop->addEventSource(fBatteryReadAllTimer)))
+	   || (kIOReturnSuccess != fWorkLoop->addEventSource(fPollTimer)))
     {
         return false;
     }
+    
+#ifdef REVIEW
+    fBatteryReadAllTimer = IOTimerEventSource::timerEventSource( this,
+																OSMemberFunctionCast( IOTimerEventSource::Action,
+																					 this, &AppleSmartBattery::incompleteReadTimeOut) );
+    if ( !fBatteryReadAllTimer
+        || (kIOReturnSuccess != fWorkLoop->addEventSource(fBatteryReadAllTimer)))
+    {
+        return false;
+    }
+#endif
 
     this->setName("AppleSmartBattery");
 	
@@ -392,9 +399,11 @@ bool AppleSmartBattery::pollBatteryState(int path)
 		 by an alarm. We re-set the 30 second poll later. */
 		fPollTimer->cancelTimeout();
 		
-		/* Initialize battery read timeout to catch any longstanding stalls. */           
+#ifdef REVIEW
+		/* Initialize battery read timeout to catch any longstanding stalls. */
 		fBatteryReadAllTimer->cancelTimeout();
 		fBatteryReadAllTimer->setTimeoutMS( kBatteryReadAllTimeout );
+#endif
 		
 		pollBatteryState( kExistingBatteryPath );
 	} 
@@ -462,7 +471,9 @@ void AppleSmartBattery::handleBatteryRemoved(void)
 	{
 		fCancelPolling = true;
 		fPollTimer->cancelTimeout();
+#ifdef REVIEW
 		fBatteryReadAllTimer->cancelTimeout();
+#endif
 	}
 	
     // This must be called under workloop synchronization
@@ -503,9 +514,11 @@ IOReturn AppleSmartBattery::handleSystemSleepWake(
         {
             fPowerServiceToAck = powerService;
             fPowerServiceToAck->retain();
-            fPollTimer->cancelTimeout();    
+            fPollTimer->cancelTimeout();
+#ifdef REVIEW
             fBatteryReadAllTimer->cancelTimeout();
             ret = (kBatteryReadAllTimeout * 1000);
+#endif
         }
     }
     else // System Wake
@@ -1794,8 +1807,10 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 	/* construct and publish our battery serial number here */
 	constructAppleSerialNumber();
 	
+#ifdef REVIEW
 	/* Cancel read-completion timeout; Successfully read battery state */
 	fBatteryReadAllTimer->cancelTimeout();
+#endif
 	
 	rebuildLegacyIOBatteryInfo(true);
 	

@@ -149,7 +149,9 @@ protected:
 	IOTimerEventSource      *fPollTimer;
 	bool					fPollingNow;
 	bool					fCancelPolling;
+#ifdef REVIEW //REVIEW_REHAB: vestiges of SMBUS based-battery (Apple code; not necessary)
     IOTimerEventSource      *fBatteryReadAllTimer;
+#endif
     uint16_t                fMachinePath;
     uint32_t                fPollingInterval;
     bool                    fPollingOverridden;
