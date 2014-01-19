@@ -19,7 +19,7 @@ class EXPORT BatteryTracker : public IOService
     
 private:
     OSArray* m_pBatteryList;
-    IOLock* m_pLock;
+    IORecursiveLock* m_pLock;
     
 public:
     virtual bool init(OSDictionary* dict);

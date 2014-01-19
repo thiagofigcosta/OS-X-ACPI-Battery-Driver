@@ -39,7 +39,7 @@ bool BatteryTracker::start(IOService* provider)
 	DEBUG_LOG("ACPIBatteryManager: Version 1.51 starting BatteryTracker.\n");
     
     m_pBatteryList = OSArray::withCapacity(2);
-    m_pLock = IOLockAlloc();
+    m_pLock = IORecursiveLockAlloc();
     
     registerService();
     
@@ -53,7 +53,7 @@ void BatteryTracker::stop(IOService* provider)
     OSSafeReleaseNULL(m_pBatteryList);
     if (NULL != m_pLock)
     {
-        IOLockFree(m_pLock);
+        IORecursiveLockFree(m_pLock);
         m_pLock = NULL;
     }
     IOService::stop(provider);
@@ -65,7 +65,7 @@ bool BatteryTracker::addBatteryManager(AppleSmartBatteryManager* pManager)
     
     bool result = false;
     
-    IOLockLock(m_pLock);
+    IORecursiveLockLock(m_pLock);
     unsigned count = m_pBatteryList->getCount();
     unsigned i = 0;
     for (; i < count; ++i)
@@ -85,7 +85,7 @@ bool BatteryTracker::addBatteryManager(AppleSmartBatteryManager* pManager)
         m_pBatteryList->setObject(pManager);
         result = true;
     }
-    IOLockUnlock(m_pLock);
+    IORecursiveLockUnlock(m_pLock);
     
     return result;
 }
@@ -96,7 +96,7 @@ bool BatteryTracker::removeBatteryManager(AppleSmartBatteryManager* pManager)
     
     bool result = false;
     
-    IOLockLock(m_pLock);
+    IORecursiveLockLock(m_pLock);
     unsigned count = m_pBatteryList->getCount();
     for (unsigned i = 0; i < count; ++i)
     {
@@ -107,7 +107,7 @@ bool BatteryTracker::removeBatteryManager(AppleSmartBatteryManager* pManager)
             break;
         }
     }
-    IOLockUnlock(m_pLock);
+    IORecursiveLockUnlock(m_pLock);
     
     return result;
 }
@@ -116,7 +116,7 @@ void BatteryTracker::notifyBatteryManagers(bool connected)
 {
     DEBUG_LOG("BatteryTracker::notifyBatteryManagers: entering notifyBatteryManager(%s)\n", connected ? "connected" : "disconnected");
     
-    IOLockLock(m_pLock);
+    IORecursiveLockLock(m_pLock);
     unsigned count = m_pBatteryList->getCount();
     for (unsigned i = 0; i < count; ++i)
     {
@@ -124,14 +124,14 @@ void BatteryTracker::notifyBatteryManagers(bool connected)
         if (NULL != pManager)
             pManager->notifyConnectedState(connected);
     }
-    IOLockUnlock(m_pLock);
+    IORecursiveLockUnlock(m_pLock);
 }
 
 bool BatteryTracker::anyBatteriesDischarging(AppleSmartBattery* pExcept)
 {
     bool result = false;
     
-    IOLockLock(m_pLock);
+    IORecursiveLockLock(m_pLock);
     unsigned count = m_pBatteryList->getCount();
     for (unsigned i = 0; i < count; ++i)
     {
@@ -142,7 +142,7 @@ bool BatteryTracker::anyBatteriesDischarging(AppleSmartBattery* pExcept)
             break;
         }
     }
-    IOLockUnlock(m_pLock);
+    IORecursiveLockUnlock(m_pLock);
     
     return result;
 }
