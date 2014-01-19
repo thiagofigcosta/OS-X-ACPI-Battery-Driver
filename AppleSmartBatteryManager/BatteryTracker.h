@@ -29,6 +29,7 @@ public:
     bool addBatteryManager(AppleSmartBatteryManager* pManager);
     bool removeBatteryManager(AppleSmartBatteryManager* pManager);
     void notifyBatteryManagers(bool connected);
+    bool anyBatteriesDischarging(AppleSmartBattery* pExcept);
 };
 
 #endif /* defined(__ACPIBatteryManager__BatteryTracker__) */

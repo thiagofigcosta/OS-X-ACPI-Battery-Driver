@@ -134,6 +134,7 @@ OSSymbol *GetSymbolFromArray(OSArray * array, UInt8 index);
 OSData	*GetDataFromArray(OSArray *array, UInt8 index);
 
 class AppleSmartBatteryManager;
+class BatteryTracker;
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -141,6 +142,7 @@ class EXPORT AppleSmartBattery : public IOPMPowerSource
 {
     typedef IOPMPowerSource super;
 	OSDeclareDefaultStructors(rehab_ACPIBattery)
+    friend BatteryTracker;
 
 protected:
 
@@ -168,7 +170,9 @@ protected:
 
 	uint8_t                 fInitialPollCountdown;;
     uint32_t                fEstimateCycleCountDivisor;
-	
+    
+    BatteryTracker*         fTracker;
+
     // Accessor for MaxError reading
     // Percent error in MaxCapacity reading
     void    setMaxErr(int error);

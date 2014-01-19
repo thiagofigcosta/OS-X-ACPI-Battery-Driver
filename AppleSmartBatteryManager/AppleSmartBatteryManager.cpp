@@ -184,6 +184,7 @@ void AppleSmartBatteryManager::stop(IOService *provider)
     if (NULL != fTracker) {
         fTracker->removeBatteryManager(this);
         fTracker->release();
+        fTracker = NULL;
     }
 	
     fBattery->detach(this);

@@ -180,6 +180,8 @@ bool AppleSmartBattery::init(void)
     fProvider = NULL;
     fWorkLoop = NULL;
     fPollTimer = NULL;
+    
+    fTracker = NULL;
 	
     return true;
 }
@@ -311,6 +313,9 @@ bool AppleSmartBattery::start(IOService *provider)
         return false;
     }
 #endif
+    
+    // get tracker for status of other batteries
+    fTracker = OSDynamicCast(BatteryTracker, waitForMatchingService(serviceMatching(kBatteryTrackerService)));
 
     this->setName("AppleSmartBattery");
 	
@@ -342,6 +347,8 @@ bool AppleSmartBattery::start(IOService *provider)
 
 void AppleSmartBattery::stop(IOService *provider)
 {
+    OSSafeReleaseNULL(fTracker);
+    
     super::stop(provider);
 }
 
@@ -1726,9 +1733,10 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 		setFullyCharged(true);
 		setIsCharging(false);
 		
-		fACConnected = true;
+        bool batteriesDischarging = fTracker && fTracker->anyBatteriesDischarging(this);
+		fACConnected = !batteriesDischarging;
 		setExternalConnected(fACConnected);
-		fACChargeCapable = true;
+		fACChargeCapable = !batteriesDischarging;
 		setExternalChargeCapable(fACChargeCapable);
 		
 		setAmperage(0);

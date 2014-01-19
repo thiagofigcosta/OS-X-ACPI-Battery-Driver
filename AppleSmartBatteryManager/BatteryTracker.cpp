@@ -127,3 +127,23 @@ void BatteryTracker::notifyBatteryManagers(bool connected)
     IOLockUnlock(m_pLock);
 }
 
+bool BatteryTracker::anyBatteriesDischarging(AppleSmartBattery* pExcept)
+{
+    bool result = false;
+    
+    IOLockLock(m_pLock);
+    unsigned count = m_pBatteryList->getCount();
+    for (unsigned i = 0; i < count; ++i)
+    {
+        AppleSmartBatteryManager* pManager = static_cast<AppleSmartBatteryManager*>(m_pBatteryList->getObject(i));
+        if (pManager && pManager->fBattery && pExcept != pManager->fBattery && !pManager->fBattery->fACConnected)
+        {
+            result = true;
+            break;
+        }
+    }
+    IOLockUnlock(m_pLock);
+    
+    return result;
+}
+
