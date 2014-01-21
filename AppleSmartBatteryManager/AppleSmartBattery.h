@@ -142,7 +142,7 @@ class EXPORT AppleSmartBattery : public IOPMPowerSource
 {
     typedef IOPMPowerSource super;
 	OSDeclareDefaultStructors(rehab_ACPIBattery)
-    friend BatteryTracker;
+    friend class BatteryTracker;
 
 protected:
 

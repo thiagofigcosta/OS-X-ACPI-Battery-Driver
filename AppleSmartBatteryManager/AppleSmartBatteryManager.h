@@ -52,7 +52,7 @@ class EXPORT AppleSmartBatteryManager : public IOService
 {
     typedef IOService super;
 	OSDeclareDefaultStructors(rehab_ACPIBatteryManager)
-    friend BatteryTracker;
+    friend class BatteryTracker;
 
 public:
 #ifdef DEBUG
