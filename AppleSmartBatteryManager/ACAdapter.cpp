@@ -41,7 +41,7 @@ bool ACPIACAdapter::start(IOService* provider)
     }
     fProvider->retain();
     
-	DEBUG_LOG("ACPIBatteryManager::start Version 1.51 starting ACPIACAdapter.\n");
+	DEBUG_LOG("ACPIBatteryManager::start Version 1.52 starting ACPIACAdapter.\n");
     
     // get tracker for notifications
     fTracker = OSDynamicCast(BatteryTracker, waitForMatchingService(serviceMatching(kBatteryTrackerService)));

@@ -52,7 +52,7 @@ bool BatteryTracker::start(IOService* provider)
     }
     workLoop->addEventSource(m_pCmdGate);
     
-	DEBUG_LOG("ACPIBatteryManager: Version 1.51 starting BatteryTracker.\n");
+	DEBUG_LOG("ACPIBatteryManager: Version 1.52 starting BatteryTracker.\n");
     
     m_pBatteryList = OSArray::withCapacity(2);
     m_pLock = IORecursiveLockAlloc();
