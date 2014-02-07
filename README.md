@@ -79,6 +79,20 @@ http://www.tonymacx86.com/hp-probook/69472-battery-manager-fix-boot-without-batt
 
 ### Change Log:
 
+2014-02-07 v1.52
+
+- Fix deadlock caused by changes made for multiple batteries.  See issue #3.
+
+- When determining if other batteries are discharging, ignore batteries that are not connected.  See issue #2.
+
+- To provide AC status changes quicker after an AC change, poll battery objects more often after such a change.  See issue #4.
+
+
+2014-01-21 v1.51
+
+- Some fixes related to multiple batteries.  Work in progress.
+
+
 2013-12-04 v1.50
 
 - Added ACPIACAdapter implementation, which implemeents an ACPI compliant object to track status changes of the AC adapter.  As the status change, the battery objects are notified.
