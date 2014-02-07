@@ -128,6 +128,14 @@
 
 #define kEstimateCycleCountDivisorInfoKey   "EstimateCycleCountDivisor"
 
+
+// for pollBatteryState
+enum
+{
+    kExistingBatteryPath    = 1,
+    kNewBatteryPath         = 2
+};
+
 static const OSSymbol * unknownObjectKey		= OSSymbol::withCString("Unknown");
 UInt32 GetValueFromArray(OSArray * array, UInt8 index);
 OSSymbol *GetSymbolFromArray(OSArray * array, UInt8 index);
@@ -143,6 +151,7 @@ class EXPORT AppleSmartBattery : public IOPMPowerSource
     typedef IOPMPowerSource super;
 	OSDeclareDefaultStructors(rehab_ACPIBattery)
     friend class BatteryTracker;
+    friend class AppleSmartBatteryManager;
 
 protected:
 
@@ -265,7 +274,7 @@ public:
 
     void    setPollingInterval(int milliSeconds);
 
-    bool    pollBatteryState(int path = 0);
+    bool    pollBatteryState(int path);
     
     IOReturn setPowerState(unsigned long which, IOService *whom);
 
@@ -275,6 +284,9 @@ public:
 	
 	IOReturn handleSystemSleepWake(IOService *powerSource, bool isSystemSleep);
 	
+    // For AC adapter notification
+    void notifyConnectedState(bool connected);
+
 protected:
     
 	void    logReadError( const char *error_type, 
@@ -335,6 +347,8 @@ private:
 	UInt32	fAverageTimeToFull;
 	UInt32  fManufactureDate;
 	OSData   *fManufacturerData;
+
+    int fRealAC;
 
 public:
 

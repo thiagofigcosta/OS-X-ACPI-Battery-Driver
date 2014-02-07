@@ -20,6 +20,7 @@ class EXPORT BatteryTracker : public IOService
 private:
     OSArray* m_pBatteryList;
     IORecursiveLock* m_pLock;
+    IOCommandGate* m_pCmdGate;
     
 public:
     virtual bool init(OSDictionary* dict);
@@ -30,6 +31,9 @@ public:
     bool removeBatteryManager(AppleSmartBatteryManager* pManager);
     void notifyBatteryManagers(bool connected);
     bool anyBatteriesDischarging(AppleSmartBattery* pExcept);
+
+private:
+    void notifyBatteryManagersGated(bool connected);
 };
 
 #endif /* defined(__ACPIBatteryManager__BatteryTracker__) */

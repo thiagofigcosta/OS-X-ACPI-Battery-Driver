@@ -7,6 +7,7 @@
 //
 
 #include "BatteryTracker.h"
+#include <IOKit/IOCommandGate.h>
 
 OSDefineMetaClassAndStructors(BatteryTracker, IOService)
 
@@ -22,6 +23,7 @@ bool BatteryTracker::init(OSDictionary* dict)
     
     m_pBatteryList = NULL;
     m_pLock = NULL;
+    m_pCmdGate = NULL;
     
     return true;
 }
@@ -35,6 +37,20 @@ bool BatteryTracker::start(IOService* provider)
         IOLog("BatteryTracker: IOService::start failed!\n");
         return false;
     }
+    
+    IOWorkLoop* workLoop = getWorkLoop();
+    if (!workLoop)
+    {
+        IOLog("BatteryTracker: getWorkLoop failed\n");
+        return false;
+    }
+    m_pCmdGate = IOCommandGate::commandGate(this);
+    if (!m_pCmdGate)
+    {
+        IOLog("BatteryTracker: IOCommandGate::commmandGate failed\n");
+        return false;
+    }
+    workLoop->addEventSource(m_pCmdGate);
     
 	DEBUG_LOG("ACPIBatteryManager: Version 1.51 starting BatteryTracker.\n");
     
@@ -56,6 +72,15 @@ void BatteryTracker::stop(IOService* provider)
         IORecursiveLockFree(m_pLock);
         m_pLock = NULL;
     }
+    if (m_pCmdGate)
+    {
+        IOWorkLoop* pWorkLoop = getWorkLoop();
+        if (pWorkLoop)
+            pWorkLoop->removeEventSource(m_pCmdGate);
+        m_pCmdGate->release();
+        m_pCmdGate = NULL;
+    }
+    
     IOService::stop(provider);
 }
 
@@ -112,10 +137,8 @@ bool BatteryTracker::removeBatteryManager(AppleSmartBatteryManager* pManager)
     return result;
 }
 
-void BatteryTracker::notifyBatteryManagers(bool connected)
+void BatteryTracker::notifyBatteryManagersGated(bool connected)
 {
-    DEBUG_LOG("BatteryTracker::notifyBatteryManagers: entering notifyBatteryManager(%s)\n", connected ? "connected" : "disconnected");
-    
     IORecursiveLockLock(m_pLock);
     unsigned count = m_pBatteryList->getCount();
     for (unsigned i = 0; i < count; ++i)
@@ -125,6 +148,14 @@ void BatteryTracker::notifyBatteryManagers(bool connected)
             pManager->notifyConnectedState(connected);
     }
     IORecursiveLockUnlock(m_pLock);
+}
+
+void BatteryTracker::notifyBatteryManagers(bool connected)
+{
+    DEBUG_LOG("BatteryTracker::notifyBatteryManagers: entering notifyBatteryManager(%s)\n", connected ? "connected" : "disconnected");
+    
+    if (m_pCmdGate)
+        m_pCmdGate->runAction(OSMemberFunctionCast(IOCommandGate::Action, this, &BatteryTracker::notifyBatteryManagersGated), (void*)connected);
 }
 
 bool BatteryTracker::anyBatteriesDischarging(AppleSmartBattery* pExcept)

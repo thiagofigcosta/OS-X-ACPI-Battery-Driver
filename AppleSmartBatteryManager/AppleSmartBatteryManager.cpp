@@ -23,6 +23,7 @@
 
 #include <IOKit/pwr_mgt/RootDomain.h>
 #include <IOKit/IOCommandGate.h>
+#include <IOKit/IOTimerEventSource.h>
 
 #include "AppleSmartBatteryManager.h"
 #include "AppleSmartBattery.h"
@@ -242,9 +243,7 @@ IOReturn AppleSmartBatteryManager::setPowerState(unsigned long which, IOService 
 	{
         // We are waking from sleep - kick off a battery read to make sure
         // our battery concept is in line with reality.
-        ret = fBatteryGate->runAction(OSMemberFunctionCast(IOCommandGate::Action,
-                           fBattery, &AppleSmartBattery::handleSystemSleepWake),
-                           (void *) this, (void *) !which, NULL, NULL);
+        ret = fBatteryGate->runAction(OSMemberFunctionCast(IOCommandGate::Action, fBattery, &AppleSmartBattery::handleSystemSleepWake), (void*)this, (void*)!which);
     }
 
     return ret;
@@ -269,26 +268,20 @@ IOReturn AppleSmartBatteryManager::message(UInt32 type, IOService *provider, voi
 			{
 				// Battery inserted
 				DEBUG_LOG("AppleSmartBatteryManager: battery inserted\n");
-				fBatteryGate->runAction(OSMemberFunctionCast(IOCommandGate::Action,
-                               fBattery, &AppleSmartBattery::handleBatteryInserted),
-                               NULL, NULL, NULL, NULL);
+				fBatteryGate->runAction(OSMemberFunctionCast(IOCommandGate::Action, fBattery, &AppleSmartBattery::handleBatteryInserted));
 			}
 			else 
 			{
 				// Battery removed
 				DEBUG_LOG("AppleSmartBatteryManager: battery removed\n");
-				fBatteryGate->runAction(OSMemberFunctionCast(IOCommandGate::Action,
-                               fBattery, &AppleSmartBattery::handleBatteryRemoved),
-                               NULL, NULL, NULL, NULL);
+				fBatteryGate->runAction(OSMemberFunctionCast(IOCommandGate::Action, fBattery, &AppleSmartBattery::handleBatteryRemoved));
 			}
 		}
 		else 
 		{
             // Just an alarm; re-read battery state.
 			DEBUG_LOG("AppleSmartBatteryManager: polling battery state\n");
-            fBatteryGate->runAction(OSMemberFunctionCast(IOCommandGate::Action,
-                               fBattery, &AppleSmartBattery::pollBatteryState),
-                               NULL, NULL, NULL, NULL);
+            fBatteryGate->runAction(OSMemberFunctionCast(IOCommandGate::Action, fBattery, &AppleSmartBattery::pollBatteryState), (void*)kExistingBatteryPath);
 		}
 	}
 
@@ -460,9 +453,9 @@ IOReturn AppleSmartBatteryManager::getBatteryBST(void)
 
 void AppleSmartBatteryManager::notifyConnectedState(bool connected)
 {
-    if (NULL != fBatteryGate && NULL != fBattery) {
-        // push through command gate, so it always happens on workloop thread...
-        fBatteryGate->runAction(OSMemberFunctionCast(IOCommandGate::Action, fBattery, &AppleSmartBattery::pollBatteryState), NULL, NULL, NULL, NULL);
+    if (NULL != fBatteryGate && NULL != fBattery)
+    {
+        fBattery->notifyConnectedState(connected);
     }
 }
 

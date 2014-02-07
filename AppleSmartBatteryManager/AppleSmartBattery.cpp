@@ -59,15 +59,6 @@
 #include "AppleSmartBatteryManager.h"
 #include "AppleSmartBattery.h"
 
-// Defines the order of reading properties in the power source state machine
-// Bitfield
-
-enum
-{
-    kExistingBatteryPath    = 1,
-    kNewBatteryPath         = 2
-};
-
 // Retry attempts on command failure
 
 enum { 
@@ -398,6 +389,8 @@ void AppleSmartBattery::setPollingInterval(
 bool AppleSmartBattery::pollBatteryState(int path)
 {
     DEBUG_LOG("AppleSmartBattery::pollBatteryState: path = 0x%x\n", path);
+
+//REVIEW: this could be simplified kNewBatteryPath vs. kExistingBatteryPath means little/nothing...
     
     // This must be called under workloop synchronization
     if (kNewBatteryPath == path) 
@@ -443,16 +436,25 @@ bool AppleSmartBattery::pollBatteryState(int path)
         }
 		
 		fPollingNow = false;
-		
+
+        fPollTimer->cancelTimeout();
 		if (!fPollingOverridden) 
 		{
-			/* Restart timer with standard polling interval */
-			fPollTimer->setTimeoutMS( milliSecPollingTable[fPollingInterval] );
+            if (-1 == fRealAC || fRealAC == fACConnected)
+            {
+                /* Restart timer with standard polling interval */
+                fPollTimer->setTimeoutMS(milliSecPollingTable[fPollingInterval]);
+            }
+            else
+            {
+                /* Restart timer with quick polling interval */
+                fPollTimer->setTimeoutMS(milliSecPollingTable[kQuickPollInterval]);
+            }
 		}
 		else
 		{
 			/* restart timer with debug value */
-			fPollTimer->setTimeoutMS( 1000 * fPollingInterval );
+			fPollTimer->setTimeoutMS(1000 * fPollingInterval);
 		}
 	}
 	
@@ -490,14 +492,28 @@ void AppleSmartBattery::handleBatteryRemoved(void)
     return;
 }
 
+/*****************************************************************************
+ * AppleSmartBatteryManager::notifyConnectedState
+ * Cause a fresh battery poll in workloop to check AC status
+ ******************************************************************************/
+
+void AppleSmartBattery::notifyConnectedState(bool connected)
+{
+    fRealAC = connected;
+    if (fBatteryPresent)
+    {
+        // on AC status change, poll right away (will set quick timer if AC is out-of-sync)
+        pollBatteryState(kExistingBatteryPath);
+    }
+}
+
 /******************************************************************************
  * AppleSmartBattery::handleSystemSleepWake
  *
  * Caller must hold the gate.
  ******************************************************************************/
 
-IOReturn AppleSmartBattery::handleSystemSleepWake(
-												  IOService * powerService, bool isSystemSleep )
+IOReturn AppleSmartBattery::handleSystemSleepWake(IOService* powerService, bool isSystemSleep)
 {
     IOReturn ret = kIOPMAckImplied;
 	
@@ -699,6 +715,8 @@ void AppleSmartBattery::clearBatteryState(bool do_update)
     removeProperty(_HardwareSerialSym);
 	
     rebuildLegacyIOBatteryInfo(do_update);
+
+    fRealAC = -1;   // real AC status is unknown...
 	
     if(do_update) {
         updateStatus();
@@ -1613,18 +1631,22 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 		DEBUG_LOG("AppleSmartBattery::setBatteryBST: adjusted fCurrentRate to %d\n", (unsigned int) fCurrentRate);
 	}
 	
-	
-	if (fCurrentRate <= 0x00000000) {
+
+    //REVIEW: fCurrentRate is unsigned, so this test is really fCurrentRate==0...
+    //  why set fCurrentRate to half MaxCapacity in the case that it isn't discharging or charging?
+#ifdef REVIEW
+	if (fCurrentRate < 0x00000000) {
 		fCurrentRate = fMaxCapacity / 2;
-		DEBUG_LOG("AppleSmartBattery::setBatteryBST: adjusted fCurrentRate = 0x%x\n",		(unsigned int) fCurrentRate);
+		DEBUG_LOG("AppleSmartBattery::setBatteryBST: adjusted fCurrentRate = 0x%x\n", (unsigned int) fCurrentRate);
 	}
+#endif
 	
-	if (fAverageRate)	
+	if (fAverageRate)
 		fAverageRate = (fAverageRate + fCurrentRate) / 2;
 	else
 		fAverageRate = fCurrentRate;
 	
-	DEBUG_LOG("AppleSmartBattery::setBatteryBST: fAverageRate = 0x%x\n",		(unsigned int) fAverageRate);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBST: fAverageRate = 0x%x\n", (unsigned int) fAverageRate);
 	
 	if (currentStatus ^ fStatus) 
 	{
@@ -1809,7 +1831,7 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 	
 	setProperty("CellVoltage", fCellVoltages);
 
-//rehabman: no need to set this as it is never updated here...
+//REVIEW: no need to set this as it is never updated here...
 //	setProperty("Temperature", (long long unsigned int)fTemperature, NUM_BITS);
 	
 	/* construct and publish our battery serial number here */
