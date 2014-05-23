@@ -30,9 +30,12 @@
 
 //REVIEW: avoids problem with Xcode 5.1.0 where -dead_strip eliminates these required symbols
 #include <libkern/OSKextLib.h>
-void* _hack_dontstrip1_ = (void*)&OSKextGetCurrentIdentifier;
-void* _hack_dontstrip2_ = (void*)&OSKextGetCurrentLoadTag;
-void* _hack_dontstrip3_ = (void*)&OSKextGetCurrentVersionString;
+void* _org_rehabman_dontstrip_[] =
+{
+    (void*)&OSKextGetCurrentIdentifier,
+    (void*)&OSKextGetCurrentLoadTag,
+    (void*)&OSKextGetCurrentVersionString,
+};
 
 enum {
     kMyOnPowerState = 1
