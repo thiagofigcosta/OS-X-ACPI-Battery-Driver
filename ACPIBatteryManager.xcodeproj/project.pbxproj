@@ -220,6 +220,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CURRENT_PROJECT_VERSION = 1.53;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				GCC_ENABLE_KERNEL_DEVELOPMENT = YES;
@@ -249,6 +250,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CURRENT_PROJECT_VERSION = 1.53;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				GCC_ENABLE_KERNEL_DEVELOPMENT = YES;
@@ -272,12 +274,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.52;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppleSmartBatteryManager/ACPIBatteryManager-Prefix.pch";
 				INFOPLIST_FILE = "AppleSmartBatteryManager/ACPIBatteryManager-Info.plist";
 				MODULE_NAME = org.rehabman.driver.AppleSmartBatteryManager;
-				MODULE_VERSION = 1.51;
+				MODULE_VERSION = 1.53;
 				PRODUCT_NAME = ACPIBatteryManager;
 			};
 			name = Debug;
@@ -286,12 +287,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.52;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppleSmartBatteryManager/ACPIBatteryManager-Prefix.pch";
 				INFOPLIST_FILE = "AppleSmartBatteryManager/ACPIBatteryManager-Info.plist";
 				MODULE_NAME = org.rehabman.driver.AppleSmartBatteryManager;
-				MODULE_VERSION = 1.51;
+				MODULE_VERSION = 1.53;
 				PRODUCT_NAME = ACPIBatteryManager;
 			};
 			name = Release;
