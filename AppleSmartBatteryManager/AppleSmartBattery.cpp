@@ -1406,7 +1406,21 @@ IOReturn AppleSmartBattery::setBatteryBIX(OSArray *acpibat_bix)
 	fType				= GetSymbolFromArray(acpibat_bix, BIX_BATTERY_TYPE);
 	fManufacturer		= GetSymbolFromArray(acpibat_bix, BIX_OEM);
 	
-	if (WATTS == fPowerUnit && fDesignVoltage)
+    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fPowerUnit       = 0x%x\n", (unsigned)fPowerUnit);
+    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fDesignCapacity  = 0x%x\n", (unsigned)fDesignCapacity);
+    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fMaxCapacity     = 0x%x\n", (unsigned)fMaxCapacity);
+    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fBatteryTech     = 0x%x\n", (unsigned)fBatteryTechnology);
+    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fDesignVoltage   = 0x%x\n", (unsigned)fDesignVoltage);
+    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fCapacityWarning = 0x%x\n", (unsigned)fCapacityWarning);
+    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fLowWarning      = 0x%x\n", (unsigned)fLowWarning);
+    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fCycleCount      = 0x%x\n", (unsigned)fCycleCount);
+    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fMaxErr          = 0x%x\n", (unsigned)fMaxErr);
+    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fDeviceName      = '%s'\n", fDeviceName->getCStringNoCopy());
+    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fSerialNumber    = '%s'\n", fSerialNumber->getCStringNoCopy());
+    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fType            = '%s'\n", fType->getCStringNoCopy());
+    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fManufacturer    = '%s'\n", fManufacturer->getCStringNoCopy());
+
+    if (WATTS == fPowerUnit && fDesignVoltage)
     {
         // Watts = Amps X Volts
         fDesignCapacity = (fDesignCapacity * 1000) / fDesignVoltage;
