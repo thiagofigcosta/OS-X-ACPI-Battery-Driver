@@ -148,7 +148,7 @@
 		0C4B237314598AD10080D960 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0600;
 			};
 			buildConfigurationList = 0C4B237614598AD10080D960 /* Build configuration list for PBXProject "ACPIBatteryManager" */;
 			compatibilityVersion = "Xcode 3.2";
