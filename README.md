@@ -22,7 +22,7 @@ https://code.google.com/p/os-x-acpi-battery-driver/downloads/list
 
 ### Build Environment
 
-My build environment is currently Xcode 5.0.2, using SDK 10.8, targeting OS X 10.6.
+My build environment is currently Xcode 6.1, using SDK 10.8, targeting OS X 10.6.
 
 No other build environment is supported.
 
@@ -78,6 +78,11 @@ http://www.tonymacx86.com/hp-probook/69472-battery-manager-fix-boot-without-batt
 
 
 ### Change Log:
+
+2014-10-16 v1.53
+
+- added debug output for _BIX
+
 
 2014-02-07 v1.52
 
