@@ -388,7 +388,7 @@ void AppleSmartBattery::setPollingInterval(
 
 bool AppleSmartBattery::pollBatteryState(int path)
 {
-    DEBUG_LOG("AppleSmartBattery::pollBatteryState: path = 0x%x\n", path);
+    DEBUG_LOG("AppleSmartBattery::pollBatteryState: path = %d\n", path);
 
 //REVIEW: this could be simplified kNewBatteryPath vs. kExistingBatteryPath means little/nothing...
     
@@ -517,7 +517,7 @@ IOReturn AppleSmartBattery::handleSystemSleepWake(IOService* powerService, bool 
 {
     IOReturn ret = kIOPMAckImplied;
 	
-	DEBUG_LOG("AppleSmartBattery::handleSystemSleepWake: isSystemSleep = 0x%x\n", isSystemSleep);
+	DEBUG_LOG("AppleSmartBattery::handleSystemSleepWake: isSystemSleep = %d\n", isSystemSleep);
 	
     if (!powerService || (fSystemSleeping == isSystemSleep))
         return kIOPMAckImplied;
@@ -562,8 +562,8 @@ IOReturn AppleSmartBattery::handleSystemSleepWake(IOService* powerService, bool 
         }
     }
 	
-    DEBUG_LOG("AppleSmartBattery::handleSystemSleepWake: handleSystemSleepWake(%d) = %u\n",
-			isSystemSleep, (uint32_t) ret);
+    DEBUG_LOG("AppleSmartBattery::handleSystemSleepWake: handleSystemSleepWake(%d) = %x\n",
+			isSystemSleep, (unsigned)ret);
     return ret;
 }
 
@@ -1287,12 +1287,12 @@ IOReturn AppleSmartBattery::setBatteryBIF(OSArray *acpibat_bif)
 	fManufacturer		= GetSymbolFromArray(acpibat_bif, BIF_OEM);
 
 	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fPowerUnit       = 0x%x\n", (unsigned)fPowerUnit);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fDesignCapacity  = 0x%x\n", (unsigned)fDesignCapacity);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fMaxCapacity     = 0x%x\n", (unsigned)fMaxCapacity);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fDesignCapacity  = %d\n", (int)fDesignCapacity);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fMaxCapacity     = %d\n", (int)fMaxCapacity);
 	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fBatteryTech     = 0x%x\n", (unsigned)fBatteryTechnology);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fDesignVoltage   = 0x%x\n", (unsigned)fDesignVoltage);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fCapacityWarning = 0x%x\n", (unsigned)fCapacityWarning);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fLowWarning      = 0x%x\n", (unsigned)fLowWarning);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fDesignVoltage   = %d\n", (int)fDesignVoltage);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fCapacityWarning = %d\n", (int)fCapacityWarning);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fLowWarning      = %d\n", (int)fLowWarning);
 	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fDeviceName      = '%s'\n", fDeviceName->getCStringNoCopy());
 	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fSerialNumber    = '%s'\n", fSerialNumber->getCStringNoCopy());
 	DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fType            = '%s'\n", fType->getCStringNoCopy());
@@ -1335,7 +1335,7 @@ IOReturn AppleSmartBattery::setBatteryBIF(OSArray *acpibat_bif)
     fTemperature = -1;
     if (acpibat_bif->getCount() > BIF_TEMPERATURE) {
         fTemperature = GetValueFromArray(acpibat_bif, BIF_TEMPERATURE);
-        DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fTemperature = 0x%x (0.1K)\n", (unsigned int)fTemperature);
+        DEBUG_LOG("AppleSmartBattery::setBatteryBIF: fTemperature = %d (0.1K)\n", (unsigned)fTemperature);
     }
     if (-1 == fTemperature || 0 == fTemperature)
         fTemperature = 2731; // 2731(.1K) == 0 degrees C
@@ -1407,14 +1407,14 @@ IOReturn AppleSmartBattery::setBatteryBIX(OSArray *acpibat_bix)
 	fManufacturer		= GetSymbolFromArray(acpibat_bix, BIX_OEM);
 	
     DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fPowerUnit       = 0x%x\n", (unsigned)fPowerUnit);
-    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fDesignCapacity  = 0x%x\n", (unsigned)fDesignCapacity);
-    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fMaxCapacity     = 0x%x\n", (unsigned)fMaxCapacity);
+    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fDesignCapacity  = %d\n", (int)fDesignCapacity);
+    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fMaxCapacity     = %d\n", (int)fMaxCapacity);
     DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fBatteryTech     = 0x%x\n", (unsigned)fBatteryTechnology);
-    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fDesignVoltage   = 0x%x\n", (unsigned)fDesignVoltage);
-    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fCapacityWarning = 0x%x\n", (unsigned)fCapacityWarning);
-    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fLowWarning      = 0x%x\n", (unsigned)fLowWarning);
-    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fCycleCount      = 0x%x\n", (unsigned)fCycleCount);
-    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fMaxErr          = 0x%x\n", (unsigned)fMaxErr);
+    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fDesignVoltage   = %d\n", (int)fDesignVoltage);
+    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fCapacityWarning = %d\n", (int)fCapacityWarning);
+    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fLowWarning      = %d\n", (int)fLowWarning);
+    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fCycleCount      = %d\n", (int)fCycleCount);
+    DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fMaxErr          = %d\n", (int)fMaxErr);
     DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fDeviceName      = '%s'\n", fDeviceName->getCStringNoCopy());
     DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fSerialNumber    = '%s'\n", fSerialNumber->getCStringNoCopy());
     DEBUG_LOG("AppleSmartBattery::setBatteryBIX: fType            = '%s'\n", fType->getCStringNoCopy());
@@ -1509,22 +1509,22 @@ IOReturn AppleSmartBattery::setBatteryBBIX(OSArray *acpibat_bbix)
 	fManufactureDate		= GetValueFromArray (acpibat_bbix, BBIX_MANUF_DATE);
 	fManufacturerData		= GetDataFromArray  (acpibat_bbix, BBIX_MANUF_DATA);
 	
-	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fManufacturerAccess    = 0x%x\n", (unsigned int) fManufacturerAccess);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fBatteryMode           = 0x%x\n", (unsigned int) fBatteryMode);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fAtRateTimeToFull      = 0x%x (min)\n", (unsigned int) fAtRateTimeToFull);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fAtRateTimeToEmpty     = 0x%x (min)\n", (unsigned int) fAtRateTimeToEmpty);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fTemperature           = 0x%x (0.1K)\n", (unsigned int) fTemperature);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fVoltage               = 0x%x (mV)\n", (unsigned int) fVoltage);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fCurrent               = 0x%x (mA)\n", (unsigned int) fCurrent);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fAverageCurrent        = 0x%x (mA)\n", (unsigned int) fAverageCurrent);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fRelativeStateOfCharge = 0x%x (%%)\n", (unsigned int) fRelativeStateOfCharge);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fAbsoluteStateOfCharge = 0x%x (%%)\n", (unsigned int) fAbsoluteStateOfCharge);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fRemainingCapacity     = 0x%x (mAh)\n", (unsigned int) fRemainingCapacity);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fRunTimeToEmpty        = 0x%x (min)\n", (unsigned int) fRunTimeToEmpty);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fAverageTimeToEmpty    = 0x%x (min)\n", (unsigned int) fAverageTimeToEmpty);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fAverageTimeToFull     = 0x%x (min)\n", (unsigned int) fAverageTimeToFull);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fManufactureDate       = 0x%x\n", (unsigned int) fManufactureDate);
-    DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fManufacturerData size = 0x%x\n", (unsigned int) (fManufacturerData ? fManufacturerData->getLength() : -1));
+	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fManufacturerAccess    = 0x%x\n", (unsigned)fManufacturerAccess);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fBatteryMode           = 0x%x\n", (unsigned)fBatteryMode);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fAtRateTimeToFull      = %d (min)\n", (int)fAtRateTimeToFull);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fAtRateTimeToEmpty     = %d (min)\n", (int)fAtRateTimeToEmpty);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fTemperature           = %d (0.1K)\n", (int)fTemperature);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fVoltage               = %d (mV)\n", (int)fVoltage);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fCurrent               = %d (mA)\n", (int)fCurrent);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fAverageCurrent        = %d (mA)\n", (int)fAverageCurrent);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fRelativeStateOfCharge = %d (%%)\n", (int)fRelativeStateOfCharge);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fAbsoluteStateOfCharge = %d (%%)\n", (int)fAbsoluteStateOfCharge);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fRemainingCapacity     = %d (mAh)\n", (int)fRemainingCapacity);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fRunTimeToEmpty        = %d (min)\n", (int)fRunTimeToEmpty);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fAverageTimeToEmpty    = %d (min)\n", (int)fAverageTimeToEmpty);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fAverageTimeToFull     = %d (min)\n", (int)fAverageTimeToFull);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fManufactureDate       = 0x%x\n", (unsigned) fManufactureDate);
+    DEBUG_LOG("AppleSmartBattery::setBatteryBBIX: fManufacturerData size = 0x%x\n", (unsigned) (fManufacturerData ? fManufacturerData->getLength() : -1));
 	
     // temperature must be converted from .1K to .01 degrees C
     if (-1 == fTemperature || 0 == fTemperature)
@@ -1612,16 +1612,16 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
     
 	// Get the values from the ACPI array
 	
-	UInt32 currentStatus = GetValueFromArray (acpibat_bst, BST_STATUS);
-	fCurrentRate		 = GetValueFromArray (acpibat_bst, BST_RATE);
-	fCurrentCapacity	 = GetValueFromArray (acpibat_bst, BST_CAPACITY);
-	fCurrentVoltage		 = GetValueFromArray (acpibat_bst, BST_VOLTAGE);	
+	UInt32 currentStatus = GetValueFromArray(acpibat_bst, BST_STATUS);
+	fCurrentRate		 = GetValueFromArray(acpibat_bst, BST_RATE);
+	fCurrentCapacity	 = GetValueFromArray(acpibat_bst, BST_CAPACITY);
+	fCurrentVoltage		 = GetValueFromArray(acpibat_bst, BST_VOLTAGE);
 	
-	DEBUG_LOG("AppleSmartBattery::setBatteryBST: fPowerUnit       = 0x%x\n",	(unsigned int) fPowerUnit);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBST: currentStatus    = 0x%x\n",	(unsigned int) currentStatus);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentRate     = 0x%x\n",	(unsigned int) fCurrentRate);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentCapacity = 0x%x\n",	(unsigned int) fCurrentCapacity);
-	DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentVoltage  = 0x%x\n",	(unsigned int) fCurrentVoltage);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBST: fPowerUnit       = 0x%x\n", (unsigned)fPowerUnit);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBST: currentStatus    = 0x%x\n", (unsigned)currentStatus);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentRate     = %d\n", (int)fCurrentRate);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentCapacity = %d\n", (int)fCurrentCapacity);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentVoltage  = %d\n", (int)fCurrentVoltage);
     
 	if (fCurrentRate == ACPI_UNKNOWN)
     {
@@ -1633,34 +1633,26 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
         DEBUG_LOG("AppleSmartBattery::setBatteryBST: Calculating for WATTS\n");
         fCurrentRate = ((int)fCurrentRate * 1000) / fDesignVoltage;
         fCurrentCapacity = (fCurrentCapacity * 1000) / fDesignVoltage;
-        DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentRate = %d\n",		(unsigned int) fCurrentRate);
-        DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentCapacity = %d\n",	(unsigned int) fCurrentCapacity);
+        DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentRate = %d\n", (int)fCurrentRate);
+        DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentCapacity = %d\n",	(int)fCurrentCapacity);
     }
 
+//REVIEW_REHABMAN: why only use lower 16-bits?
 	if (fCurrentRate & 0x8000)
     {
-		fCurrentRate = 0xFFFF - (fCurrentRate);
-		DEBUG_LOG("AppleSmartBattery::setBatteryBST: adjusted fCurrentRate to %d\n", (unsigned int) fCurrentRate);
+		fCurrentRate = 0xFFFF - (fCurrentRate & 0xFFFF);
+		DEBUG_LOG("AppleSmartBattery::setBatteryBST: adjusted fCurrentRate to %d\n", (int)fCurrentRate);
 	}
 
     setCurrentCapacity(fCurrentCapacity);
     setVoltage(fCurrentVoltage);
 
-    //REVIEW: fCurrentRate is unsigned, so this test is really fCurrentRate==0...
-    //  why set fCurrentRate to half MaxCapacity in the case that it isn't discharging or charging?
-#ifdef REVIEW
-	if (fCurrentRate < 0x00000000) {
-		fCurrentRate = fMaxCapacity / 2;
-		DEBUG_LOG("AppleSmartBattery::setBatteryBST: adjusted fCurrentRate = 0x%x\n", (unsigned int) fCurrentRate);
-	}
-#endif
-	
 	if (fAverageRate)
 		fAverageRate = (fAverageRate + fCurrentRate) / 2;
 	else
 		fAverageRate = fCurrentRate;
 	
-	DEBUG_LOG("AppleSmartBattery::setBatteryBST: fAverageRate = 0x%x\n", (unsigned int) fAverageRate);
+	DEBUG_LOG("AppleSmartBattery::setBatteryBST: fAverageRate = %d\n", fAverageRate);
 	
 	if (currentStatus ^ fStatus) 
 	{
