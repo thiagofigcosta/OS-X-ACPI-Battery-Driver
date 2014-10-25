@@ -1623,9 +1623,6 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 	DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentCapacity = 0x%x\n",	(unsigned int) fCurrentCapacity);
 	DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentVoltage  = 0x%x\n",	(unsigned int) fCurrentVoltage);
     
-	setCurrentCapacity(fCurrentCapacity);
-	setVoltage(fCurrentVoltage);
-
 	if (fCurrentRate == ACPI_UNKNOWN)
     {
 		DEBUG_LOG("AppleSmartBattery::setBatteryBST: fCurrentRate is ACPI_UNKNOWN\n");
@@ -1645,6 +1642,9 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 		fCurrentRate = 0xFFFF - (fCurrentRate);
 		DEBUG_LOG("AppleSmartBattery::setBatteryBST: adjusted fCurrentRate to %d\n", (unsigned int) fCurrentRate);
 	}
+
+    setCurrentCapacity(fCurrentCapacity);
+    setVoltage(fCurrentVoltage);
 
     //REVIEW: fCurrentRate is unsigned, so this test is really fCurrentRate==0...
     //  why set fCurrentRate to half MaxCapacity in the case that it isn't discharging or charging?
