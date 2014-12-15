@@ -23,14 +23,14 @@
 		0C4B238514598AD20080D960 /* ACPIBatteryManager-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ACPIBatteryManager-Info.plist"; sourceTree = "<group>"; };
 		0C4B238714598AD20080D960 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0C4B238914598AD20080D960 /* AppleSmartBatteryManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppleSmartBatteryManager.h; sourceTree = "<group>"; };
-		0C4B238B14598AD20080D960 /* AppleSmartBatteryManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AppleSmartBatteryManager.cpp; sourceTree = "<group>"; };
+		0C4B238B14598AD20080D960 /* AppleSmartBatteryManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = AppleSmartBatteryManager.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		0C4B238D14598AD20080D960 /* ACPIBatteryManager-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ACPIBatteryManager-Prefix.pch"; sourceTree = "<group>"; };
 		0C4B240514598CD00080D960 /* AppleSmartBattery.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppleSmartBattery.cpp; sourceTree = "<group>"; };
 		0C4B240614598CD00080D960 /* AppleSmartBattery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppleSmartBattery.h; sourceTree = "<group>"; };
 		84440B8F183811A400779871 /* ACAdapter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ACAdapter.h; sourceTree = "<group>"; };
-		84440B901838131700779871 /* ACAdapter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ACAdapter.cpp; sourceTree = "<group>"; };
+		84440B901838131700779871 /* ACAdapter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = ACAdapter.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		844778D216E7FC2400B27895 /* makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = makefile; sourceTree = SOURCE_ROOT; usesTabs = 1; };
-		8494BAA6184E6F2100674D3E /* BatteryTracker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BatteryTracker.cpp; sourceTree = "<group>"; };
+		8494BAA6184E6F2100674D3E /* BatteryTracker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = BatteryTracker.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		8494BAA7184E6F2100674D3E /* BatteryTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BatteryTracker.h; sourceTree = "<group>"; };
 		84D49F6818381F260009CA74 /* IOPMPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOPMPrivate.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -220,7 +220,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CURRENT_PROJECT_VERSION = 1.54;
+				CURRENT_PROJECT_VERSION = 1.55;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				GCC_ENABLE_KERNEL_DEVELOPMENT = YES;
@@ -250,7 +250,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CURRENT_PROJECT_VERSION = 1.54;
+				CURRENT_PROJECT_VERSION = 1.55;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				GCC_ENABLE_KERNEL_DEVELOPMENT = YES;
@@ -278,7 +278,7 @@
 				GCC_PREFIX_HEADER = "AppleSmartBatteryManager/ACPIBatteryManager-Prefix.pch";
 				INFOPLIST_FILE = "AppleSmartBatteryManager/ACPIBatteryManager-Info.plist";
 				MODULE_NAME = org.rehabman.driver.AppleSmartBatteryManager;
-				MODULE_VERSION = 1.54;
+				MODULE_VERSION = 1.55;
 				PRODUCT_NAME = ACPIBatteryManager;
 			};
 			name = Debug;
@@ -291,7 +291,7 @@
 				GCC_PREFIX_HEADER = "AppleSmartBatteryManager/ACPIBatteryManager-Prefix.pch";
 				INFOPLIST_FILE = "AppleSmartBatteryManager/ACPIBatteryManager-Info.plist";
 				MODULE_NAME = org.rehabman.driver.AppleSmartBatteryManager;
-				MODULE_VERSION = 1.54;
+				MODULE_VERSION = 1.55;
 				PRODUCT_NAME = ACPIBatteryManager;
 			};
 			name = Release;
