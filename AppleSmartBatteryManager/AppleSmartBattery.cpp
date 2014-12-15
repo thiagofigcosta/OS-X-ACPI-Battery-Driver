@@ -322,6 +322,9 @@ bool AppleSmartBattery::start(IOService *provider)
 	
     // zero out battery state with argument (do_set == true)
     clearBatteryState(false);
+
+    // some DSDT implementations aren't ready to read the EC yet, so avoid false reading
+    IOSleep(500);
 	
     // Kick off the 30 second timer and do an initial poll
     pollBatteryState( kNewBatteryPath );
