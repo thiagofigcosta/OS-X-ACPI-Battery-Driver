@@ -79,6 +79,15 @@ http://www.tonymacx86.com/hp-probook/69472-battery-manager-fix-boot-without-batt
 
 ### Change Log:
 
+2015-01-23 v1.55
+
+- Add 500ms delay before polling initial battery state (_STA) to account for battery devices at are not ready early in the boot process.  This avoids dimming the display when booting on battery, as the system doesn't detect it as a battery present->battery removed transition.
+
+- some minor fixes for watts when CurrentRate is ACPI_UNKNOWN
+
+- debug messages are now in decimal
+
+
 2014-10-16 v1.53
 
 - added debug output for _BIX
