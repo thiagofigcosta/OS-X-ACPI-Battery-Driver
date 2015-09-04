@@ -57,8 +57,6 @@ make BITS=32
 
 The source code is maintained at the following sites:
 
-https://code.google.com/p/os-x-acpi-battery-driver/
-
 https://github.com/RehabMan/OS-X-ACPI-Battery-Driver
 
 https://bitbucket.org/RehabMan/os-x-acpi-battery-driver
