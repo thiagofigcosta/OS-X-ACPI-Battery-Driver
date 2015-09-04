@@ -24,6 +24,7 @@
 #include <IOKit/pwr_mgt/RootDomain.h>
 #include <IOKit/IOCommandGate.h>
 #include <IOKit/IOTimerEventSource.h>
+#include <libkern/version.h>
 
 #include "AppleSmartBatteryManager.h"
 #include "AppleSmartBattery.h"
@@ -119,8 +120,19 @@ bool AppleSmartBatteryManager::start(IOService *provider)
     registerPowerDriver(this, myTwoStates, 2);
     provider->joinPMtree(this);
 
-    //rehabman: updated version
-	IOLog("ACPIBatteryManager: Version 1.55 starting.\n");
+    // announce version
+    extern kmod_info_t kmod_info;
+    IOLog("ACPIBatteryManager: Version %s starting on OS X Darwin %d.%d.\n", kmod_info.version, version_major, version_minor);
+
+    // place version/build info in ioreg properties RM,Build and RM,Version
+    char buf[128];
+    snprintf(buf, sizeof(buf), "%s %s", kmod_info.name, kmod_info.version);
+    setProperty("RM,Version", buf);
+#ifdef DEBUG
+    setProperty("RM,Build", "Debug-" LOGNAME);
+#else
+    setProperty("RM,Build", "Release-" LOGNAME);
+#endif
 
 #if 0
     //REVIEW_REHABMAN: I don't think this makes any sense...

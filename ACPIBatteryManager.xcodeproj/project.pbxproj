@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0C4B238814598AD20080D960 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0C4B238614598AD20080D960 /* InfoPlist.strings */; };
 		0C4B238A14598AD20080D960 /* AppleSmartBatteryManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 0C4B238914598AD20080D960 /* AppleSmartBatteryManager.h */; };
 		0C4B238C14598AD20080D960 /* AppleSmartBatteryManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0C4B238B14598AD20080D960 /* AppleSmartBatteryManager.cpp */; };
 		0C4B240714598CD00080D960 /* AppleSmartBattery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0C4B240514598CD00080D960 /* AppleSmartBattery.cpp */; };
@@ -172,7 +171,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C4B238814598AD20080D960 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -220,7 +218,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CURRENT_PROJECT_VERSION = 1.55;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				GCC_ENABLE_KERNEL_DEVELOPMENT = YES;
@@ -228,6 +225,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"DEBUG_MSG=1",
+					"LOGNAME=\\\"${LOGNAME}\\\"",
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
@@ -238,10 +236,12 @@
 				LLVM_LTO = NO;
 				"LLVM_LTO[arch=x86_64]" = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MODULE_VERSION = 1.56;
 				OTHER_CFLAGS = "-fno-stack-protector";
 				"OTHER_LDFLAGS[arch=x86_64]" = "-dead_strip";
 				SDKROOT = macosx10.8;
 				STRIP_STYLE = "non-global";
+				SYMROOT = build/Products;
 			};
 			name = Debug;
 		};
@@ -250,11 +250,14 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CURRENT_PROJECT_VERSION = 1.55;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				GCC_ENABLE_KERNEL_DEVELOPMENT = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"LOGNAME=\\\"${LOGNAME}\\\"",
+					"$(inherited)",
+				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
@@ -263,10 +266,12 @@
 				LLVM_LTO = NO;
 				"LLVM_LTO[arch=x86_64]" = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MODULE_VERSION = 1.56;
 				OTHER_CFLAGS = "-fno-stack-protector";
 				"OTHER_LDFLAGS[arch=x86_64]" = "-dead_strip";
 				SDKROOT = macosx10.8;
 				STRIP_STYLE = "non-global";
+				SYMROOT = build/Products;
 			};
 			name = Release;
 		};
@@ -278,7 +283,6 @@
 				GCC_PREFIX_HEADER = "AppleSmartBatteryManager/ACPIBatteryManager-Prefix.pch";
 				INFOPLIST_FILE = "AppleSmartBatteryManager/ACPIBatteryManager-Info.plist";
 				MODULE_NAME = org.rehabman.driver.AppleSmartBatteryManager;
-				MODULE_VERSION = 1.55;
 				PRODUCT_NAME = ACPIBatteryManager;
 			};
 			name = Debug;
@@ -291,7 +295,6 @@
 				GCC_PREFIX_HEADER = "AppleSmartBatteryManager/ACPIBatteryManager-Prefix.pch";
 				INFOPLIST_FILE = "AppleSmartBatteryManager/ACPIBatteryManager-Info.plist";
 				MODULE_NAME = org.rehabman.driver.AppleSmartBatteryManager;
-				MODULE_VERSION = 1.55;
 				PRODUCT_NAME = ACPIBatteryManager;
 			};
 			name = Release;
