@@ -29,19 +29,19 @@ bool ACPIACAdapter::start(IOService* provider)
 {
     if (!IOService::start(provider))
     {
-        IOLog("ACPIACAdapter: IOService::start failed!\n");
+        AlwaysLog("ACPIACAdapter: IOService::start failed!\n");
         return false;
     }
     
     fProvider = OSDynamicCast(IOACPIPlatformDevice, provider);
     if (!fProvider)
     {
-        IOLog("ACPIACAdapter: provider not IOACPIPlatformDevice\n");
+        AlwaysLog("ACPIACAdapter: provider not IOACPIPlatformDevice\n");
         return false;
     }
     fProvider->retain();
     
-	DEBUG_LOG("ACPIBatteryManager::starting ACPIACAdapter.\n");
+	DebugLog("starting ACPIACAdapter.\n");
     
     // get tracker for notifications
     fTracker = OSDynamicCast(BatteryTracker, waitForMatchingService(serviceMatching(kBatteryTrackerService)));
@@ -59,27 +59,27 @@ void ACPIACAdapter::stop(IOService* provider)
 
 IOReturn ACPIACAdapter::setPowerState(unsigned long state, IOService* device)
 {
-    DEBUG_LOG("ACPIACAdapter::setPowerState: state: %u, device: %s\n", (unsigned int) state, device->getName());
+    DebugLog("ACPIACAdapter::setPowerState: state: %u, device: %s\n", (unsigned int) state, device->getName());
     
     return kIOPMAckImplied;
 }
 
 IOReturn ACPIACAdapter::message(UInt32 type, IOService* provider, void* argument)
 {
-    DEBUG_LOG("ACPIACAdapter::message: type: %08X provider: %s\n", (unsigned int)type, provider->getName());
+    DebugLog("ACPIACAdapter::message: type: %08X provider: %s\n", (unsigned int)type, provider->getName());
     
     if (type == kIOACPIMessageDeviceNotification && fProvider)
     {
         UInt32 acpi = 0;
         if (kIOReturnSuccess == fProvider->evaluateInteger("_PSR", &acpi))
         {
-            DEBUG_LOG("ACPIACAdapter::message setting AC %s\n", (acpi ? "connected" : "disconnected"));
+            DebugLog("ACPIACAdapter::message setting AC %s\n", (acpi ? "connected" : "disconnected"));
             
             // notify system of change in AC state
             if (IOPMrootDomain* root = getPMRootDomain())
                 root->receivePowerNotification(kIOPMSetACAdaptorConnected | acpi ? kIOPMSetValue : 0);
             else
-                DEBUG_LOG("ACPIACAdapter::message could not notify OS about AC status\n");
+                DebugLog("ACPIACAdapter::message could not notify OS about AC status\n");
             
             // notify battery managers of change in AC state
             if (NULL != fTracker)
@@ -87,7 +87,7 @@ IOReturn ACPIACAdapter::message(UInt32 type, IOService* provider, void* argument
         }
         else
         {
-            IOLog("ACPIACAdapter: ACPI method _PSR failed\n");
+            AlwaysLog("ACPIACAdapter: ACPI method _PSR failed\n");
         }
     }
     return kIOReturnSuccess;

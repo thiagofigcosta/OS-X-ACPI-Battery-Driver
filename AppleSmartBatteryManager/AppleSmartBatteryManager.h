@@ -38,10 +38,14 @@
 #include "BatteryTracker.h"
 
 #ifdef DEBUG_MSG
-#define DEBUG_LOG(args...)  IOLog(args)
+#define DebugLog(args...)  do { IOLog("ACPIBatteryManager: " args); } while (0)
+#define DebugOnly(expr)     do { expr; } while (0)
 #else
-#define DEBUG_LOG(args...)
+#define DebugLog(args...)  do { } while (0)
+#define DebugOnly(expr)    do { } while (0)
 #endif
+
+#define AlwaysLog(args...) do { IOLog("ACPIBatteryManager: " args); } while (0)
 
 class AppleSmartBattery;
 class BatteryTracker;
@@ -76,6 +80,12 @@ private:
     BatteryTracker          *fTracker;
 
 	IOReturn setPollingInterval(int milliSeconds);
+
+public:
+    OSDictionary* getConfigurationOverride(const char* method);
+private:
+    OSObject* translateArray(OSArray* array);
+    OSObject* translateEntry(OSObject* obj);
 
 public:
 	

@@ -111,6 +111,9 @@
 #define	BST_VOLTAGE				3
 
 #define NUM_BITS				32
+#define NUM_CELLS               4
+
+#define kConfigurationInfoKey   "Configuration"
 
 // Define this in Info.plist to override the default polling inverval
 
@@ -128,6 +131,15 @@
 
 #define kEstimateCycleCountDivisorInfoKey   "EstimateCycleCountDivisor"
 
+// Define this in Info.plist to change how WATTS converted to AMPs in _BIF/_BST
+
+#define kUseDesignVoltageForDesignCapacity "UseDesignVoltageForDesignCapacity"
+#define kUseDesignVoltageForMaxCapacity "UseDesignVoltageForMaxCapacity"
+#define kUseDesignVoltageForCurrentCapacity "UseDesignVoltageForCurrentCapacity"
+
+// Define this in Info.plist to cap reported Amperage
+
+#define kCurrentRateMaxInfoKey  "CurrentRateMax"
 
 // for pollBatteryState
 enum
@@ -136,7 +148,6 @@ enum
     kNewBatteryPath         = 2
 };
 
-static const OSSymbol * unknownObjectKey		= OSSymbol::withCString("Unknown");
 UInt32 GetValueFromArray(OSArray * array, UInt8 index);
 OSSymbol *GetSymbolFromArray(OSArray * array, UInt8 index);
 OSData	*GetDataFromArray(OSArray *array, UInt8 index);
@@ -181,6 +192,11 @@ protected:
     uint32_t                fEstimateCycleCountDivisor;
     
     BatteryTracker*         fTracker;
+
+    bool                    fUseDesignVoltageForDesignCapacity;
+    bool                    fUseDesignVoltageForMaxCapacity;
+    bool                    fUseDesignVoltageForCurrentCapacity;
+    UInt32                  fCurrentRateMax; // to cap reported Amperage
 
     // Accessor for MaxError reading
     // Percent error in MaxCapacity reading
@@ -227,7 +243,7 @@ protected:
 	
     void    oneTimeBatterySetup(void);
     
-    void    constructAppleSerialNumber(void);
+    void    constructAppleSerialNumber(const OSSymbol* deviceName, const OSSymbol* serialNumber);
 
 	void    setDesignCapacity(unsigned int val);
     unsigned int designCapacity(void);
@@ -268,9 +284,7 @@ public:
     virtual bool init(void);
     virtual void free(void);
 	virtual bool start(IOService *provider);
-#ifdef DEBUG
     virtual void stop(IOService *provider);
-#endif
 
     void    setPollingInterval(int milliSeconds);
 
@@ -289,7 +303,7 @@ public:
 
 protected:
     
-	void    logReadError( const char *error_type, 
+	void    logReadError( const char *error_type,
                           uint16_t additional_error,
                           void *t);
 
@@ -302,34 +316,29 @@ protected:
     void    rebuildLegacyIOBatteryInfo(bool do_update);
 
 	void	acknowledgeSystemSleepWake(void);
-	
+
+private:
+    bool loadConfiguration();
+    UInt32 convertAmpsToWatts(UInt32 watts, bool useDesignVoltage);
+
 private:
 	
 	UInt32   fPowerUnit;
 	UInt32   fDesignVoltage;
 	UInt32   fCurrentVoltage;
-	UInt32   fDesignCapacity;
+	UInt32   fDesignCapacity, fDesignCapacityRaw;
 	UInt32   fCurrentCapacity;
 	UInt32	 fBatteryTechnology;
-	UInt32   fMaxCapacity;
+	UInt32   fMaxCapacity, fMaxCapacityRaw;
 	UInt32   fCurrentRate;
 	UInt32   fAverageRate;
 	UInt32   fStatus;
 	UInt32	 fCycleCount;
     //rehabman: added for warnings when battery is running low
-    UInt32   fCapacityWarning;
-    UInt32   fLowWarning;
-
-	OSSymbol *fDeviceName;
-	OSSymbol *fType;
-	OSSymbol *fManufacturer;
-	OSSymbol *fSerialNumber;
+    UInt32   fCapacityWarning, fCapacityWarningRaw;
+    UInt32   fLowWarning, fLowWarningRaw;
 
 	UInt32   fMaxErr;
-	UInt32   fCellVoltage1;
-	UInt32   fCellVoltage2;
-	UInt32   fCellVoltage3;
-	UInt32   fCellVoltage4;
 
 	UInt32	fManufacturerAccess;
 	UInt32	fBatteryMode;
@@ -346,7 +355,6 @@ private:
 	UInt32	fAverageTimeToEmpty;
 	UInt32	fAverageTimeToFull;
 	UInt32  fManufactureDate;
-	OSData   *fManufacturerData;
 
     int fRealAC;
 

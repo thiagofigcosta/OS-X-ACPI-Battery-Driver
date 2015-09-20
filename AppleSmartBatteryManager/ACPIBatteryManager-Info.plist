@@ -38,12 +38,23 @@
 			<string>IOACPIPlatformDevice</string>
 			<key>IOProbeScore</key>
 			<integer>1000</integer>
-			<key>UseExtendedBatteryInformationMethod</key>
-			<true/>
-			<key>UseExtraBatteryInformationMethod</key>
-			<true/>
-			<key>EstimateCycleCountDivisor</key>
-			<integer>6</integer>
+			<key>Configuration</key>
+			<dict>
+				<key>UseExtendedBatteryInformationMethod</key>
+				<true/>
+				<key>UseExtraBatteryInformationMethod</key>
+				<true/>
+				<key>EstimateCycleCountDivisor</key>
+				<integer>6</integer>
+				<key>UseDesignVoltageForDesignCapacity</key>
+				<true/>
+				<key>UseDesignVoltageForMaxCapacity</key>
+				<true/>
+				<key>UseDesignVoltageForCurrentCapacity</key>
+				<true/>
+				<key>CurrentRateMax</key>
+				<integer>20000</integer>
+			</dict>
 		</dict>
 		<key>ACPI Battery Tracker</key>
 		<dict>

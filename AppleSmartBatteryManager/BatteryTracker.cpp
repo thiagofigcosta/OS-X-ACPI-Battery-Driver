@@ -13,11 +13,11 @@ OSDefineMetaClassAndStructors(BatteryTracker, IOService)
 
 bool BatteryTracker::init(OSDictionary* dict)
 {
-    DEBUG_LOG("BatteryTracker::start: entering init\n");
+    DebugLog("BatteryTracker::start: entering init\n");
     
     if (!IOService::init(dict))
     {
-        IOLog("BatteryTracker: IOService::init failed!\n");
+        AlwaysLog("BatteryTracker: IOService::init failed!\n");
         return false;
     }
     
@@ -30,29 +30,29 @@ bool BatteryTracker::init(OSDictionary* dict)
 
 bool BatteryTracker::start(IOService* provider)
 {
-    DEBUG_LOG("BatteryTracker::start: entering start\n");
+    DebugLog("BatteryTracker::start: entering start\n");
     
     if (!IOService::start(provider))
     {
-        IOLog("BatteryTracker: IOService::start failed!\n");
+        AlwaysLog("BatteryTracker: IOService::start failed!\n");
         return false;
     }
     
     IOWorkLoop* workLoop = getWorkLoop();
     if (!workLoop)
     {
-        IOLog("BatteryTracker: getWorkLoop failed\n");
+        AlwaysLog("BatteryTracker: getWorkLoop failed\n");
         return false;
     }
     m_pCmdGate = IOCommandGate::commandGate(this);
     if (!m_pCmdGate)
     {
-        IOLog("BatteryTracker: IOCommandGate::commmandGate failed\n");
+        AlwaysLog("BatteryTracker: IOCommandGate::commmandGate failed\n");
         return false;
     }
     workLoop->addEventSource(m_pCmdGate);
     
-	DEBUG_LOG("ACPIBatteryManager: starting BatteryTracker.\n");
+	DebugLog("starting BatteryTracker.\n");
     
     m_pBatteryList = OSArray::withCapacity(2);
     m_pLock = IORecursiveLockAlloc();
@@ -64,7 +64,7 @@ bool BatteryTracker::start(IOService* provider)
 
 void BatteryTracker::stop(IOService* provider)
 {
-    DEBUG_LOG("BatteryTracker::stop: entering stop\n");
+    DebugLog("BatteryTracker::stop: entering stop\n");
     
     OSSafeReleaseNULL(m_pBatteryList);
     if (NULL != m_pLock)
@@ -86,7 +86,7 @@ void BatteryTracker::stop(IOService* provider)
 
 bool BatteryTracker::addBatteryManager(AppleSmartBatteryManager* pManager)
 {
-    DEBUG_LOG("BatteryTracker::addBatteryManager: entering addBatteryManager(%p)\n", pManager);
+    DebugLog("entering addBatteryManager(%p)\n", pManager);
     
     bool result = false;
     
@@ -117,7 +117,7 @@ bool BatteryTracker::addBatteryManager(AppleSmartBatteryManager* pManager)
 
 bool BatteryTracker::removeBatteryManager(AppleSmartBatteryManager* pManager)
 {
-    DEBUG_LOG("BatteryTracker::removeBatteryManager: entering removeBatteryManager(%p)\n", pManager);
+    DebugLog("entering removeBatteryManager(%p)\n", pManager);
     
     bool result = false;
     
@@ -152,7 +152,7 @@ void BatteryTracker::notifyBatteryManagersGated(bool connected)
 
 void BatteryTracker::notifyBatteryManagers(bool connected)
 {
-    DEBUG_LOG("BatteryTracker::notifyBatteryManagers: entering notifyBatteryManager(%s)\n", connected ? "connected" : "disconnected");
+    DebugLog("entering notifyBatteryManager(%s)\n", connected ? "connected" : "disconnected");
     
     if (m_pCmdGate)
         m_pCmdGate->runAction(OSMemberFunctionCast(IOCommandGate::Action, this, &BatteryTracker::notifyBatteryManagersGated), (void*)connected);
