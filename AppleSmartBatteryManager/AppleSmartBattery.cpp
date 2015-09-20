@@ -1726,7 +1726,7 @@ UInt32 AppleSmartBattery::convertAmpsToWatts(UInt32 watts, bool useDesignVoltage
     if (voltage)
     {
         amps *= 1000;
-        watts /= voltage;
+        amps /= voltage;
     }
     return amps;
 }
