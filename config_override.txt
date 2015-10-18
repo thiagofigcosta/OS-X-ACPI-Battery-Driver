@@ -16,7 +16,7 @@ Method(RMCF)\n
         "UseDesignVoltageForDesignCapacity", ">y",\n
         "UseDesignVoltageForMaxCapacity", ">y",\n
         "UseDesignVoltageForCurrentCapacity", ">y",\n
-        "CurrentRateMax", 20000,\n
+        "CurrentDischargeRateMax", 20000,\n
     })\n
 }\n
 end;

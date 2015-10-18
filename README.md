@@ -77,6 +77,13 @@ http://www.tonymacx86.com/hp-probook/69472-battery-manager-fix-boot-without-batt
 
 ### Change Log:
 
+2015-09-30 v1.60
+
+- Add CurrentDischargeRateMax configuration key as a way to cap the discharge rate against bad data from ACPI _BST
+
+- Add ACPI method for overriding configuration data in Info.plist.  See config_override.txt for more info
+
+
 2015-01-23 v1.55
 
 - Add 500ms delay before polling initial battery state (_STA) to account for battery devices at are not ready early in the boot process.  This avoids dimming the display when booting on battery, as the system doesn't detect it as a battery present->battery removed transition.

@@ -281,9 +281,9 @@ bool AppleSmartBattery::loadConfiguration()
         fEstimateCycleCountDivisor = estimateCycleCountDivisor->unsigned32BitValue();
 
     // Get cap for reported amperage
-    fCurrentRateMax = 0;
-    if (OSNumber* currentRateMax = OSDynamicCast(OSNumber, config->getObject(kCurrentRateMaxInfoKey)))
-        fCurrentRateMax = currentRateMax->unsigned32BitValue();
+    fCurrentDischargeRateMax = 0;
+    if (OSNumber* currentDischargeRateMax = OSDynamicCast(OSNumber, config->getObject(kCurrentDischargeRateMaxInfoKey)))
+        fCurrentDischargeRateMax = currentDischargeRateMax->unsigned32BitValue();
 
     // Configuration done, release allocated merged configuration
     OSSafeRelease(merged);
@@ -1387,8 +1387,8 @@ IOReturn AppleSmartBattery::setBatteryBIF(OSArray *acpibat_bif)
     {
         // Watts = Amps X Volts
         DebugLog("Calculating for WATTS\n");
-        fDesignCapacity = convertAmpsToWatts(fDesignCapacityRaw, true);
-        fMaxCapacity = convertAmpsToWatts(fMaxCapacityRaw, true);
+        fDesignCapacity = convertWattsToAmps(fDesignCapacityRaw, true);
+        fMaxCapacity = convertWattsToAmps(fMaxCapacityRaw, true);
         DebugLog("fDesignCapacity(mAh)  = %d\n", (int)fDesignCapacity);
         DebugLog("fMaxCapacity(mAh)     = %d\n", (int)fMaxCapacity);
 	}
@@ -1525,8 +1525,8 @@ IOReturn AppleSmartBattery::setBatteryBIX(OSArray *acpibat_bix)
     {
         // Watts = Amps X Volts
         DebugLog("Calculating for WATTS\n");
-        fDesignCapacity = convertAmpsToWatts(fDesignCapacityRaw, true);
-        fMaxCapacity = convertAmpsToWatts(fMaxCapacityRaw, true);
+        fDesignCapacity = convertWattsToAmps(fDesignCapacityRaw, true);
+        fMaxCapacity = convertWattsToAmps(fMaxCapacityRaw, true);
         DebugLog("fDesignCapacity(mAh)  = %d\n", (int)fDesignCapacity);
         DebugLog("fMaxCapacity(mAh)     = %d\n", (int)fMaxCapacity);
 	}
@@ -1719,7 +1719,7 @@ IOReturn AppleSmartBattery::setBatteryBBIX(OSArray *acpibat_bbix)
  * Note: Only a primary battery can report unknown voltage.
  */
 
-UInt32 AppleSmartBattery::convertAmpsToWatts(UInt32 watts, bool useDesignVoltage)
+UInt32 AppleSmartBattery::convertWattsToAmps(UInt32 watts, bool useDesignVoltage)
 {
     UInt32 voltage = useDesignVoltage ? fDesignVoltage : fCurrentVoltage;
     UInt32 amps = watts;
@@ -1754,18 +1754,18 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
     {
         // Watts = Amps X Volts
         DebugLog("Calculating for WATTS\n");
-        fCurrentRate = convertAmpsToWatts(fCurrentRate, fUseDesignVoltageForCurrentCapacity);
-        fCurrentCapacity = convertAmpsToWatts(fCurrentCapacity, fUseDesignVoltageForCurrentCapacity);
+        fCurrentRate = convertWattsToAmps(fCurrentRate, fUseDesignVoltageForCurrentCapacity);
+        fCurrentCapacity = convertWattsToAmps(fCurrentCapacity, fUseDesignVoltageForCurrentCapacity);
         DebugLog("fCurrentRate(mA) = %d\n", (int)fCurrentRate);
         DebugLog("fCurrentCapacity(mAh) = %d\n",	(int)fCurrentCapacity);
 
         // also convert fDesignCapacity and fMaxCapacity here
-        fDesignCapacity = convertAmpsToWatts(fDesignCapacityRaw, fUseDesignVoltageForDesignCapacity);
-        fMaxCapacity = convertAmpsToWatts(fMaxCapacityRaw, fUseDesignVoltageForMaxCapacity);
+        fDesignCapacity = convertWattsToAmps(fDesignCapacityRaw, fUseDesignVoltageForDesignCapacity);
+        fMaxCapacity = convertWattsToAmps(fMaxCapacityRaw, fUseDesignVoltageForMaxCapacity);
 
         // and the warning levels... (calculated as design capacity)
-        fCapacityWarning = convertAmpsToWatts(fCapacityWarningRaw, fUseDesignVoltageForDesignCapacity);
-        fLowWarning = convertAmpsToWatts(fLowWarningRaw, fUseDesignVoltageForDesignCapacity);
+        fCapacityWarning = convertWattsToAmps(fCapacityWarningRaw, fUseDesignVoltageForDesignCapacity);
+        fLowWarning = convertWattsToAmps(fLowWarningRaw, fUseDesignVoltageForDesignCapacity);
     }
 
 	if ((SInt32)fCurrentRate < 0)
@@ -1774,18 +1774,6 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 		DebugLog("fCurrentRate negative, adjusted fCurrentRate to %d\n", (int)fCurrentRate);
 	}
 
-    if (fCurrentRateMax && fCurrentRate > fCurrentRateMax)
-    {
-        fCurrentRate = fCurrentRateMax;
-        DebugLog("fCurrentRate > fCurrentRateMax, adjusted fCurrentRate to %d\n", (int)fCurrentRate);
-    }
-
-    setDesignCapacity(fDesignCapacity);
-    setMaxCapacity(fMaxCapacity);
-
-    setCurrentCapacity(fCurrentCapacity);
-    setVoltage(fCurrentVoltage);
-
     if (currentStatus ^ fStatus)
     {
         // The battery has changed states
@@ -1793,14 +1781,33 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
         fAverageRate = 0;
     }
 
-	if (fAverageRate)
-		fAverageRate = (fAverageRate + fCurrentRate) / 2;
-	else
-		fAverageRate = fCurrentRate;
-	
-	DebugLog("fAverageRate = %d\n", fAverageRate);
-	
-	if ((currentStatus & BATTERY_DISCHARGING) && (currentStatus & BATTERY_CHARGING)) 
+    // avoid crazy discharge rates
+    if ((currentStatus & BATTERY_DISCHARGING) && fCurrentDischargeRateMax && fCurrentRate > fCurrentDischargeRateMax)
+    {
+        // cap fCurrentRate at maximum (avoid "RED" battery with bad data from DSDT)
+        fCurrentRate = fCurrentDischargeRateMax+1;
+        // so fAverageRate will reset once a "good" fCurrentRate is seen
+        fAverageRate = fCurrentDischargeRateMax+1;
+        DebugLog("fCurrentRate > fCurrentDischargeRateMax, adjusted fCurrentRate to %d\n", (int)fCurrentRate);
+    }
+
+    // check for transition from "bad rate" to "good rate"
+    if (fAverageRate == fCurrentDischargeRateMax+1 && fCurrentRate != fCurrentDischargeRateMax+1)
+        fAverageRate = 0;
+
+    // calculate decaying average for fAverageRate
+    if (!fAverageRate)
+        fAverageRate = fCurrentRate;
+    fAverageRate = (fAverageRate + fCurrentRate) / 2;
+
+    DebugLog("fAverageRate = %d\n", fAverageRate);
+
+    setDesignCapacity(fDesignCapacity);
+    setMaxCapacity(fMaxCapacity);
+    setCurrentCapacity(fCurrentCapacity);
+    setVoltage(fCurrentVoltage);
+
+	if ((currentStatus & BATTERY_DISCHARGING) && (currentStatus & BATTERY_CHARGING))
 	{		
 		// This should NEVER happen but...
 		

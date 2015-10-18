@@ -139,7 +139,7 @@
 
 // Define this in Info.plist to cap reported Amperage
 
-#define kCurrentRateMaxInfoKey  "CurrentRateMax"
+#define kCurrentDischargeRateMaxInfoKey  "CurrentDischargeRateMax"
 
 // for pollBatteryState
 enum
@@ -196,7 +196,7 @@ protected:
     bool                    fUseDesignVoltageForDesignCapacity;
     bool                    fUseDesignVoltageForMaxCapacity;
     bool                    fUseDesignVoltageForCurrentCapacity;
-    UInt32                  fCurrentRateMax; // to cap reported Amperage
+    UInt32                  fCurrentDischargeRateMax; // to cap reported Amperage
 
     // Accessor for MaxError reading
     // Percent error in MaxCapacity reading
@@ -319,7 +319,7 @@ protected:
 
 private:
     bool loadConfiguration();
-    UInt32 convertAmpsToWatts(UInt32 watts, bool useDesignVoltage);
+    UInt32 convertWattsToAmps(UInt32 watts, bool useDesignVoltage);
 
 private:
 	

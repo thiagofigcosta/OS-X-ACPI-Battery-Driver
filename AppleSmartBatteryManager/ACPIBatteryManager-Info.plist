@@ -52,7 +52,7 @@
 				<true/>
 				<key>UseDesignVoltageForCurrentCapacity</key>
 				<true/>
-				<key>CurrentRateMax</key>
+				<key>CurrentDischargeRateMax</key>
 				<integer>20000</integer>
 			</dict>
 		</dict>
