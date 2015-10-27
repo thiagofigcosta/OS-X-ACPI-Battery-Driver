@@ -141,6 +141,12 @@
 
 #define kCurrentDischargeRateMaxInfoKey  "CurrentDischargeRateMax"
 
+// Define this in Info.plsit to correct corrupt Capacities (CurrentCapacity<=MaxCapacity<=DesignCapacity)
+#define kCorrectCorruptCapacities   "CorrectCorruptCapacities"
+
+// Define this in Info.plist to correct for current capacity in _BST being 16-bit signed
+#define kCorrect16bitSignedCurrentRate "Correct16bitSignedCurrentRate"
+
 // for pollBatteryState
 enum
 {
@@ -196,6 +202,8 @@ protected:
     bool                    fUseDesignVoltageForDesignCapacity;
     bool                    fUseDesignVoltageForMaxCapacity;
     bool                    fUseDesignVoltageForCurrentCapacity;
+    bool                    fCorrectCorruptCapacities;
+    bool                    fCorrect16bitSignedCurrentRate;
     UInt32                  fCurrentDischargeRateMax; // to cap reported Amperage
 
     // Accessor for MaxError reading

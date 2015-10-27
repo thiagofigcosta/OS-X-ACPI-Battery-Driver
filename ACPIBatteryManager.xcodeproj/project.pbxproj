@@ -14,7 +14,7 @@
 		84440B911838131700779871 /* ACAdapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84440B901838131700779871 /* ACAdapter.cpp */; };
 		8494BAA8184E6F2100674D3E /* BatteryTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8494BAA6184E6F2100674D3E /* BatteryTracker.cpp */; };
 		8494BAA9184E6F2100674D3E /* BatteryTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = 8494BAA7184E6F2100674D3E /* BatteryTracker.h */; };
-		EDE11A961BADE84F009023F7 /* PatchCoconut.sh in Resources */ = {isa = PBXBuildFile; fileRef = EDE11A951BADE84F009023F7 /* PatchCoconut.sh */; settings = {ASSET_TAGS = (); }; };
+		EDE11A961BADE84F009023F7 /* PatchCoconut.sh in Resources */ = {isa = PBXBuildFile; fileRef = EDE11A951BADE84F009023F7 /* PatchCoconut.sh */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -250,7 +250,7 @@
 				LLVM_LTO = NO;
 				"LLVM_LTO[arch=x86_64]" = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MODULE_VERSION = 1.60;
+				MODULE_VERSION = 1.60.3;
 				OTHER_CFLAGS = "-fno-stack-protector";
 				"OTHER_LDFLAGS[arch=x86_64]" = "-dead_strip";
 				SDKROOT = macosx10.8;
@@ -280,7 +280,7 @@
 				LLVM_LTO = NO;
 				"LLVM_LTO[arch=x86_64]" = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MODULE_VERSION = 1.60;
+				MODULE_VERSION = 1.60.3;
 				OTHER_CFLAGS = "-fno-stack-protector";
 				"OTHER_LDFLAGS[arch=x86_64]" = "-dead_strip";
 				SDKROOT = macosx10.8;

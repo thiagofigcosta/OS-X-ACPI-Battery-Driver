@@ -275,6 +275,14 @@ bool AppleSmartBattery::loadConfiguration()
     flag = OSDynamicCast(OSBoolean, config->getObject(kUseDesignVoltageForCurrentCapacity));
     fUseDesignVoltageForCurrentCapacity = flag && flag->isTrue() ? true : false;
 
+    // Check whether to correct to be certain CurrentCapacity<=MaxCapacity<=DesignCapacity
+    flag = OSDynamicCast(OSBoolean, config->getObject(kCorrectCorruptCapacities));
+    fCorrectCorruptCapacities = flag && flag->isTrue() ? true : false;
+
+    // Check whether to correct for 16-bit signed current capacity from _BST
+    flag = OSDynamicCast(OSBoolean, config->getObject(kCorrect16bitSignedCurrentRate));
+    fCorrect16bitSignedCurrentRate = flag && flag->isTrue() ? true : false;
+
     // Get divisor to be used when estimating CycleCount
     fEstimateCycleCountDivisor = 6;
     if (OSNumber* estimateCycleCountDivisor = OSDynamicCast(OSNumber, config->getObject(kEstimateCycleCountDivisorInfoKey)))
@@ -1768,11 +1776,16 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
         fLowWarning = convertWattsToAmps(fLowWarningRaw, fUseDesignVoltageForDesignCapacity);
     }
 
-	if ((SInt32)fCurrentRate < 0)
+    if (fCorrect16bitSignedCurrentRate)
     {
-        fCurrentRate = -(SInt32)fCurrentRate;
-		DebugLog("fCurrentRate negative, adjusted fCurrentRate to %d\n", (int)fCurrentRate);
-	}
+        // some DSDTs incorrectly return 16-bit signed numbers for current discharge rate
+        fCurrentRate = fCurrentRate & 0xFFFF;
+        if (fCurrentRate & 0x8000)
+        {
+            fCurrentRate = 0xFFFF - fCurrentRate + 1;
+            DebugLog("fCurrentRate negative, adjusted fCurrentRate to %d\n", (int)fCurrentRate);
+        }
+    }
 
     if (currentStatus ^ fStatus)
     {
@@ -1801,6 +1814,21 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
     fAverageRate = (fAverageRate + fCurrentRate) / 2;
 
     DebugLog("fAverageRate = %d\n", fAverageRate);
+
+    if (fCorrectCorruptCapacities)
+    {
+        // make sure CurrentCapacity<=MaxCapacity<=DesignCapacity
+        if (fMaxCapacity > fDesignCapacity)
+        {
+            AlwaysLog("WARNING! fMaxCapacity > fDesignCapacity. adjusted fMaxCapacity from %d, to %d\n", (int)fMaxCapacity, (int)fDesignCapacity);
+            fMaxCapacity = fDesignCapacity;
+        }
+        if (fCurrentCapacity > fMaxCapacity)
+        {
+            AlwaysLog("WARNING! fCurrentCapacity > fMaxCapacity. adjusted fCurrentCapacity from %d, to %d\n", (int)fCurrentCapacity, (int)fMaxCapacity);
+            fCurrentCapacity = fMaxCapacity;
+        }
+    }
 
     setDesignCapacity(fDesignCapacity);
     setMaxCapacity(fMaxCapacity);

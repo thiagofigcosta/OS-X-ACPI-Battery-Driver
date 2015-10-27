@@ -54,6 +54,10 @@
 				<true/>
 				<key>CurrentDischargeRateMax</key>
 				<integer>20000</integer>
+				<key>CorrectCorruptCapacities</key>
+				<true/>
+				<key>Correct16bitSignedCurrentRate</key>
+				<true/>
 			</dict>
 		</dict>
 		<key>ACPI Battery Tracker</key>
