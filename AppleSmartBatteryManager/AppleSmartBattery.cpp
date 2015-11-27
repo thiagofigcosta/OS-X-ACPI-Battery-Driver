@@ -1757,6 +1757,13 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 	DebugLog("fCurrentRate     = %d\n", (int)fCurrentRate);
 	DebugLog("fCurrentCapacity = %d\n", (int)fCurrentCapacity);
 	DebugLog("fCurrentVoltage  = %d\n", (int)fCurrentVoltage);
+
+    if (fDesignCapacityRaw == ACPI_UNKNOWN)
+    {
+        DebugLog("fDesignCapacityRaw is ACPI_UNKNOWN, correcting to 0\n");
+        fDesignCapacityRaw = 0;
+        fDesignCapacity = 0;
+    }
     
 	if (fCurrentRate == ACPI_UNKNOWN)
     {
@@ -1822,12 +1829,12 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
     if (fCorrectCorruptCapacities)
     {
         // make sure CurrentCapacity<=MaxCapacity<=DesignCapacity
-        if (fMaxCapacity > fDesignCapacity)
+        if (fDesignCapacity && fMaxCapacity > fDesignCapacity)
         {
             AlwaysLog("WARNING! fMaxCapacity > fDesignCapacity. adjusted fMaxCapacity from %d, to %d\n", (int)fMaxCapacity, (int)fDesignCapacity);
             fMaxCapacity = fDesignCapacity;
         }
-        if (fCurrentCapacity > fMaxCapacity)
+        if (fMaxCapacity && fCurrentCapacity > fMaxCapacity)
         {
             AlwaysLog("WARNING! fCurrentCapacity > fMaxCapacity. adjusted fCurrentCapacity from %d, to %d\n", (int)fCurrentCapacity, (int)fMaxCapacity);
             fCurrentCapacity = fMaxCapacity;

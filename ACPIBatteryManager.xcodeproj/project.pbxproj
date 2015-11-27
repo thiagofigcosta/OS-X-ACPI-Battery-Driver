@@ -297,6 +297,7 @@
 				GCC_PREFIX_HEADER = "AppleSmartBatteryManager/ACPIBatteryManager-Prefix.pch";
 				INFOPLIST_FILE = "AppleSmartBatteryManager/ACPIBatteryManager-Info.plist";
 				MODULE_NAME = org.rehabman.driver.AppleSmartBatteryManager;
+				MODULE_VERSION = 1.60.5;
 				PRODUCT_NAME = ACPIBatteryManager;
 			};
 			name = Debug;
@@ -309,6 +310,7 @@
 				GCC_PREFIX_HEADER = "AppleSmartBatteryManager/ACPIBatteryManager-Prefix.pch";
 				INFOPLIST_FILE = "AppleSmartBatteryManager/ACPIBatteryManager-Info.plist";
 				MODULE_NAME = org.rehabman.driver.AppleSmartBatteryManager;
+				MODULE_VERSION = 1.60.5;
 				PRODUCT_NAME = ACPIBatteryManager;
 			};
 			name = Release;
