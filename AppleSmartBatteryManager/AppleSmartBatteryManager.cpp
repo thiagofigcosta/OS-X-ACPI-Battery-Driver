@@ -537,7 +537,7 @@ OSObject* AppleSmartBatteryManager::translateArray(OSArray* array)
         {
             if (OSObject* obj = translateEntry(array->getObject(i)))
             {
-                array->setObject(i, obj);
+                array->replaceObject(i, obj);
                 obj->release();
             }
         }
