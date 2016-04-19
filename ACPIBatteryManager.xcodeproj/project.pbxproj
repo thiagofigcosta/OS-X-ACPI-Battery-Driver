@@ -14,6 +14,7 @@
 		84440B911838131700779871 /* ACAdapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84440B901838131700779871 /* ACAdapter.cpp */; };
 		8494BAA8184E6F2100674D3E /* BatteryTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8494BAA6184E6F2100674D3E /* BatteryTracker.cpp */; };
 		8494BAA9184E6F2100674D3E /* BatteryTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = 8494BAA7184E6F2100674D3E /* BatteryTracker.h */; };
+		ED6DFB391CC677BD00FF57A6 /* SSDT-ACPIBATT.dsl in Resources */ = {isa = PBXBuildFile; fileRef = ED6DFB381CC677BD00FF57A6 /* SSDT-ACPIBATT.dsl */; };
 		EDE11A961BADE84F009023F7 /* PatchCoconut.sh in Resources */ = {isa = PBXBuildFile; fileRef = EDE11A951BADE84F009023F7 /* PatchCoconut.sh */; };
 /* End PBXBuildFile section */
 
@@ -33,6 +34,7 @@
 		8494BAA6184E6F2100674D3E /* BatteryTracker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = BatteryTracker.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		8494BAA7184E6F2100674D3E /* BatteryTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BatteryTracker.h; sourceTree = "<group>"; };
 		84D49F6818381F260009CA74 /* IOPMPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOPMPrivate.h; sourceTree = "<group>"; };
+		ED6DFB381CC677BD00FF57A6 /* SSDT-ACPIBATT.dsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SSDT-ACPIBATT.dsl"; sourceTree = SOURCE_ROOT; };
 		EDE11A921BADE60A009023F7 /* config_override.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = config_override.txt; path = ../config_override.txt; sourceTree = "<group>"; };
 		EDE11A951BADE84F009023F7 /* PatchCoconut.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = PatchCoconut.sh; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -113,6 +115,7 @@
 		EDE11A941BADE828009023F7 /* Patches */ = {
 			isa = PBXGroup;
 			children = (
+				ED6DFB381CC677BD00FF57A6 /* SSDT-ACPIBATT.dsl */,
 				EDE11A921BADE60A009023F7 /* config_override.txt */,
 				EDE11A951BADE84F009023F7 /* PatchCoconut.sh */,
 			);
@@ -185,6 +188,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EDE11A961BADE84F009023F7 /* PatchCoconut.sh in Resources */,
+				ED6DFB391CC677BD00FF57A6 /* SSDT-ACPIBATT.dsl in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
