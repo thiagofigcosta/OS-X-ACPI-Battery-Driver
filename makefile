@@ -17,13 +17,16 @@ ifeq ($(findstring 64,$(BITS)),64)
 OPTIONS:=$(OPTIONS) -arch x86_64
 endif
 
+ALL=./build/SSDT-BATC.aml ./build/SSDT-ACPIBATT.aml
+
 .PHONY: all
-all:
+all: $(ALL)
 	xcodebuild build $(OPTIONS) -configuration Debug
 	xcodebuild build $(OPTIONS) -configuration Release
 
 .PHONY: clean
 clean:
+	rm $(ALL)
 	xcodebuild clean $(OPTIONS) -configuration Debug
 	xcodebuild clean $(OPTIONS) -configuration Release
 
@@ -60,3 +63,6 @@ distribute:
 	rm /tmp/org.voodoo.rm.dsym.sh
 	ditto -c -k --sequesterRsrc --zlibCompressionLevel 9 ./Distribute ./Archive.zip
 	mv ./Archive.zip ./Distribute/`date +$(DIST)-%Y-%m%d.zip`
+
+./build/%.aml : %.dsl
+	iasl $(IASLOPTS) -p $@ $^

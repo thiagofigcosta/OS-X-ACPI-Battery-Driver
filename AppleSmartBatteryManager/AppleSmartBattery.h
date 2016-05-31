@@ -178,12 +178,6 @@ protected:
     AppleSmartBatteryManager *fProvider;
 	IOWorkLoop              *fWorkLoop;
 	IOTimerEventSource      *fPollTimer;
-	bool					fPollingNow;
-	bool					fCancelPolling;
-#ifdef REVIEW //REVIEW_REHAB: vestiges of SMBUS based-battery (Apple code; not necessary)
-    IOTimerEventSource      *fBatteryReadAllTimer;
-#endif
-    uint16_t                fMachinePath;
     uint32_t                fPollingInterval;
     bool                    fPollingOverridden;
 	bool					fUseBatteryExtendedInformation;
@@ -191,9 +185,6 @@ protected:
     bool                    fBatteryPresent;
     bool                    fACConnected;
 	bool                    fACChargeCapable;
-	
-	bool					fSystemSleeping;
-	IOService				*fPowerServiceToAck;
 	
     OSArray                 *fCellVoltages;
 
@@ -326,8 +317,6 @@ protected:
     void    incompleteReadTimeOut(void);
 
     void    rebuildLegacyIOBatteryInfo(bool do_update);
-
-	void	acknowledgeSystemSleepWake(void);
 
 private:
     bool loadConfiguration();

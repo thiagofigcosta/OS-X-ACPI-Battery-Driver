@@ -96,8 +96,6 @@ static uint32_t milliSecPollingTable[2] =
 	1000      // 1 == Quick 1 second polling
 };
 
-static const uint32_t kBatteryReadAllTimeout = 10000;       // 10 seconds
-
 // Keys we use to publish battery state in our IOPMPowerSource::properties array
 static const OSSymbol *_MaxErrSym =				OSSymbol::withCString(kIOPMPSMaxErrKey);
 static const OSSymbol *_DeviceNameSym =			OSSymbol::withCString(kIOPMDeviceNameKey);
@@ -189,13 +187,9 @@ bool AppleSmartBattery::init(void)
 void AppleSmartBattery::free(void) 
 {
     fPollTimer->cancelTimeout();
-#ifdef REVIEW
-    fBatteryReadAllTimer->cancelTimeout();
-#endif
     fWorkLoop->disableAllEventSources();
-    
     clearBatteryState(true);
-    
+
     super::free();
 }
 
@@ -330,10 +324,7 @@ bool AppleSmartBattery::start(IOService *provider)
     fBatteryPresent		= false;
     fACConnected		= false;
     fACChargeCapable	= false;
-	fSystemSleeping     = false;
-    fPowerServiceToAck  = NULL;
-	fPollingNow         = false;
-	
+
 	// Make sure that we read battery state at least 5 times at 30 second intervals
     // after system boot.
     fInitialPollCountdown = kInitialPollCountdown;
@@ -348,17 +339,6 @@ bool AppleSmartBattery::start(IOService *provider)
     {
         return false;
     }
-    
-#ifdef REVIEW
-    fBatteryReadAllTimer = IOTimerEventSource::timerEventSource( this,
-																OSMemberFunctionCast( IOTimerEventSource::Action,
-																					 this, &AppleSmartBattery::incompleteReadTimeOut) );
-    if ( !fBatteryReadAllTimer
-        || (kIOReturnSuccess != fWorkLoop->addEventSource(fBatteryReadAllTimer)))
-    {
-        return false;
-    }
-#endif
     
     // get tracker for status of other batteries
     fTracker = OSDynamicCast(BatteryTracker, waitForMatchingService(serviceMatching(kBatteryTrackerService)));
@@ -446,106 +426,66 @@ bool AppleSmartBattery::pollBatteryState(int path)
 {
     DebugLog("pollBatteryState: path = %d\n", path);
 
-//REVIEW: this could be simplified kNewBatteryPath vs. kExistingBatteryPath means little/nothing...
-    
     // This must be called under workloop synchronization
-    if (kNewBatteryPath == path) 
-	{
-		/* Cancel polling timer in case this round of reads was initiated
-		 by an alarm. We re-set the 30 second poll later. */
-		fPollTimer->cancelTimeout();
-		
-#ifdef REVIEW
-		/* Initialize battery read timeout to catch any longstanding stalls. */
-		fBatteryReadAllTimer->cancelTimeout();
-		fBatteryReadAllTimer->setTimeoutMS( kBatteryReadAllTimeout );
-#endif
-		
-		pollBatteryState( kExistingBatteryPath );
-	} 
-	else 
-	{
-		fPollingNow = true;
-		
-        fProvider->getBatterySTA();
-		
-        if (fBatteryPresent) 
-		{
-			if(fUseBatteryExtendedInformation)
-				fProvider->getBatteryBIX();
-			else
-				fProvider->getBatteryBIF();
-			
-			if(fUseBatteryExtraInformation)
-				fProvider->getBatteryBBIX();
-			
-			fProvider->getBatteryBST();
-        }
-		else
-		{
-            //rehabman: added to correct power source Battery if boot w/ no batteries
-            DebugLog("!fBatteryPresent\n");
-            fACConnected = true;
-            setExternalConnected(fACConnected);
-            setFullyCharged(false);
-            clearBatteryState(true);
-        }
-		
-		fPollingNow = false;
 
-        fPollTimer->cancelTimeout();
-		if (!fPollingOverridden) 
-		{
-            if (-1 == fRealAC || fRealAC == fACConnected)
-            {
-                /* Restart timer with standard polling interval */
-                fPollTimer->setTimeoutMS(milliSecPollingTable[fPollingInterval]);
-            }
-            else
-            {
-                /* Restart timer with quick polling interval */
-                fPollTimer->setTimeoutMS(milliSecPollingTable[kQuickPollInterval]);
-            }
-		}
-		else
-		{
-			/* restart timer with debug value */
-			fPollTimer->setTimeoutMS(1000 * fPollingInterval);
-		}
-	}
-	
+    fProvider->getBatterySTA();
+    if (fBatteryPresent)
+    {
+        if (fUseBatteryExtendedInformation)
+            fProvider->getBatteryBIX();
+        else
+            fProvider->getBatteryBIF();
+        if (fUseBatteryExtraInformation)
+            fProvider->getBatteryBBIX();
+        fProvider->getBatteryBST();
+    }
+    else
+    {
+        //rehabman: added to correct power source Battery if boot w/ no batteries
+        DebugLog("!fBatteryPresent\n");
+        fACConnected = true;
+        setExternalConnected(fACConnected);
+        setFullyCharged(false);
+        clearBatteryState(true);
+    }
+
+    fPollTimer->cancelTimeout();
+    if (!fPollingOverridden)
+    {
+        if (-1 == fRealAC || fRealAC == fACConnected)
+        {
+            // Restart timer with standard polling interval
+            fPollTimer->setTimeoutMS(milliSecPollingTable[fPollingInterval]);
+        }
+        else
+        {
+            // Restart timer with quick polling interval
+            fPollTimer->setTimeoutMS(milliSecPollingTable[kQuickPollInterval]);
+        }
+    }
+    else
+    {
+        // restart timer with debug value
+        fPollTimer->setTimeoutMS(1000 * fPollingInterval);
+    }
+
     return true;
 }
 
-void AppleSmartBattery::handleBatteryInserted(void)
+void AppleSmartBattery::handleBatteryInserted()
 {
     DebugLog("handleBatteryInserted called\n");
     
     // This must be called under workloop synchronization
-    pollBatteryState( kNewBatteryPath );
-	
-    return;
+    pollBatteryState(kNewBatteryPath);
 }
 
-void AppleSmartBattery::handleBatteryRemoved(void)
+void AppleSmartBattery::handleBatteryRemoved()
 {
     DebugLog("handleBatteryRemoved called\n");
     
-	// Removed battery means cancel any ongoing polling session */
-	if(fPollingNow)
-	{
-		fCancelPolling = true;
-		fPollTimer->cancelTimeout();
-#ifdef REVIEW
-		fBatteryReadAllTimer->cancelTimeout();
-#endif
-	}
-	
     // This must be called under workloop synchronization
-    clearBatteryState(true);
-	acknowledgeSystemSleepWake();
-	
-    return;
+    pollBatteryState(kNewBatteryPath);
 }
 
 /*****************************************************************************
@@ -571,74 +511,18 @@ void AppleSmartBattery::notifyConnectedState(bool connected)
 
 IOReturn AppleSmartBattery::handleSystemSleepWake(IOService* powerService, bool isSystemSleep)
 {
-    IOReturn ret = kIOPMAckImplied;
-	
 	DebugLog("handleSystemSleepWake: isSystemSleep = %d\n", isSystemSleep);
 	
-    if (!powerService || (fSystemSleeping == isSystemSleep))
-        return kIOPMAckImplied;
-	
-    if (fPowerServiceToAck)
+    if (isSystemSleep) // System Sleep
     {
-        fPowerServiceToAck->release();
-        fPowerServiceToAck = 0;
-    }
-	
-    fSystemSleeping = isSystemSleep;
-	
-    if (fSystemSleeping) // System Sleep
-    {
-        // Stall PM until battery poll in progress is cancelled.
-        if (fPollingNow)
-        {
-            fPowerServiceToAck = powerService;
-//REVIEW: this retain may not always have matching release
-            fPowerServiceToAck->retain();
-            fPollTimer->cancelTimeout();
-#ifdef REVIEW
-            fBatteryReadAllTimer->cancelTimeout();
-            ret = (kBatteryReadAllTimeout * 1000);
-#endif
-        }
+        // nothing
     }
     else // System Wake
     {
-        fPowerServiceToAck = powerService;
-        fPowerServiceToAck->retain();
-        pollBatteryState(kExistingBatteryPath);
-		
-        if (fPollingNow)
-        {
-            // Transaction started, wait for completion.
-            ret = (kBatteryReadAllTimeout * 1000);
-        }
-        else if (fPowerServiceToAck)
-        {
-            fPowerServiceToAck->release();
-            fPowerServiceToAck = 0;
-        }
+        pollBatteryState(kNewBatteryPath);
     }
 	
-    DebugLog("handleSystemSleepWake(%d) = %x\n", isSystemSleep, (unsigned)ret);
-    return ret;
-}
-
-/******************************************************************************
- * AppleSmartBattery::acknowledgeSystemSleepWake
- *
- * Caller must hold the gate.
- ******************************************************************************/
-
-void AppleSmartBattery::acknowledgeSystemSleepWake( void )
-{
-	DebugLog("acknowledgeSystemSleepWake called\n");
-	
-    if (fPowerServiceToAck)
-    {
-        fPowerServiceToAck->acknowledgeSetPowerState();
-        fPowerServiceToAck->release();
-        fPowerServiceToAck = 0;
-    }
+    return kIOPMAckImplied;
 }
 
 /******************************************************************************
@@ -647,23 +531,19 @@ void AppleSmartBattery::acknowledgeSystemSleepWake( void )
  * Regular 30 second poll expiration handler.
  ******************************************************************************/
 
-void AppleSmartBattery::pollingTimeOut(void)
+void AppleSmartBattery::pollingTimeOut()
 {
     DebugLog("pollingTimeOut called\n");
     
-	// Timer will be re-enabled from the battery polling routine.
-    // Timer will not be kicked off again if battery is plugged in and
-    // fully charged.
-    if( fPollingNow ) 
-        return;
-    
-    if (fInitialPollCountdown > 0) 
+    if (fInitialPollCountdown > 0)
     {
         // At boot time we make sure to re-read everything kInitialPoltoCountdown times
-        pollBatteryState( kNewBatteryPath );
+        pollBatteryState(kNewBatteryPath);
         --fInitialPollCountdown;
-    } else {
-		pollBatteryState( kExistingBatteryPath );
+    }
+    else
+    {
+		pollBatteryState(kExistingBatteryPath);
 	}
 }
 
@@ -684,7 +564,7 @@ void AppleSmartBattery::incompleteReadTimeOut(void)
     
     logReadError(kErrorOverallTimeoutExpired, 0, NULL);
 	
-	pollBatteryState( kExistingBatteryPath );
+	pollBatteryState(kExistingBatteryPath);
 }
 
 /******************************************************************************
@@ -2018,11 +1898,6 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 	
 	/* construct and publish our battery serial number here */
 	constructAppleSerialNumber(deviceName(), serialNumber());
-	
-#ifdef REVIEW
-	/* Cancel read-completion timeout; Successfully read battery state */
-	fBatteryReadAllTimer->cancelTimeout();
-#endif
 	
 	rebuildLegacyIOBatteryInfo(true);
 	
