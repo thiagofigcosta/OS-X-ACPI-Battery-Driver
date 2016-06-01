@@ -11,6 +11,46 @@
 //
 // It may need modification depending on the ACPI path of your
 // existing battery objects.
+//
+
+// IMPORTANT:
+//
+// To use this SSDT, you must also patch any Notify for either BAT0 or BAT1
+// objects.
+//
+// The Notify is used to tell the system when a battery is removed or added.
+//
+// Any code:
+//   Notify(...BAT0, ...)
+//         -or
+//   Notify(...BAT1, ...)
+//
+// Must be changed to:
+//   Notify(...BATC, ...)
+//
+// Also, you must use ACPIBatteryManager.kext v1.70.0 or greater.
+//
+// If the Notify code is not patched, or the latest kext is not used,
+// detection of battery removal/adding will not work correctly.
+//
+// You can Clover hotpatch (config.plist/ACPI/DSDT/Patches) your battery code.
+//
+// For example, Notify(BAT0, 0x80) is
+//   86 42 41 54 30 0A 80
+// To change it to Notify(BATC, 0x80):
+//   86 42 41 54 30 0A 80
+//
+// Sometimes, you'll find there is a fully qualified path.
+// Such as, Notify (\_SB.PCI0.LPC.EC.BAT1, 0x01)
+//   86 5C 2F 05 5F 53 42 5F 50 43 49 30 4C 50 43 5F 45 43 5F 5F 42 41 54 30 0A 01
+// Changing to BATC:
+//   86 5C 2F 05 5F 53 42 5F 50 43 49 30 4C 50 43 5F 45 43 5F 5F 42 41 54 43 0A 01
+//
+// You may find that 0x01 is optimized:
+//   86 5C 2F 05 5F 53 42 5F 50 43 49 30 4C 50 43 5F 45 43 5F 5F 42 41 54 30 01
+// Similarly, 0x00 can be optimized:
+//   86 5C 2F 05 5F 53 42 5F 50 43 49 30 4C 50 43 5F 45 43 5F 5F 42 41 54 30 00
+//
 
 DefinitionBlock ("", "SSDT", 2, "hack", "BATC", 0)
 {
@@ -128,14 +168,12 @@ DefinitionBlock ("", "SSDT", 2, "hack", "BATC", 0)
                     }
                     // if none of the above, just leave as BAT0 is
 
-                    // Note: Depends on _BIF being called before _BST to set B0CO and B1CO
+                    // Note: Following code depends on _BIF being called before _BST to set B0CO and B1CO
 
                     // _BST 1 - Battery Present Rate - Add BAT0 and BAT1 values
                     Local0[1] = CVWA(DerefOf(Local0[1]), B0DV, B0CO) + CVWA(DerefOf(Local3[1]), B1DV, B1CO)
-
                     // _BST 2 - Battery Remaining Capacity - Add BAT0 and BAT1 values
                     Local0[2] = CVWA(DerefOf(Local0[2]), B0DV, B0CO) + CVWA(DerefOf(Local3[2]), B1DV, B1CO)
-
                     // _BST 3 - Battery Present Voltage - Average BAT0 and BAT1 values
                     Local0[3] = (DerefOf(Local0[3]) + DerefOf(Local1[3])) / 2
                 }
@@ -197,28 +235,20 @@ DefinitionBlock ("", "SSDT", 2, "hack", "BATC", 0)
                     B1CO = !DerefOf(Local1[0])
                     // set _BIF[0] = 1 => mAh
                     Local0[0] = 1
-
                     // _BIF 4 - Design Voltage - store value for each Battery in mV
                     B0DV = DerefOf(Local0[4]) // cache BAT0 voltage
                     B1DV = DerefOf(Local1[4]) // cache BAT1 voltage
-
                     // _BIF 1 - Design Capacity - add BAT0 and BAT1 values
                     Local0[1] = CVWA(DerefOf(Local0[1]), B0DV, B0CO) + CVWA(DerefOf(Local1[1]), B1DV, B1CO)
-
                     // _BIF 2 - Last Full Charge Capacity - add BAT0 and BAT1 values
                     Local0[2] = CVWA(DerefOf(Local0[2]), B0DV, B0CO) + CVWA(DerefOf(Local1[2]), B1DV, B1CO)
-
                     // _BIF 3 - Battery Technology - leave BAT0 value
-
                     // _BIF 4 - Design Voltage - average BAT0 and BAT1 values
                     Local0[4] = (B0DV + B1DV) / 2
-
                     // _BIF 5 - Design Capacity Warning - add BAT0 and BAT1 values
                     Local0[5] = CVWA(DerefOf(Local0[5]), B0DV, B0CO) + CVWA(DerefOf(Local1[5]), B1DV, B1CO)
-
                     // _BIF 6 - Design Capacity of Low - add BAT0 and BAT1 values
                     Local0[6] = CVWA(DerefOf(Local0[6]), B0DV, B0CO) + CVWA(DerefOf(Local1[6]), B1DV, B1CO)
-
                     // _BIF 7+ - Leave BAT0 values for now
                 }
                 Return(Local0)

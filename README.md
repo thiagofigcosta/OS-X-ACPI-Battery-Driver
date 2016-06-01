@@ -22,7 +22,7 @@ https://code.google.com/p/os-x-acpi-battery-driver/downloads/list
 
 ### Build Environment
 
-My build environment is currently Xcode 6.1, using SDK 10.8, targeting OS X 10.6.
+My build environment is currently Xcode 7.3, using SDK 10.8, targeting OS X 10.6.
 
 No other build environment is supported.
 
@@ -69,13 +69,44 @@ Please use this thread on tonymacx86.com for feedback, questions, and help:
 http://www.tonymacx86.com/hp-probook/69472-battery-manager-fix-boot-without-batteries.html
 
 
-
 ### Known issues:
 
-- Most DSDTs need to be patched in order to work properly with OS X.  
+- Most DSDTs need to be patched in order to work properly with OS X.
+
+- OS X does not deal well with dual-batteries: Consider SSDT-BATC, which will combine two batteries to a single battery.
 
 
 ### Change Log:
+
+2016-05-31 v1.70.0
+
+- added SSDT-BATC.dsl which allows multiple batteries to be dealt with as a single ACPI battery
+
+- changed the code that responds to battery notifications so it is not sensitive to incorrect remove/add flags
+
+- misc cleanup
+
+
+2015-12-30 v1.60.5
+
+- Fixed bug with zero length dictionary (ACPI-based configuration)
+
+- correct capacities only if non-zero
+
+- change StartupDelay to 0ms
+
+
+2015-11-09 v1.60.4
+
+- added configurable StartupDelay
+
+- changed default StartupDelay from 500ms to 50ms
+
+
+2015-10-29 v1.60.3
+
+- Add correction for capacities that don't conform to OS X expectations (CurrentCapacity<=MaxCapacity<=DesignCapacity)'
+
 
 2015-09-30 v1.60
 
