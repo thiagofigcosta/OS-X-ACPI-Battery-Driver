@@ -26,7 +26,7 @@ all: $(ALL)
 
 .PHONY: clean
 clean:
-	rm $(ALL)
+	rm -f $(ALL)
 	xcodebuild clean $(OPTIONS) -configuration Debug
 	xcodebuild clean $(OPTIONS) -configuration Release
 
