@@ -741,42 +741,53 @@ void AppleSmartBattery::rebuildLegacyIOBatteryInfo(bool do_update)
  *  number.
  ******************************************************************************/
 
+static bool isBlankString(const char* sz)
+{
+    //  empty or all spaces is blank
+    if (sz) {
+        while (*sz) {
+            if (*sz != ' ')
+                return false;
+            sz++;
+        }
+    }
+    return true;
+}
+
 #define kMaxGeneratedSerialSize (64)
 
 void AppleSmartBattery::setBatterySerialNumber(const OSSymbol* deviceName, const OSSymbol* serialNumber)
 {
-    const OSSymbol  *device_string = deviceName;
-    const char *    device_cstring_ptr;
-    const OSSymbol  *serial_string = serialNumber;
-    const char *    serial_cstring_ptr;
-	
-    const OSSymbol  *printableSerial = NULL;
-    char            serialBuf[kMaxGeneratedSerialSize];
-	
     DebugLog("setBatterySerialNumber called\n");
-    
-    if (device_string) {
-        device_cstring_ptr = device_string->getCStringNoCopy();
-    } else {
+
+    const char *device_cstring_ptr;
+    if (deviceName)
+        device_cstring_ptr = deviceName->getCStringNoCopy();
+    else
         device_cstring_ptr = "Unknown";
-    }
 	
-    if (serial_string) {
-        serial_cstring_ptr = serial_string->getCStringNoCopy();
-    } else {
+    const char *serial_cstring_ptr;
+    if (serialNumber)
+        serial_cstring_ptr = serialNumber->getCStringNoCopy();
+    else
         serial_cstring_ptr = "Unknown";
-    }
 	
+    char serialBuf[kMaxGeneratedSerialSize];
     bzero(serialBuf, kMaxGeneratedSerialSize);
     snprintf(serialBuf, kMaxGeneratedSerialSize, "%s-%s", device_cstring_ptr, serial_cstring_ptr);
 	
-    printableSerial = OSSymbol::withCString(serialBuf);
+    const OSSymbol *printableSerial = OSSymbol::withCString(serialBuf);
     if (printableSerial) {
 		setPSProperty(_BatterySerialNumberSym, const_cast<OSSymbol*>(printableSerial));
         printableSerial->release();
     }
-	
-    return;
+}
+
+void AppleSmartBattery::setSerialString(OSSymbol* serialNumber)
+{
+    if (!serialNumber || isBlankString(serialNumber->getCStringNoCopy()))
+        serialNumber = (OSSymbol*)unknownObjectKey;
+    setSerial(serialNumber);
 }
 
 /******************************************************************************
@@ -810,13 +821,7 @@ const OSSymbol * AppleSmartBattery::unpackDate(UInt32 packedDate)
     snprintf(dateBuf, kMaxDateSize, "%4d-%02d-%02d%c", (unsigned int) yearBits + 1980, (unsigned int) monthBits, (unsigned int) dayBits, (char)0);
 	
     const OSSymbol *printableDate = OSSymbol::withCString(dateBuf);
-    if (printableDate) {
-		return printableDate;
-	}
-	else {
-		return NULL;
-	}
-
+	return printableDate;
 }
 
 /******************************************************************************
@@ -837,11 +842,7 @@ void AppleSmartBattery::setMaxErr(int error)
 int AppleSmartBattery::maxErr(void)
 {
     OSNumber *n = OSDynamicCast(OSNumber, properties->getObject(_MaxErrSym));
-    if (n) {
-        return n->unsigned32BitValue();
-    } else {
-        return 0;
-    }
+    return n ? n->unsigned32BitValue() : 0;
 }
 
 void AppleSmartBattery::setDeviceName(const OSSymbol *sym)
@@ -857,8 +858,7 @@ OSSymbol * AppleSmartBattery::deviceName(void)
 
 void AppleSmartBattery::setFullyCharged(bool charged)
 {
-	setPSProperty(_FullyChargedSym, 
-						  (charged ? kOSBooleanTrue:kOSBooleanFalse));
+	setPSProperty(_FullyChargedSym, charged ? kOSBooleanTrue : kOSBooleanFalse);
 }
 
 bool AppleSmartBattery::fullyCharged(void) 
@@ -906,11 +906,7 @@ void AppleSmartBattery::setAverageTimeToEmpty(int seconds)
 int AppleSmartBattery::averageTimeToEmpty(void)
 {
     OSNumber *n = OSDynamicCast(OSNumber, properties->getObject(_AvgTimeToEmptySym));
-    if (n) {
-        return n->unsigned32BitValue();
-    } else {
-        return 0;
-    }
+    return n ? n->unsigned32BitValue() : 0;
 }
 
 void AppleSmartBattery::setAverageTimeToFull(int seconds)
@@ -925,11 +921,7 @@ void AppleSmartBattery::setAverageTimeToFull(int seconds)
 int AppleSmartBattery::averageTimeToFull(void)
 {
     OSNumber *n = OSDynamicCast(OSNumber, properties->getObject(_AvgTimeToFullSym));
-    if (n) {
-        return n->unsigned32BitValue();
-    } else {
-        return 0;
-    }
+    return n ? n->unsigned32BitValue() : 0;
 }
 
 void AppleSmartBattery::setRunTimeToEmpty(int seconds)
@@ -944,11 +936,7 @@ void AppleSmartBattery::setRunTimeToEmpty(int seconds)
 int AppleSmartBattery::runTimeToEmpty(void)
 {
     OSNumber *n = OSDynamicCast(OSNumber, properties->getObject(_RunTimeToEmptySym));
-    if (n) {
-        return n->unsigned32BitValue();
-    } else {
-        return 0;
-    }
+    return n ? n->unsigned32BitValue() : 0;
 }
 
 void AppleSmartBattery::setRelativeStateOfCharge(int percent)
@@ -963,11 +951,7 @@ void AppleSmartBattery::setRelativeStateOfCharge(int percent)
 int AppleSmartBattery::relativeStateOfCharge(void)
 {
     OSNumber *n = OSDynamicCast(OSNumber, properties->getObject(_RelativeStateOfChargeSym));
-    if (n) {
-        return n->unsigned32BitValue();
-    } else {
-        return 0;
-    }
+    return n ? n->unsigned32BitValue() : 0;
 }
 
 void AppleSmartBattery::setAbsoluteStateOfCharge(int percent)
@@ -982,11 +966,7 @@ void AppleSmartBattery::setAbsoluteStateOfCharge(int percent)
 int AppleSmartBattery::absoluteStateOfCharge(void)
 {
     OSNumber *n = OSDynamicCast(OSNumber, properties->getObject(_AbsoluteStateOfChargeSym));
-    if (n) {
-        return n->unsigned32BitValue();
-    } else {
-        return 0;
-    }
+    return n ? n->unsigned32BitValue() : 0;
 }
 
 void AppleSmartBattery::setRemainingCapacity(int mah)
@@ -1001,11 +981,7 @@ void AppleSmartBattery::setRemainingCapacity(int mah)
 int AppleSmartBattery::remainingCapacity(void)
 {
     OSNumber *n = OSDynamicCast(OSNumber, properties->getObject(_RemainingCapacitySym));
-    if (n) {
-        return n->unsigned32BitValue();
-    } else {
-        return 0;
-    }
+    return n ? n->unsigned32BitValue() : 0;
 }
 
 void AppleSmartBattery::setAverageCurrent(int ma)
@@ -1020,11 +996,7 @@ void AppleSmartBattery::setAverageCurrent(int ma)
 int AppleSmartBattery::averageCurrent(void)
 {
     OSNumber *n = OSDynamicCast(OSNumber, properties->getObject(_AverageCurrentSym));
-    if (n) {
-        return n->unsigned32BitValue();
-    } else {
-        return 0;
-    }
+    return n ? n->unsigned32BitValue() : 0;
 }
 
 void AppleSmartBattery::setCurrent(int ma)
@@ -1039,11 +1011,7 @@ void AppleSmartBattery::setCurrent(int ma)
 int AppleSmartBattery::current(void)
 {
     OSNumber *n = OSDynamicCast(OSNumber, properties->getObject(_CurrentSym));
-    if (n) {
-        return n->unsigned32BitValue();
-    } else {
-        return 0;
-    }
+    return n ? n->unsigned32BitValue() : 0;
 }
 
 void AppleSmartBattery::setTemperature(int temperature)
@@ -1058,11 +1026,7 @@ void AppleSmartBattery::setTemperature(int temperature)
 int AppleSmartBattery::temperature(void)
 {
     OSNumber *n = OSDynamicCast(OSNumber, properties->getObject(_TemperatureSym));
-    if (n) {
-        return n->unsigned32BitValue();
-    } else {
-        return 0;
-    }
+    return n ? n->unsigned32BitValue() : 0;
 }
 
 void AppleSmartBattery::setManufactureDate(int date)
@@ -1077,11 +1041,7 @@ void AppleSmartBattery::setManufactureDate(int date)
 int AppleSmartBattery::manufactureDate(void)
 {
     OSNumber *n = OSDynamicCast(OSNumber, properties->getObject(_ManufactureDateSym));
-    if (n) {
-        return n->unsigned32BitValue();
-    } else {
-        return 0;
-    }
+    return n ? n->unsigned32BitValue() : 0;
 }
 
 void AppleSmartBattery::setFirmwareSerialNumber(const OSSymbol *sym)
@@ -1140,13 +1100,8 @@ void AppleSmartBattery::setDesignCapacity(unsigned int val)
 
 unsigned int AppleSmartBattery::designCapacity(void) 
 {
-    OSNumber *n;
-
-    n = OSDynamicCast(OSNumber, properties->getObject(_DesignCapacitySym));
-    if(!n) 
-		return 0;
-    else 
-		return (unsigned int)n->unsigned32BitValue();
+    OSNumber* n = OSDynamicCast(OSNumber, properties->getObject(_DesignCapacitySym));
+    return n ? n->unsigned32BitValue() : 0;
 }
 
 void AppleSmartBattery::setBatteryType(const OSSymbol *sym)
@@ -1163,7 +1118,6 @@ OSSymbol * AppleSmartBattery::batteryType(void)
 void AppleSmartBattery::setPermanentFailureStatus(unsigned int val)
 {
 	OSNumber *n = OSNumber::withNumber(val, NUM_BITS);
-	
     if (n)
 	{
 		setPSProperty(_PFStatusSym, n);
@@ -1173,13 +1127,8 @@ void AppleSmartBattery::setPermanentFailureStatus(unsigned int val)
 
 unsigned int AppleSmartBattery::permanentFailureStatus(void)
 {
-    OSNumber *n;
-	
-    n = OSDynamicCast(OSNumber, properties->getObject(_PFStatusSym));
-    if(!n) 
-		return 0;
-    else 
-		return (unsigned int)n->unsigned32BitValue();
+    OSNumber* n = OSDynamicCast(OSNumber, properties->getObject(_PFStatusSym));
+    return n ? n->unsigned32BitValue() : 0;
 }
 
 /******************************************************************************
@@ -1285,9 +1234,9 @@ IOReturn AppleSmartBattery::setBatteryBIF(OSArray *acpibat_bif)
 	setDeviceName(deviceName);
 	setBatteryType(type);
 	setManufacturer(manufacturer);
-    setSerial(serialNumber);
+    setSerialString(serialNumber);
     setFirmwareSerialNumber(serialNumber);
-    setBatterySerialNumber(deviceName, serialNumber);
+    setBatterySerialNumber(deviceName, OSDynamicCast(OSSymbol, getProperty(kIOPMPSSerialKey)));
 
     OSSafeReleaseNULL(deviceName);
     OSSafeReleaseNULL(type);
@@ -1314,10 +1263,9 @@ IOReturn AppleSmartBattery::setBatteryBIF(OSArray *acpibat_bif)
         fTemperature = GetValueFromArray(acpibat_bif, BIF_TEMPERATURE);
         DebugLog("fTemperature = %d (0.1K)\n", (unsigned)fTemperature);
     }
-    if (-1 == fTemperature || 0 == fTemperature)
-        fTemperature = 2731; // 2731(.1K) == 0 degrees C
-    setTemperature((fTemperature - 2731) * 10);
-    
+    if (-1 != fTemperature && 0 != fTemperature)
+        setTemperature((fTemperature - 2731) * 10);
+
 	// ACPI _BIF doesn't provide these
 	setMaxErr(0);
 	setManufactureDate(0);
@@ -1424,9 +1372,9 @@ IOReturn AppleSmartBattery::setBatteryBIX(OSArray *acpibat_bix)
 	setDeviceName(deviceName);
     setBatteryType(type);
     setManufacturer(manufacturer);
-	setSerial(serialNumber);
+	setSerialString(serialNumber);
     setFirmwareSerialNumber(serialNumber);
-    setBatterySerialNumber(deviceName, serialNumber);
+    setBatterySerialNumber(deviceName, OSDynamicCast(OSSymbol, getProperty(kIOPMPSSerialKey)));
 
     OSSafeRelease(deviceName);
     OSSafeRelease(type);
@@ -1526,9 +1474,8 @@ IOReturn AppleSmartBattery::setBatteryBBIX(OSArray *acpibat_bbix)
     DebugLog("fManufacturerData size = 0x%x\n", (unsigned) (manufacturerData ? manufacturerData->getLength() : -1));
 	
     // temperature must be converted from .1K to .01 degrees C
-    if (-1 == fTemperature || 0 == fTemperature)
-        fTemperature = 2731;
-	setTemperature((fTemperature - 2731) * 10);
+    if (-1 != fTemperature && 0 != fTemperature)
+        setTemperature((fTemperature - 2731) * 10);
     
 	setManufactureDate(fManufactureDate);
 	

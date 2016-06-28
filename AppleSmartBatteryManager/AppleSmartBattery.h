@@ -247,6 +247,7 @@ protected:
     void    oneTimeBatterySetup(void);
     
     void    setBatterySerialNumber(const OSSymbol* deviceName, const OSSymbol* serialNumber);
+    void    setSerialString(OSSymbol* serialNumber);
 
 	void    setDesignCapacity(unsigned int val);
     unsigned int designCapacity(void);
