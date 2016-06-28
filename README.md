@@ -78,6 +78,17 @@ http://www.tonymacx86.com/hp-probook/69472-battery-manager-fix-boot-without-batt
 
 ### Change Log:
 
+2016-06-28 v1.70.1
+
+- Fix bug involving BatterySerialNumber (always showing -Unknown)
+
+- Handle ACPI returning a blank string for serial# in _BIF (use "Unknown" in that case)
+
+- no longer setting Temperature when it is not available from ACPI
+
+- misc cleanup
+
+
 2016-05-31 v1.70.0
 
 - added SSDT-BATC.dsl which allows multiple batteries to be dealt with as a single ACPI battery
