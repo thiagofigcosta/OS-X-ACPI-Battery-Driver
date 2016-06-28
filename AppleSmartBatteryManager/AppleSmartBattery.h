@@ -235,8 +235,8 @@ protected:
     void    setManufactureDate(int date);
     int     manufactureDate(void);
 
-    void    setSerialNumber(const OSSymbol *sym);
-    OSSymbol *serialNumber(void);
+    void    setFirmwareSerialNumber(const OSSymbol *sym);
+    OSSymbol *firmwareSerialNumber(void);
 
     // An OSData container of manufacturer specific data
     void    setManufacturerData(uint8_t *buffer, uint32_t bufferSize);
@@ -246,7 +246,7 @@ protected:
 	
     void    oneTimeBatterySetup(void);
     
-    void    constructAppleSerialNumber(const OSSymbol* deviceName, const OSSymbol* serialNumber);
+    void    setBatterySerialNumber(const OSSymbol* deviceName, const OSSymbol* serialNumber);
 
 	void    setDesignCapacity(unsigned int val);
     unsigned int designCapacity(void);

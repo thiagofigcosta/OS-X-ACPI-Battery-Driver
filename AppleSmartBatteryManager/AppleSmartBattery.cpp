@@ -122,16 +122,16 @@ static const OSSymbol *_RemainingCapacitySym =		OSSymbol::withCString("Remaining
 static const OSSymbol *_AverageCurrentSym =			OSSymbol::withCString("AverageCurrent");
 static const OSSymbol *_CurrentSym =				OSSymbol::withCString("Current");
 
-/* _SerialNumberSym represents the manufacturer's 16-bit serial number in
+/* _FirmwareSerialNumberSym represents the manufacturer's 16-bit serial number in
  numeric format. 
  */
-static const OSSymbol *_SerialNumberSym =		OSSymbol::withCString("FirmwareSerialNumber");
+static const OSSymbol *_FirmwareSerialNumberSym =		OSSymbol::withCString("FirmwareSerialNumber");
 
 /* _SoftwareSerialSym == AppleSoftwareSerial
  represents the Apple-generated user readable serial number that will appear
  in the OS and is accessible to users.
  */
-static const OSSymbol *_HardwareSerialSym =		OSSymbol::withCString("BatterySerialNumber");
+static const OSSymbol *_BatterySerialNumberSym = OSSymbol::withCString("BatterySerialNumber");
 static const OSSymbol *_DateOfManufacture =		OSSymbol::withCString("Date of Manufacture");
 
 static const OSSymbol * unknownObjectKey = OSSymbol::withCString("Unknown");
@@ -616,8 +616,8 @@ void AppleSmartBattery::clearBatteryState(bool do_update)
     removeProperty(_MaxErrSym);
 	properties->removeObject(_ManufactureDateSym);
     removeProperty(_ManufactureDateSym);
-	properties->removeObject(_SerialNumberSym);
-    removeProperty(_SerialNumberSym);
+	properties->removeObject(_FirmwareSerialNumberSym);
+    removeProperty(_FirmwareSerialNumberSym);
 	properties->removeObject(_ManufacturerDataSym);
     removeProperty(_ManufacturerDataSym);
 	properties->removeObject(_PFStatusSym);
@@ -650,8 +650,8 @@ void AppleSmartBattery::clearBatteryState(bool do_update)
     removeProperty(_CellVoltageSym);
 	properties->removeObject(_TemperatureSym);
     removeProperty(_TemperatureSym);
-	properties->removeObject(_HardwareSerialSym);
-    removeProperty(_HardwareSerialSym);
+	properties->removeObject(_BatterySerialNumberSym);
+    removeProperty(_BatterySerialNumberSym);
 	
     rebuildLegacyIOBatteryInfo(do_update);
 
@@ -743,7 +743,7 @@ void AppleSmartBattery::rebuildLegacyIOBatteryInfo(bool do_update)
 
 #define kMaxGeneratedSerialSize (64)
 
-void AppleSmartBattery::constructAppleSerialNumber(const OSSymbol* deviceName, const OSSymbol* serialNumber)
+void AppleSmartBattery::setBatterySerialNumber(const OSSymbol* deviceName, const OSSymbol* serialNumber)
 {
     const OSSymbol  *device_string = deviceName;
     const char *    device_cstring_ptr;
@@ -753,7 +753,7 @@ void AppleSmartBattery::constructAppleSerialNumber(const OSSymbol* deviceName, c
     const OSSymbol  *printableSerial = NULL;
     char            serialBuf[kMaxGeneratedSerialSize];
 	
-    DebugLog("constructAppleSerialNumber called\n");
+    DebugLog("setBatterySerialNumber called\n");
     
     if (device_string) {
         device_cstring_ptr = device_string->getCStringNoCopy();
@@ -772,7 +772,7 @@ void AppleSmartBattery::constructAppleSerialNumber(const OSSymbol* deviceName, c
 	
     printableSerial = OSSymbol::withCString(serialBuf);
     if (printableSerial) {
-		setPSProperty(_HardwareSerialSym, const_cast<OSSymbol*>(printableSerial));
+		setPSProperty(_BatterySerialNumberSym, const_cast<OSSymbol*>(printableSerial));
         printableSerial->release();
     }
 	
@@ -1084,31 +1084,24 @@ int AppleSmartBattery::manufactureDate(void)
     }
 }
 
-void AppleSmartBattery::setSerialNumber(const OSSymbol *sym)
+void AppleSmartBattery::setFirmwareSerialNumber(const OSSymbol *sym)
 {
-	// BatterySerialNumber
-	
-    if (sym) 
+	// FirmwareSerialNumber
+    if (sym)
 	{
-		setPSProperty(_HardwareSerialSym, const_cast<OSSymbol*>(sym));
-	
-		// FirmwareSerialNumber - This is a number so we have to convert it from the zero padded
-		//                        string returned by ACPI.
-	
-        long lSerialNumber = strtol(sym->getCStringNoCopy(), (char **)NULL, 16);
-											 
-		OSNumber *n = OSNumber::withNumber((unsigned long long) lSerialNumber, NUM_BITS);
-
-		if(n) {
-			setPSProperty(_SerialNumberSym, n);
+		// The FirmwareSerialNumber property is a number so we have to convert it from the zero padded
+		// string returned by ACPI.
+        long lSerialNumber = strtol(sym->getCStringNoCopy(), NULL, 16);
+		if (OSNumber *n = OSNumber::withNumber((unsigned long long) lSerialNumber, NUM_BITS)) {
+			setPSProperty(_FirmwareSerialNumberSym, n);
 			n->release();
 		}
 	}
 }
 
-OSSymbol *AppleSmartBattery::serialNumber(void)
+OSSymbol *AppleSmartBattery::firmwareSerialNumber(void)
 {
-	return OSDynamicCast(OSSymbol, properties->getObject(_SerialNumberSym));
+	return OSDynamicCast(OSSymbol, properties->getObject(_FirmwareSerialNumberSym));
 }
 
 void AppleSmartBattery::setManufacturerData(uint8_t *buffer, uint32_t bufferSize)
@@ -1290,15 +1283,16 @@ IOReturn AppleSmartBattery::setBatteryBIF(OSArray *acpibat_bif)
 	}
 
 	setDeviceName(deviceName);
-	setSerialNumber(serialNumber);
 	setBatteryType(type);
 	setManufacturer(manufacturer);
     setSerial(serialNumber);
+    setFirmwareSerialNumber(serialNumber);
+    setBatterySerialNumber(deviceName, serialNumber);
 
     OSSafeReleaseNULL(deviceName);
-    OSSafeReleaseNULL(serialNumber);
     OSSafeReleaseNULL(type);
     OSSafeReleaseNULL(manufacturer);
+    OSSafeReleaseNULL(serialNumber);
 
     //rehabman: added to get battery status to show
     setBatteryInstalled(true);
@@ -1428,13 +1422,16 @@ IOReturn AppleSmartBattery::setBatteryBIX(OSArray *acpibat_bix)
 	}
 
 	setDeviceName(deviceName);
-	setSerialNumber(serialNumber);
-	setBatteryType(type);
-	setManufacturer(manufacturer);
+    setBatteryType(type);
+    setManufacturer(manufacturer);
+	setSerial(serialNumber);
+    setFirmwareSerialNumber(serialNumber);
+    setBatterySerialNumber(deviceName, serialNumber);
+
     OSSafeRelease(deviceName);
-    OSSafeRelease(serialNumber);
     OSSafeRelease(type);
     OSSafeRelease(manufacturer);
+    OSSafeRelease(serialNumber);
 
 	setCycleCount(fCycleCount);
 
@@ -1893,12 +1890,6 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
     num->setValue(fCurrentVoltage-cellVoltage*(NUM_CELLS-1));
     setProperty("CellVoltage", fCellVoltages);
 
-//REVIEW: no need to set this as it is never updated here...
-//	setProperty("Temperature", (long long unsigned int)fTemperature, NUM_BITS);
-	
-	/* construct and publish our battery serial number here */
-	constructAppleSerialNumber(deviceName(), serialNumber());
-	
 	rebuildLegacyIOBatteryInfo(true);
 	
 	updateStatus();
