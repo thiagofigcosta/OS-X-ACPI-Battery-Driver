@@ -1622,6 +1622,10 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
         }
     }
 
+    // discharging, but at zero rate is impossible... (correcting logic flaw in some ACPI implementations)
+    if ((currentStatus & BATTERY_DISCHARGING) && !fCurrentRate)
+        currentStatus &= ~BATTERY_DISCHARGING;
+
     if (currentStatus ^ fStatus)
     {
         // The battery has changed states
