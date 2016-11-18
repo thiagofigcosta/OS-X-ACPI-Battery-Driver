@@ -78,6 +78,11 @@ http://www.tonymacx86.com/hp-probook/69472-battery-manager-fix-boot-without-batt
 
 ### Change Log:
 
+2016-11-18 v1.70.2
+
+- Fix problem where incorrect _BST code returns status of "discharging" when at full charge, AC adapter still plugged in.
+
+
 2016-06-28 v1.70.1
 
 - Fix bug involving BatterySerialNumber (always showing -Unknown)
