@@ -12,7 +12,7 @@ Please read this post if you need to make DSDT edits: http://www.tonymacx86.com/
 
 Downloads are available on Bitbucket:
 
-https://bitbucket.org/RehabMan/os-x-acpi-battery-driver/downloads
+https://bitbucket.org/RehabMan/os-x-acpi-battery-driver/downloads/
 
 
 Archived builds are available on Google Code:
