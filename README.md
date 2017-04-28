@@ -78,6 +78,11 @@ http://www.tonymacx86.com/hp-probook/69472-battery-manager-fix-boot-without-batt
 
 ### Change Log:
 
+2017-04-28 v1.70.3
+
+- Add quick polling for the first 10 seconds of startup for the case the EC/ACPI does not respond correctly at startup.  This quick poll will be cancelled once a battery status is succesfully acquired, or after the 10 seconds.
+
+
 2016-11-18 v1.70.2
 
 - Fix problem where incorrect _BST code returns status of "discharging" when at full charge, AC adapter still plugged in.
