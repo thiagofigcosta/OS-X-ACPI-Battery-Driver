@@ -1,4 +1,5 @@
-Build
+build/*
+!build/readme.txt
 DerivedData
 Distribute
 ACPIBatteryManager.xcodeproj/project.xcworkspace/xcuserdata
