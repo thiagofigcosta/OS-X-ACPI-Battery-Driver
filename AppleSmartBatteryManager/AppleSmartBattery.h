@@ -324,7 +324,6 @@ private:
     UInt32 convertWattsToAmps(UInt32 watts, bool useDesignVoltage);
 
 private:
-	
 	UInt32   fPowerUnit;
 	UInt32   fDesignVoltage;
 	UInt32   fCurrentVoltage;
@@ -359,6 +358,7 @@ private:
 	UInt32  fManufactureDate;
 
     int fRealAC;
+    int fStartupFastPoll;
 
 public:
 

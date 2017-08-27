@@ -356,6 +356,8 @@ bool AppleSmartBattery::start(IOService *provider)
     setProperty( kIOPMPSPostDishargeWaitSecondsKey, kPostDischargeWaitSeconds, NUM_BITS);
 	
     // zero out battery state with argument (do_set == true)
+    fStartupFastPoll = 10;
+    fPollingInterval = kQuickPollInterval;
     clearBatteryState(false);
 
     // some DSDT implementations aren't ready to read the EC yet, so avoid false reading
@@ -452,6 +454,16 @@ bool AppleSmartBattery::pollBatteryState(int path)
     fPollTimer->cancelTimeout();
     if (!fPollingOverridden)
     {
+        // at startup, polling is quick for slow to respond ACPI implementations
+        if (fStartupFastPoll)
+        {
+            DebugLog("fStartupFastPoll=%d\n", fStartupFastPoll);
+            --fStartupFastPoll;
+            if (!fStartupFastPoll)
+                fPollingInterval = kDefaultPollInterval;
+        }
+
+        DebugLog("fRealAC=%d, fACConnected=%d\n", fRealAC, fACConnected);
         if (-1 == fRealAC || fRealAC == fACConnected)
         {
             // Restart timer with standard polling interval
@@ -1809,7 +1821,8 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 		
 		DebugLog("Battery is charged.\n");
 	}
-	
+
+    fStartupFastPoll = 0;
 	if (!fPollingOverridden && fMaxCapacity) {
 		/*
 		 * Conditionally set polling interval to 1 second if we're
