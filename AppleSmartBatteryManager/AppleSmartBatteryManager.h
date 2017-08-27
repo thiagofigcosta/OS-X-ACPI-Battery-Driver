@@ -26,8 +26,8 @@
 
 #define EXPORT __attribute__((visibility("default")))
 
-#define AppleSmartBatteryManager rehab_ACPIBatteryManager
-#define AppleSmartBattery rehab_ACPIBattery
+#define AppleSmartBatteryManager AppleSmartBatteryManager // was rehab_ACPIBatteryManager
+#define AppleSmartBattery AppleSmartBattery // was rehab_ACPIBattery
 #define ACPIACAdapter rehab_ACPIACAdapter
 #define BatteryTracker rehab_BatteryTracker
 
@@ -55,7 +55,7 @@ class BatteryTracker;
 class EXPORT AppleSmartBatteryManager : public IOService
 {
     typedef IOService super;
-	OSDeclareDefaultStructors(rehab_ACPIBatteryManager)
+	OSDeclareDefaultStructors(AppleSmartBatteryManager)
     friend class BatteryTracker;
 
 public:

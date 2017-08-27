@@ -31,7 +31,7 @@
 			<key>CFBundleIdentifier</key>
 			<string>${MODULE_NAME}</string>
 			<key>IOClass</key>
-			<string>rehab_ACPIBatteryManager</string>
+			<string>AppleSmartBatteryManager</string>
 			<key>IONameMatch</key>
 			<string>PNP0C0A</string>
 			<key>IOProviderClass</key>

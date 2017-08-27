@@ -136,7 +136,7 @@ static const OSSymbol *_DateOfManufacture =		OSSymbol::withCString("Date of Manu
 
 static const OSSymbol * unknownObjectKey = OSSymbol::withCString("Unknown");
 
-OSDefineMetaClassAndStructors(rehab_ACPIBattery, IOPMPowerSource)
+OSDefineMetaClassAndStructors(AppleSmartBattery, IOPMPowerSource)
 
 /******************************************************************************
  * AppleSmartBattery::ACPIBattery
