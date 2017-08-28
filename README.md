@@ -78,6 +78,11 @@ http://www.tonymacx86.com/hp-probook/69472-battery-manager-fix-boot-without-batt
 
 ### Change Log:
 
+2017-08-28 v1.80
+
+- Fix problem of losing battery icon on 10.13 High Sierra beta.  It is a new timing bug introduced in High Sierra.  Delaying the first poll and battery status publish fixes it.  StartupDelay configuration is removed (not used, has no effect if specified in ACPI override).  New configuration item FirstPollDelay is default at 7500.  Slower computers may need a longer delay (for my Lenovo u430, 3500 is too short, 4000 is long enough).
+
+
 2017-08-26 v1.71
 
 - Fix problem with Activity Monitor "Energy" tab, by changing class names to AppleSmartBatteryManager and AppleSmartBattery

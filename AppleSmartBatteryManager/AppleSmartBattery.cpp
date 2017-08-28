@@ -287,9 +287,9 @@ bool AppleSmartBattery::loadConfiguration()
     if (OSNumber* currentDischargeRateMax = OSDynamicCast(OSNumber, config->getObject(kCurrentDischargeRateMaxInfoKey)))
         fCurrentDischargeRateMax = currentDischargeRateMax->unsigned32BitValue();
 
-    fStartupDelay = 0;
-    if (OSNumber* startupDelay = OSDynamicCast(OSNumber, config->getObject(kStartupDelay)))
-        fStartupDelay = startupDelay->unsigned32BitValue();
+    fFirstPollDelay = 7500;
+    if (OSNumber* firstPollDelay = OSDynamicCast(OSNumber, config->getObject(kFirstPollDelay)))
+        fFirstPollDelay = firstPollDelay->unsigned32BitValue();
 
     // Configuration done, release allocated merged configuration
     OSSafeRelease(merged);
@@ -360,11 +360,9 @@ bool AppleSmartBattery::start(IOService *provider)
     fPollingInterval = kQuickPollInterval;
     clearBatteryState(false);
 
-    // some DSDT implementations aren't ready to read the EC yet, so avoid false reading
-    IOSleep(fStartupDelay);
-	
     // Kick off the 30 second timer and do an initial poll
-    pollBatteryState( kNewBatteryPath );
+    //pollBatteryState( kNewBatteryPath );
+    fPollTimer->setTimeoutMS(fFirstPollDelay);
 	
     return true;
 }

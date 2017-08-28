@@ -147,8 +147,8 @@
 // Define this in Info.plist to correct for current capacity in _BST being 16-bit signed
 #define kCorrect16bitSignedCurrentRate "Correct16bitSignedCurrentRate"
 
-// Define this in Info.plist to change the startup delay before ACPI calls are made
-#define kStartupDelay   "StartupDelay"
+// For configuring the time before the first status poll
+#define kFirstPollDelay "FirstPollDelay"
 
 // for pollBatteryState
 enum
@@ -199,7 +199,7 @@ protected:
     bool                    fCorrectCorruptCapacities;
     bool                    fCorrect16bitSignedCurrentRate;
     UInt32                  fCurrentDischargeRateMax; // to cap reported Amperage
-    UInt32                  fStartupDelay;
+    UInt32                  fFirstPollDelay;
 
     // Accessor for MaxError reading
     // Percent error in MaxCapacity reading
