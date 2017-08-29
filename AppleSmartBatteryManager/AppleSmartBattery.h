@@ -200,6 +200,7 @@ protected:
     bool                    fCorrect16bitSignedCurrentRate;
     UInt32                  fCurrentDischargeRateMax; // to cap reported Amperage
     UInt32                  fFirstPollDelay;
+    bool                    fFirstTimer;
 
     // Accessor for MaxError reading
     // Percent error in MaxCapacity reading

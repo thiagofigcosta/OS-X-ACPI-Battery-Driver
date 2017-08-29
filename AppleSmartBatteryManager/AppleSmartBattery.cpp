@@ -362,6 +362,8 @@ bool AppleSmartBattery::start(IOService *provider)
 
     // Kick off the 30 second timer and do an initial poll
     //pollBatteryState( kNewBatteryPath );
+    DebugLog("AppleSmartBattery: setting fFirstTimer=false, and setting timer for %ums\n", (unsigned)fFirstPollDelay);
+    fFirstTimer = false;
     fPollTimer->setTimeoutMS(fFirstPollDelay);
 	
     return true;
@@ -425,6 +427,13 @@ void AppleSmartBattery::setPollingInterval(
 bool AppleSmartBattery::pollBatteryState(int path)
 {
     DebugLog("pollBatteryState: path = %d\n", path);
+
+    // Ignore calls to pollBatteryState before first timer has expired
+    if (!fFirstTimer)
+    {
+        DebugLog("pollBatteryState: doing nothing due to !fFirstTimer\n");
+        return false;
+    }
 
     // This must be called under workloop synchronization
 
@@ -545,6 +554,7 @@ void AppleSmartBattery::pollingTimeOut()
 {
     DebugLog("pollingTimeOut called\n");
     
+    fFirstTimer = true;
     if (fInitialPollCountdown > 0)
     {
         // At boot time we make sure to re-read everything kInitialPoltoCountdown times
