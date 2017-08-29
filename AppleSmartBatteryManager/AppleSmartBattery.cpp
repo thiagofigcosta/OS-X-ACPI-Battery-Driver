@@ -287,7 +287,7 @@ bool AppleSmartBattery::loadConfiguration()
     if (OSNumber* currentDischargeRateMax = OSDynamicCast(OSNumber, config->getObject(kCurrentDischargeRateMaxInfoKey)))
         fCurrentDischargeRateMax = currentDischargeRateMax->unsigned32BitValue();
 
-    fFirstPollDelay = 7500;
+    fFirstPollDelay = 1000;
     if (OSNumber* firstPollDelay = OSDynamicCast(OSNumber, config->getObject(kFirstPollDelay)))
         fFirstPollDelay = firstPollDelay->unsigned32BitValue();
 

@@ -78,6 +78,17 @@ http://www.tonymacx86.com/hp-probook/69472-battery-manager-fix-boot-without-batt
 
 ### Change Log:
 
+2017-08-29 v1.81
+
+- More experiments for 10.13 and the startup problem.
+
+- Now we wait for AppleSMC to load before ACPIBatteryManager starts.  This provides a better "anchor" for the FirstPollDelay wait.
+
+- FirstPollDelay now 1000.  Tested on my 4530s (HDD, Sandy Bridge Core i3).  It works with 500 (and with other larger values), but fails and 250.  Decided to try 1000 as a default.
+
+- Avoid a problem where power management registration caues an early (but not real early) call to setPowerState which was triggering a pollBatteryState prior to the delay specified by FirstPollDelay.
+
+
 2017-08-28 v1.80
 
 - Fix problem of losing battery icon on 10.13 High Sierra beta.  It is a new timing bug introduced in High Sierra.  Delaying the first poll and battery status publish fixes it.  StartupDelay configuration is removed (not used, has no effect if specified in ACPI override).  New configuration item FirstPollDelay is default at 7500.  Slower computers may need a longer delay (for my Lenovo u430, 3500 is too short, 4000 is long enough).
