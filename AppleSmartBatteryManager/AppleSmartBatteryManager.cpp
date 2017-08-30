@@ -112,8 +112,9 @@ bool AppleSmartBatteryManager::start(IOService *provider)
         return false;
     }
 
-    // maybe waiting for SMC to load avoids startup problems...
-    waitForService(serviceMatching("AppleSMC"));
+    // maybe waiting for SMC to load avoids startup problems on 10.13.x
+    if (RunningKernel() >= MakeKernelVersion(17,0,0))
+        waitForService(serviceMatching("AppleSMC"));
 
     // Join power management so that we can get a notification early during
     // wakeup to re-sample our battery data. We don't actually power manage

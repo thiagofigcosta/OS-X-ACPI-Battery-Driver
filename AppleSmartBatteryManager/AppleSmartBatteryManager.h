@@ -26,6 +26,7 @@
 
 #define EXPORT __attribute__((visibility("default")))
 
+
 #define AppleSmartBatteryManager AppleSmartBatteryManager // was rehab_ACPIBatteryManager
 #define AppleSmartBattery AppleSmartBattery // was rehab_ACPIBattery
 #define ACPIACAdapter rehab_ACPIACAdapter
@@ -33,6 +34,11 @@
 
 #include <IOKit/IOService.h>
 #include <IOKit/acpi/IOACPIPlatformDevice.h>
+
+#include <libkern/version.h>
+#define MakeKernelVersion(maj,min,rev) (static_cast<uint32_t>((maj)<<16)|static_cast<uint16_t>((min)<<8)|static_cast<uint8_t>(rev))
+#define RunningKernel() MakeKernelVersion(version_major,version_minor,version_revision)
+
 
 #include "AppleSmartBattery.h"
 #include "BatteryTracker.h"

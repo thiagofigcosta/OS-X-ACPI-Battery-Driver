@@ -361,10 +361,21 @@ bool AppleSmartBattery::start(IOService *provider)
     clearBatteryState(false);
 
     // Kick off the 30 second timer and do an initial poll
-    //pollBatteryState( kNewBatteryPath );
-    DebugLog("AppleSmartBattery: setting fFirstTimer=false, and setting timer for %ums\n", (unsigned)fFirstPollDelay);
-    fFirstTimer = false;
-    fPollTimer->setTimeoutMS(fFirstPollDelay);
+    // specifics depend on macOS version (working around system bugs)
+#if 0
+    if (RunningKernel() < MakeKernelVersion(17,0,0))
+    {
+        DebugLog("AppleSmartBattry: setting fFirstTimer=true, and doing immediate poll\n");
+        fFirstTimer = true;
+        pollBatteryState( kNewBatteryPath );
+    }
+    else
+#endif
+    {
+        DebugLog("AppleSmartBattery: setting fFirstTimer=false, and setting timer for %ums\n", (unsigned)fFirstPollDelay);
+        fFirstTimer = false;
+        fPollTimer->setTimeoutMS(fFirstPollDelay);
+    }
 	
     return true;
 }
