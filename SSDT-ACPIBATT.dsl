@@ -16,7 +16,7 @@ DefinitionBlock ("", "SSDT", 2, "hack", "acpibatt", 0)
         "CurrentDischargeRateMax", 20000,
         "CorrectCorruptCapacities", ">y",
         "Correct16bitSignedCurrentRate", ">y",
-        "FirstPollDelay", 1000,
+        "FirstPollDelay", 4000,
     })
 }
 // EOF

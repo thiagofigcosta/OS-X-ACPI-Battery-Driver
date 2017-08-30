@@ -59,7 +59,7 @@
 				<key>Correct16bitSignedCurrentRate</key>
 				<true/>
 				<key>FirstPollDelay</key>
-				<integer>1000</integer>
+				<integer>4000</integer>
 			</dict>
 		</dict>
 		<key>ACPI Battery Tracker</key>

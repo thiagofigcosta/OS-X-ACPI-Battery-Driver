@@ -78,6 +78,11 @@ http://www.tonymacx86.com/hp-probook/69472-battery-manager-fix-boot-without-batt
 
 ### Change Log:
 
+2017-08-30 v1.81.1
+
+- Change FirstPollDelay to 4000
+
+
 2017-08-29 v1.81
 
 - More experiments for 10.13 and the startup problem.
