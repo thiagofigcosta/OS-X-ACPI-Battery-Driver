@@ -287,6 +287,10 @@ bool AppleSmartBattery::loadConfiguration()
     if (OSNumber* currentDischargeRateMax = OSDynamicCast(OSNumber, config->getObject(kCurrentDischargeRateMaxInfoKey)))
         fCurrentDischargeRateMax = currentDischargeRateMax->unsigned32BitValue();
 
+    fStartupDelay = 0;
+    if (OSNumber* startupDelay = OSDynamicCast(OSNumber, config->getObject(kStartupDelay)))
+        fStartupDelay = startupDelay->unsigned32BitValue();
+
     fFirstPollDelay = 4000;
     if (OSNumber* firstPollDelay = OSDynamicCast(OSNumber, config->getObject(kFirstPollDelay)))
         fFirstPollDelay = firstPollDelay->unsigned32BitValue();
@@ -360,17 +364,18 @@ bool AppleSmartBattery::start(IOService *provider)
     fPollingInterval = kQuickPollInterval;
     clearBatteryState(false);
 
+    // some DSDT implementations aren't ready to read the EC yet, so avoid false reading
+    IOSleep(fStartupDelay);
+
     // Kick off the 30 second timer and do an initial poll
     // specifics depend on macOS version (working around system bugs)
-#if 0
     if (RunningKernel() < MakeKernelVersion(17,0,0))
     {
         DebugLog("AppleSmartBattry: setting fFirstTimer=true, and doing immediate poll\n");
         fFirstTimer = true;
-        pollBatteryState( kNewBatteryPath );
+        pollBatteryState(kNewBatteryPath);
     }
     else
-#endif
     {
         DebugLog("AppleSmartBattery: setting fFirstTimer=false, and setting timer for %ums\n", (unsigned)fFirstPollDelay);
         fFirstTimer = false;

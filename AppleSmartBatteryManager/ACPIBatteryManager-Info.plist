@@ -58,6 +58,8 @@
 				<true/>
 				<key>Correct16bitSignedCurrentRate</key>
 				<true/>
+				<key>StartupDelay</key>
+				<integer>0</integer>
 				<key>FirstPollDelay</key>
 				<integer>4000</integer>
 			</dict>

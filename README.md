@@ -78,6 +78,11 @@ http://www.tonymacx86.com/hp-probook/69472-battery-manager-fix-boot-without-batt
 
 ### Change Log:
 
+2017-09-01 v1.81.3
+
+- Revert more 10.13 changes when running 10.12 and earlier (runtime checks). These changes are an attempt to solve issue #22
+
+
 2017-08-30 v1.81.2
 
 - Revert some of the 10.13 changes for 10.12 and earlier (runtime checks)

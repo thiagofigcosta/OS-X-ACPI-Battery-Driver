@@ -19,6 +19,7 @@ Method(RMCF)\n
         "CurrentDischargeRateMax", 20000,\n
         "CorrectCorruptCapacities", ">y",\n
         "Correct16bitSignedCurrentRate", ">y",\n
+        "StartupDelay", 0,\n
         "FirstPollDelay", 4000,\n
     })\n
 }\n
