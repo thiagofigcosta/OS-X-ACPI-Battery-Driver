@@ -78,6 +78,11 @@ http://www.tonymacx86.com/hp-probook/69472-battery-manager-fix-boot-without-batt
 
 ### Change Log:
 
+2017-10-01 v1.81.4
+
+- add kernel flag "abm_firstpolldelay" to allow override of FirstPollDelay with simple kernel flag entry (config.plist/Boot/Arguments).  For example, to set FirstPollDelay to 16000 (16 seconds), use abm_firstpolldelay=16000
+
+
 2017-09-01 v1.81.3
 
 - Revert more 10.13 changes when running 10.12 and earlier (runtime checks). These changes are an attempt to solve issue #22

@@ -294,6 +294,9 @@ bool AppleSmartBattery::loadConfiguration()
     fFirstPollDelay = 4000;
     if (OSNumber* firstPollDelay = OSDynamicCast(OSNumber, config->getObject(kFirstPollDelay)))
         fFirstPollDelay = firstPollDelay->unsigned32BitValue();
+    uint32_t pollDelay = 0;
+    if (PE_parse_boot_argn("abm_firstpolldelay", &pollDelay, sizeof pollDelay))
+        fFirstPollDelay = pollDelay;
 
     // Configuration done, release allocated merged configuration
     OSSafeRelease(merged);
