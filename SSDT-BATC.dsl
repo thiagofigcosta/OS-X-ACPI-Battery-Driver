@@ -38,7 +38,7 @@
 // For example, Notify(BAT0, 0x80) is
 //   86 42 41 54 30 0A 80
 // To change it to Notify(BATC, 0x80):
-//   86 42 41 54 30 0A 80
+//   86 42 41 54 43 0A 80
 //
 // Sometimes, you'll find there is a fully qualified path.
 // Such as, Notify (\_SB.PCI0.LPC.EC.BAT1, 0x01)
