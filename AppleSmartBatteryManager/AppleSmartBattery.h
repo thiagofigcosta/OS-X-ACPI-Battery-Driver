@@ -193,8 +193,6 @@ protected:
 
 	uint8_t                 fInitialPollCountdown;;
     uint32_t                fEstimateCycleCountDivisor;
-    
-    BatteryTracker*         fTracker;
 
     bool                    fUseDesignVoltageForDesignCapacity;
     bool                    fUseDesignVoltageForMaxCapacity;
