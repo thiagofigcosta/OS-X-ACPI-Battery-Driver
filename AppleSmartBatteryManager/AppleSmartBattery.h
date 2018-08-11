@@ -360,7 +360,6 @@ private:
 	UInt32	fAverageTimeToFull;
 	UInt32  fManufactureDate;
 
-    int fRealAC;
     int fStartupFastPoll;
 
 public:

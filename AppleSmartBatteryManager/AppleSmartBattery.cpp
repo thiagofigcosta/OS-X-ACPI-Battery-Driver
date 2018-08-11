@@ -466,9 +466,6 @@ bool AppleSmartBattery::pollBatteryState(int path)
     {
         //rehabman: added to correct power source Battery if boot w/ no batteries
         DebugLog("!fBatteryPresent\n");
-        fACConnected = true;
-        //setExternalConnected(fACConnected);
-        //setExternalConnected(fRealAC);
         setFullyCharged(false);
         clearBatteryState(true);
     }
@@ -485,8 +482,8 @@ bool AppleSmartBattery::pollBatteryState(int path)
                 fPollingInterval = kDefaultPollInterval;
         }
 
-        DebugLog("fRealAC=%d, fACConnected=%d\n", fRealAC, fACConnected);
-        if (-1 == fRealAC || fRealAC == fACConnected)
+        DebugLog("fACConnected=%d\n", fACConnected);
+        if (fACConnected)
         {
             // Restart timer with standard polling interval
             fPollTimer->setTimeoutMS(milliSecPollingTable[fPollingInterval]);
@@ -536,8 +533,8 @@ void AppleSmartBattery::notifyConnectedState(bool connected)
         settingsChangedSinceUpdate = true;
         updateStatus();
     }
-    
-    fRealAC = connected;
+
+    fACConnected = connected;
 
 /*
     if (fBatteryPresent)
@@ -626,7 +623,6 @@ void AppleSmartBattery::clearBatteryState(bool do_update)
     // We just zero out the int and bool values, but remove the OSType values.
 
     fBatteryPresent = false;
-    fACConnected = false;
     fACChargeCapable = false;
 	
     setBatteryInstalled(false);
@@ -700,8 +696,6 @@ void AppleSmartBattery::clearBatteryState(bool do_update)
     removeProperty(_BatterySerialNumberSym);
 	
     rebuildLegacyIOBatteryInfo(do_update);
-
-    fRealAC = -1;   // real AC status is unknown...
 	
     if(do_update) {
         updateStatus();
@@ -1735,9 +1729,6 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 		setFullyCharged(false);
 		setIsCharging(false);
 		
-		fACConnected = true;
-		//setExternalConnected(fACConnected);
-        //setExternalConnected(fRealAC);
 		fACChargeCapable = false;
 		setExternalChargeCapable(fACChargeCapable);
 		
@@ -1757,9 +1748,6 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 		setFullyCharged(false);
 		setIsCharging(false);
 		
-		fACConnected = false;
-        //setExternalConnected(fACConnected);
-        //setExternalConnected(fRealAC);
 		fACChargeCapable = false;
 		setExternalChargeCapable(fACChargeCapable);
 		
@@ -1791,9 +1779,6 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 		setFullyCharged(false);
 		setIsCharging(true);
 		
-		fACConnected = true;
-		//setExternalConnected(fACConnected);
-        //setExternalConnected(fRealAC);
 		fACChargeCapable = true;
 		setExternalChargeCapable(fACChargeCapable);
 		
@@ -1827,9 +1812,6 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 		
         bool batteriesDischarging = fProvider->areBatteriesDischarging(this);
 
-        fACConnected = !batteriesDischarging;
-		//setExternalConnected(fACConnected);
-        //setExternalConnected(fRealAC);
 		fACChargeCapable = !batteriesDischarging;
 		setExternalChargeCapable(fACChargeCapable);
 		
