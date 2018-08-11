@@ -109,6 +109,7 @@ void ACPIACAdapter::stop(IOService* provider)
     OSSafeReleaseNULL(fBatteryServices);
     
     fWorkloop->removeEventSource(fCommandGate);
+    OSSafeReleaseNULL(fCommandGate);
     
     if (NULL != fLock)
     {
