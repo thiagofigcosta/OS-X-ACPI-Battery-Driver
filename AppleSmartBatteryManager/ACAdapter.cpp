@@ -151,9 +151,10 @@ void ACPIACAdapter::gatedHandler(IOService* newService, IONotifier * notifier)
         if (notifier == fPublishNotify) {
             DebugLog("%s: Notification consumer published: %s\n", getName(), battery->getName());
             
-            // Ensure the newly registered battery is updated with the latest AC connection state
-            battery->notifyConnectedState(fACConnected);
             fBatteryServices->setObject(battery);
+            
+            // Ensure the newly registered battery is updated with the latest AC connection state
+            pollState();
         }
         
         if (notifier == fTerminateNotify) {
