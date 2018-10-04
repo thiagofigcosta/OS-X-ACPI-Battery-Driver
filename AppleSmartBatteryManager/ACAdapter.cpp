@@ -166,12 +166,10 @@ void ACPIACAdapter::gatedHandler(IOService* newService, IONotifier * notifier)
 
 bool ACPIACAdapter::notificationHandler(void * refCon, IOService * newService, IONotifier * notifier)
 {
-    fCommandGate->runAction(
-        (IOCommandGate::Action)OSMemberFunctionCast(
-            IOCommandGate::Action, this,
-            &ACPIACAdapter::gatedHandler),
-            newService, notifier, NULL, NULL);
+    if (!fCommandGate)
+        return false;
 
+    fCommandGate->runAction((IOCommandGate::Action)OSMemberFunctionCast(IOCommandGate::Action, this, &ACPIACAdapter::gatedHandler), newService, notifier, NULL, NULL);
     return true;
 }
 

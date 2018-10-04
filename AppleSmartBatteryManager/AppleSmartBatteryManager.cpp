@@ -188,15 +188,15 @@ populateBattery:
 	if(!fBattery) 
 		return false;
 
-	fBattery->attach(this);
-	fBattery->start(this);
-
     // Command gate for ACPIBattery
     fBatteryGate = IOCommandGate::commandGate(fBattery);
     if (!fBatteryGate) {
         return false;
     }
     wl->addEventSource(fBatteryGate);
+
+    fBattery->attach(this);
+	fBattery->start(this);
 
 skipBattery:
 
@@ -272,11 +272,10 @@ void AppleSmartBatteryManager::gatedHandler(IOService* newService, IONotifier * 
 
 bool AppleSmartBatteryManager::notificationHandler(void * refCon, IOService * newService, IONotifier * notifier)
 {
-    fBatteryGate->runAction((IOCommandGate::Action)OSMemberFunctionCast(
-                            IOCommandGate::Action, this,
-                            &AppleSmartBatteryManager::gatedHandler),
-                            newService, notifier, NULL, NULL);
+    if (!fBatteryGate)
+        return false;
 
+    fBatteryGate->runAction((IOCommandGate::Action)OSMemberFunctionCast(IOCommandGate::Action, this, &AppleSmartBatteryManager::gatedHandler), newService, notifier, NULL, NULL);
     return true;
 }
 

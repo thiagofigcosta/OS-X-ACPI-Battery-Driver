@@ -78,7 +78,12 @@ http://www.tonymacx86.com/hp-probook/69472-battery-manager-fix-boot-without-batt
 
 ### Change Log:
 
-2018-09-15 v.1.90
+2018-10-5 v1.90.1
+
+- fix a crash in ACPIBatteryManager due to notifications received very early in startup (may be in invalid configurations)
+
+
+2018-09-15 v1.90
 
 - merge 'refactor' branch from the-darkvoid (details below)
 
