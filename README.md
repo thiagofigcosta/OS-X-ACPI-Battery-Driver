@@ -1,6 +1,6 @@
 ## ACPIBatteryManager by RehabMan
 
-Changed for better working on MacOSX Sierra Dell Inspiron 5557
+Changed for lazy better working on MacOSX Sierra Dell Inspiron 5557
 
 ### Original Credits
 
