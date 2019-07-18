@@ -1250,14 +1250,10 @@ IOReturn AppleSmartBattery::setBatteryBIF(OSArray *acpibat_bif)
 	DebugLog("fSerialNumber    = '%s'\n", serialNumber->getCStringNoCopy());
 	DebugLog("fType            = '%s'\n", type->getCStringNoCopy());
 	DebugLog("fManufacturer    = '%s'\n", manufacturer->getCStringNoCopy());
-    
-    // thiagofigcosta
-    fDesignCapacityRaw*=10;
-    fMaxCapacity*=10;
-    // thiagofigcosta
 
+    // thiagofigcosta
     fDesignCapacity = fDesignCapacityRaw;
-    fMaxCapacity = fMaxCapacityRaw;
+    fMaxCapacity = 3840;//fMaxCapacityRaw;
     fCapacityWarning = fCapacityWarningRaw;
     fLowWarning = fLowWarningRaw;
 
@@ -1267,7 +1263,8 @@ IOReturn AppleSmartBattery::setBatteryBIF(OSArray *acpibat_bif)
         // Watts = Amps X Volts
         DebugLog("Calculating for WATTS\n");
         fDesignCapacity = convertWattsToAmps(fDesignCapacityRaw, true);
-        fMaxCapacity = convertWattsToAmps(fMaxCapacityRaw, true);
+        // thiagofigcosta
+        fMaxCapacity = 3840;//convertWattsToAmps(fMaxCapacityRaw, true);
         DebugLog("fDesignCapacity(mAh)  = %d\n", (int)fDesignCapacity);
         DebugLog("fMaxCapacity(mAh)     = %d\n", (int)fMaxCapacity);
 	}
@@ -1394,14 +1391,10 @@ IOReturn AppleSmartBattery::setBatteryBIX(OSArray *acpibat_bix)
     DebugLog("fSerialNumber    = '%s'\n", serialNumber->getCStringNoCopy());
     DebugLog("fType            = '%s'\n", type->getCStringNoCopy());
     DebugLog("fManufacturer    = '%s'\n", manufacturer->getCStringNoCopy());
-    
+
     // thiagofigcosta
-    fDesignCapacityRaw*=10;
-    fMaxCapacity*=10;
-    // thiagofigcosta
-    
     fDesignCapacity = fDesignCapacityRaw;
-    fMaxCapacity = fMaxCapacityRaw;
+    fMaxCapacity = 3840;
     fCapacityWarning = fCapacityWarningRaw;
     fLowWarning = fLowWarningRaw;
 
@@ -1410,7 +1403,8 @@ IOReturn AppleSmartBattery::setBatteryBIX(OSArray *acpibat_bix)
         // Watts = Amps X Volts
         DebugLog("Calculating for WATTS\n");
         fDesignCapacity = convertWattsToAmps(fDesignCapacityRaw, true);
-        fMaxCapacity = convertWattsToAmps(fMaxCapacityRaw, true);
+        // thiagofigcosta
+        fMaxCapacity = 3840;//convertWattsToAmps(fMaxCapacityRaw, true);
         DebugLog("fDesignCapacity(mAh)  = %d\n", (int)fDesignCapacity);
         DebugLog("fMaxCapacity(mAh)     = %d\n", (int)fMaxCapacity);
 	}
@@ -1507,8 +1501,7 @@ IOReturn AppleSmartBattery::setBatteryBBIX(OSArray *acpibat_bbix)
 	OSData* manufacturerData		= GetDataFromArray  (acpibat_bbix, BBIX_MANUF_DATA);
     
     // thiagofigcosta
-//    fRemainingCapacity*=10;
-    // thiagofigcosta
+    fRemainingCapacity*=10;
 
 	DebugLog("fManufacturerAccess    = 0x%x\n", (unsigned)fManufacturerAccess);
 	DebugLog("fBatteryMode           = 0x%x\n", (unsigned)fBatteryMode);
@@ -1630,15 +1623,14 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 	fCurrentCapacity	 = GetValueFromArray(acpibat_bst, BST_CAPACITY);
 	fCurrentVoltage		 = GetValueFromArray(acpibat_bst, BST_VOLTAGE);
 	
+    // thiagofigcosta
+    fCurrentCapacity*=10;
+    
 	DebugLog("fPowerUnit       = 0x%x\n", (unsigned)fPowerUnit);
 	DebugLog("currentStatus    = 0x%x\n", (unsigned)currentStatus);
 	DebugLog("fCurrentRate     = %d\n", (int)fCurrentRate);
 	DebugLog("fCurrentCapacity = %d\n", (int)fCurrentCapacity);
 	DebugLog("fCurrentVoltage  = %d\n", (int)fCurrentVoltage);
-    
-    // thiagofigcosta
-//    fCurrentCapacity*=10;
-    // thiagofigcosta
 
     if (fDesignCapacityRaw == ACPI_UNKNOWN)
     {
@@ -1657,12 +1649,15 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
         DebugLog("Calculating for WATTS\n");
         fCurrentRate = convertWattsToAmps(fCurrentRate, fUseDesignVoltageForCurrentCapacity);
         fCurrentCapacity = convertWattsToAmps(fCurrentCapacity, fUseDesignVoltageForCurrentCapacity);
+        // thiagofigcosta
+        fCurrentCapacity*=10;
         DebugLog("fCurrentRate(mA) = %d\n", (int)fCurrentRate);
         DebugLog("fCurrentCapacity(mAh) = %d\n",	(int)fCurrentCapacity);
 
         // also convert fDesignCapacity and fMaxCapacity here
         fDesignCapacity = convertWattsToAmps(fDesignCapacityRaw, fUseDesignVoltageForDesignCapacity);
-        fMaxCapacity = convertWattsToAmps(fMaxCapacityRaw, fUseDesignVoltageForMaxCapacity);
+        // thiagofigcosta
+        fMaxCapacity =3840;// convertWattsToAmps(fMaxCapacityRaw, fUseDesignVoltageForMaxCapacity);
 
         // and the warning levels... (calculated as design capacity)
         fCapacityWarning = convertWattsToAmps(fCapacityWarningRaw, fUseDesignVoltageForDesignCapacity);
@@ -1711,15 +1706,15 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
     fAverageRate = (fAverageRate + fCurrentRate) / 2;
 
     DebugLog("fAverageRate = %d\n", fAverageRate);
-
-    // thiagofigcosta
+    
+// thiagofigcosta
 //    if (fCorrectCorruptCapacities)
 //    {
 //        // make sure CurrentCapacity<=MaxCapacity<=DesignCapacity
 //        if (fDesignCapacity && fMaxCapacity > fDesignCapacity)
 //        {
 //            AlwaysLog("WARNING! fMaxCapacity > fDesignCapacity. adjusted fMaxCapacity from %d, to %d\n", (int)fMaxCapacity, (int)fDesignCapacity);
-//            fMaxCapacity = fDesignCapacity;
+//            fMaxCapacity = 3840;//fDesignCapacity;
 //        }
 //        if (fMaxCapacity && fCurrentCapacity > fMaxCapacity)
 //        {
@@ -1727,7 +1722,7 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 //            fCurrentCapacity = fMaxCapacity;
 //        }
 //    }
-    // thiagofigcosta
+
 
     setDesignCapacity(fDesignCapacity);
     setMaxCapacity(fMaxCapacity);
