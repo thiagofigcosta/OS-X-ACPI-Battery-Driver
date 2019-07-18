@@ -1250,6 +1250,11 @@ IOReturn AppleSmartBattery::setBatteryBIF(OSArray *acpibat_bif)
 	DebugLog("fSerialNumber    = '%s'\n", serialNumber->getCStringNoCopy());
 	DebugLog("fType            = '%s'\n", type->getCStringNoCopy());
 	DebugLog("fManufacturer    = '%s'\n", manufacturer->getCStringNoCopy());
+    
+    // thiagofigcosta
+    fDesignCapacityRaw*=10;
+    fMaxCapacity*=10;
+    // thiagofigcosta
 
     fDesignCapacity = fDesignCapacityRaw;
     fMaxCapacity = fMaxCapacityRaw;
@@ -1389,7 +1394,12 @@ IOReturn AppleSmartBattery::setBatteryBIX(OSArray *acpibat_bix)
     DebugLog("fSerialNumber    = '%s'\n", serialNumber->getCStringNoCopy());
     DebugLog("fType            = '%s'\n", type->getCStringNoCopy());
     DebugLog("fManufacturer    = '%s'\n", manufacturer->getCStringNoCopy());
-
+    
+    // thiagofigcosta
+    fDesignCapacityRaw*=10;
+    fMaxCapacity*=10;
+    // thiagofigcosta
+    
     fDesignCapacity = fDesignCapacityRaw;
     fMaxCapacity = fMaxCapacityRaw;
     fCapacityWarning = fCapacityWarningRaw;
@@ -1495,6 +1505,10 @@ IOReturn AppleSmartBattery::setBatteryBBIX(OSArray *acpibat_bbix)
 	fAverageTimeToFull		= GetValueFromArray (acpibat_bbix, BBIX_AVG_TIME_TO_FULL);
 	fManufactureDate		= GetValueFromArray (acpibat_bbix, BBIX_MANUF_DATE);
 	OSData* manufacturerData		= GetDataFromArray  (acpibat_bbix, BBIX_MANUF_DATA);
+    
+    // thiagofigcosta
+//    fRemainingCapacity*=10;
+    // thiagofigcosta
 
 	DebugLog("fManufacturerAccess    = 0x%x\n", (unsigned)fManufacturerAccess);
 	DebugLog("fBatteryMode           = 0x%x\n", (unsigned)fBatteryMode);
@@ -1621,6 +1635,10 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 	DebugLog("fCurrentRate     = %d\n", (int)fCurrentRate);
 	DebugLog("fCurrentCapacity = %d\n", (int)fCurrentCapacity);
 	DebugLog("fCurrentVoltage  = %d\n", (int)fCurrentVoltage);
+    
+    // thiagofigcosta
+//    fCurrentCapacity*=10;
+    // thiagofigcosta
 
     if (fDesignCapacityRaw == ACPI_UNKNOWN)
     {
@@ -1694,20 +1712,22 @@ IOReturn AppleSmartBattery::setBatteryBST(OSArray *acpibat_bst)
 
     DebugLog("fAverageRate = %d\n", fAverageRate);
 
-    if (fCorrectCorruptCapacities)
-    {
-        // make sure CurrentCapacity<=MaxCapacity<=DesignCapacity
-        if (fDesignCapacity && fMaxCapacity > fDesignCapacity)
-        {
-            AlwaysLog("WARNING! fMaxCapacity > fDesignCapacity. adjusted fMaxCapacity from %d, to %d\n", (int)fMaxCapacity, (int)fDesignCapacity);
-            fMaxCapacity = fDesignCapacity;
-        }
-        if (fMaxCapacity && fCurrentCapacity > fMaxCapacity)
-        {
-            AlwaysLog("WARNING! fCurrentCapacity > fMaxCapacity. adjusted fCurrentCapacity from %d, to %d\n", (int)fCurrentCapacity, (int)fMaxCapacity);
-            fCurrentCapacity = fMaxCapacity;
-        }
-    }
+    // thiagofigcosta
+//    if (fCorrectCorruptCapacities)
+//    {
+//        // make sure CurrentCapacity<=MaxCapacity<=DesignCapacity
+//        if (fDesignCapacity && fMaxCapacity > fDesignCapacity)
+//        {
+//            AlwaysLog("WARNING! fMaxCapacity > fDesignCapacity. adjusted fMaxCapacity from %d, to %d\n", (int)fMaxCapacity, (int)fDesignCapacity);
+//            fMaxCapacity = fDesignCapacity;
+//        }
+//        if (fMaxCapacity && fCurrentCapacity > fMaxCapacity)
+//        {
+//            AlwaysLog("WARNING! fCurrentCapacity > fMaxCapacity. adjusted fCurrentCapacity from %d, to %d\n", (int)fCurrentCapacity, (int)fMaxCapacity);
+//            fCurrentCapacity = fMaxCapacity;
+//        }
+//    }
+    // thiagofigcosta
 
     setDesignCapacity(fDesignCapacity);
     setMaxCapacity(fMaxCapacity);
